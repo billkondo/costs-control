@@ -2,7 +2,7 @@ import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '.';
 
 /**
- * @param {() => void} onLogin
+ * @param {(user: import('firebase/auth').User) => void} onLogin
  * @param {() => void} onLogout
  * @returns {import('firebase/auth').Unsubscribe}
  */
@@ -11,7 +11,7 @@ export const subscribeToAuthStateChange = (onLogin, onLogout) => {
     if (!user) {
       onLogout();
     } else {
-      onLogin();
+      onLogin(user);
     }
   });
 

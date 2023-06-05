@@ -2,28 +2,34 @@ import PropTypes from 'prop-types';
 import { createContext, useEffect, useState } from 'react';
 import * as FirebaseAuth from '../firebase/auth';
 
-/** @type {import('./types').AuthenticationState} */
+/** @typedef {object} AuthenticationState
+ * @property {boolean} authenticated
+ * @property {string} authenticatedUserId
+ * @property {(email: string, passowrd: string) => Promise<void>} loginWithEmailAndPassword
+ */
+
+/** @type {AuthenticationState} */
 const defaultAuthenticationState = {
   authenticated: false,
   loginWithEmailAndPassword: async () => {},
 };
 
-/** @type {import('react').Context<import('./types').AuthenticationState>} */
+/** @type {import('react').Context<AuthenticationState>} */
 export const AuthenticationContext = createContext(defaultAuthenticationState);
 
 /**
- *
  * @param {import('react').PropsWithChildren} props
- * @returns
  */
 const AuthenticationProvider = (props) => {
   const { children } = props;
-  const [authenticated, setAuthenticated] = useState(false);
+
+  /** @type {[string | null, import('react').SetStateAction<string | null>]} */
+  const [authenticatedUserId, setAuthenticatedUserId] = useState(null);
 
   useEffect(() => {
     FirebaseAuth.subscribeToAuthStateChange(
-      () => setAuthenticated(true),
-      () => setAuthenticated(false)
+      (user) => setAuthenticatedUserId(user.uid),
+      () => setAuthenticatedUserId(null)
     );
   }, []);
 
@@ -32,13 +38,18 @@ const AuthenticationProvider = (props) => {
    * @param {string} password
    */
   const loginWithEmailAndPassword = async (email, password) => {
-    await FirebaseAuth.loginWithEmailAndPassword(email, password);
-    setAuthenticated(true);
+    const user = await FirebaseAuth.loginWithEmailAndPassword(email, password);
+
+    setAuthenticatedUserId(user.uid);
   };
 
   return (
     <AuthenticationContext.Provider
-      value={{ authenticated, loginWithEmailAndPassword }}
+      value={{
+        authenticated: !!authenticatedUserId,
+        authenticatedUserId,
+        loginWithEmailAndPassword,
+      }}
     >
       {children}
     </AuthenticationContext.Provider>
