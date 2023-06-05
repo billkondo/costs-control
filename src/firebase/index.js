@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, connectAuthEmulator } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import firebaseConfig from './firebaseConfig';
 
@@ -19,6 +19,7 @@ const init = () => {
 
   if (import.meta.env.MODE === 'development') {
     connectFirestoreEmulator(db, 'localhost', 8080);
+    connectAuthEmulator(auth, 'http://localhost:9099');
   }
 };
 
