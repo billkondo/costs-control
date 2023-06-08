@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import ExpenseForm from './components/ExpenseForm';
+import LatestExpensesList from './components/LatestExpensesList';
 import OnlyAuthenticated from './components/OnlyAuthenticated';
 import UserLoginForm from './components/UserLoginForm';
 import { init } from './firebase';
@@ -28,6 +29,7 @@ function App() {
         <OnlyAuthenticated>
           <ExpensesProvider>
             <ExpenseForm />
+            <LatestExpensesList />
           </ExpensesProvider>
         </OnlyAuthenticated>
       </div>
