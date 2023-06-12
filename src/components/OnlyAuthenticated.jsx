@@ -13,7 +13,7 @@ const OnlyAuthenticated = (props) => {
     return null;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 OnlyAuthenticated.propTypes = {

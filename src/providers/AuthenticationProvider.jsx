@@ -8,14 +8,15 @@ import * as FirebaseAuth from '../firebase/auth';
  * @property {(email: string, passowrd: string) => Promise<void>} loginWithEmailAndPassword
  */
 
-/** @type {AuthenticationState} */
-const defaultAuthenticationState = {
+/** @type {import('react').Context<AuthenticationState>} */
+export const AuthenticationContext = createContext({
   authenticated: false,
   loginWithEmailAndPassword: async () => {},
-};
+  authenticatedUserId: null,
+});
 
-/** @type {import('react').Context<AuthenticationState>} */
-export const AuthenticationContext = createContext(defaultAuthenticationState);
+/** @type {string | null} */
+const defaultAuthenticatedUserId = null;
 
 /**
  * @param {import('react').PropsWithChildren} props
@@ -23,8 +24,9 @@ export const AuthenticationContext = createContext(defaultAuthenticationState);
 const AuthenticationProvider = (props) => {
   const { children } = props;
 
-  /** @type {[string | null, import('react').SetStateAction<string | null>]} */
-  const [authenticatedUserId, setAuthenticatedUserId] = useState(null);
+  const [authenticatedUserId, setAuthenticatedUserId] = useState(
+    defaultAuthenticatedUserId
+  );
 
   useEffect(() => {
     FirebaseAuth.subscribeToAuthStateChange(

@@ -19,12 +19,13 @@ const ExpenseForm = () => {
     event.preventDefault();
 
     /** @type {EventTarget & FormTarget} */
+    // @ts-ignore
     const target = event.target;
 
     const value = target.value.valueAsNumber;
     const date = target.date.valueAsDate;
 
-    /** @type {import("../types/expenses").Expense} */
+    /** @type {Expense} */
     const expense = {
       value,
       date,

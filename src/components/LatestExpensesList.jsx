@@ -2,11 +2,13 @@ import { useContext, useEffect, useState } from 'react';
 import { latestExpensesListener } from '../firebase/firestore';
 import { AuthenticationContext } from '../providers/AuthenticationProvider';
 
+/** @type {UserExpense[]} */
+const defaultLatestExpenses = [];
+
 const LatestExpensesList = () => {
   const { authenticatedUserId } = useContext(AuthenticationContext);
 
-  /** @type {[import('../types/expenses').UserExpense[], import('react').SetStateAction<import('../types/expenses').UserExpense[]>]} */
-  const [latestExpenses, setLatestExpenses] = useState([]);
+  const [latestExpenses, setLatestExpenses] = useState(defaultLatestExpenses);
 
   useEffect(() => {
     const unsubscribe = latestExpensesListener(
@@ -23,11 +25,11 @@ const LatestExpensesList = () => {
 
   return (
     <div>
-      {latestExpenses.map((userExpense, index) => {
-        const { date, value } = userExpense;
+      {latestExpenses.map((userExpense) => {
+        const { id, date, value } = userExpense;
 
         return (
-          <div key={index}>
+          <div key={id}>
             <div>{date.toISOString()}</div>
             <div>R${value.toFixed(2)}</div>
           </div>

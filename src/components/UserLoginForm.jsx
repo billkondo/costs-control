@@ -19,6 +19,7 @@ const UserLoginForm = () => {
     event.preventDefault();
 
     /** @type {EventTarget & FormTarget} */
+    // @ts-ignore
     const target = event.target;
 
     const email = target.email.value;

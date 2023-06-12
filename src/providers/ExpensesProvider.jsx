@@ -5,14 +5,13 @@ import { AuthenticationContext } from './AuthenticationProvider';
 
 /**
  * @typedef {object} ExpensesState
- * @property {(expense: import('../types/expenses').Expense) => Promise<void>} addExpense
+ * @property {(expense: Expense) => Promise<void>} addExpense
  */
 
-/** @type {ExpensesState} */
-const defaultExpensesState = {};
-
 /** @type {import("react").Context<ExpensesState>} */
-export const ExpensesContext = createContext(defaultExpensesState);
+export const ExpensesContext = createContext({
+  addExpense: async () => {},
+});
 
 /**
  * @param {import('react').PropsWithChildren} props
@@ -22,13 +21,15 @@ const ExpensesProvider = (props) => {
   const { authenticatedUserId } = useContext(AuthenticationContext);
 
   /**
-   * @param {import("../types/expenses").Expense} expense
+   * @param {Expense} expense
    */
   const addExpense = async (expense) => {
-    /** @type {import('../types/expenses').UserExpense} */
+    /** @type {UserExpense} */
     const userExpense = {
-      ...expense,
+      id: null,
       userId: authenticatedUserId,
+      date: expense.date,
+      value: expense.value,
     };
 
     await FirebaseFirestore.addUserExpense(userExpense);

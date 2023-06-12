@@ -1,11 +1,13 @@
 import {
   collection,
-  addDoc,
   query,
   orderBy,
   limit,
   where,
   onSnapshot,
+  doc,
+  setDoc,
+  Timestamp,
 } from 'firebase/firestore';
 import { db } from '.';
 
@@ -14,15 +16,24 @@ const getExpensesCollection = () => {
 };
 
 /**
- * @param {import('../types/expenses').UserExpense} userExpense
+ * @param {UserExpense} userExpense
  */
 export const addUserExpense = async (userExpense) => {
-  await addDoc(getExpensesCollection(), userExpense);
+  const userExpenseRef = doc(getExpensesCollection());
+
+  /** @type {UserExpenseDBData} */
+  const userExpenseDBData = {
+    ...userExpense,
+    id: userExpenseRef.id,
+    date: Timestamp.fromDate(userExpense.date),
+  };
+
+  await setDoc(userExpenseRef, userExpenseDBData);
 };
 
 /**
  * @param {string} userId
- * @param {(latestExpenses: import('../types/expenses').UserExpense[]) => void} onLatestExpensesChanged
+ * @param {(latestExpenses: UserExpense[]) => void} onLatestExpensesChanged
  */
 export const latestExpensesListener = (userId, onLatestExpensesChanged) => {
   const latestExpensesQuery = query(
@@ -34,13 +45,16 @@ export const latestExpensesListener = (userId, onLatestExpensesChanged) => {
 
   const unsubscribe = onSnapshot(latestExpensesQuery, (querySnapshot) => {
     const latestExpenses = querySnapshot.docs.map((doc) => {
-      const data = doc.data();
+      /** @type {UserExpenseDBData} */
+      // @ts-ignore
+      const userExpenseDBData = doc.data();
 
-      /** @type {import('../types/expenses').UserExpense} */
+      /** @type {UserExpense} */
       const userExpense = {
-        date: data.date.toDate(),
-        userId: data.userId,
-        value: data.value,
+        id: doc.id,
+        userId,
+        date: userExpenseDBData.date.toDate(),
+        value: userExpenseDBData.value,
       };
 
       return userExpense;

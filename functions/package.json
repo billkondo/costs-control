@@ -6,15 +6,17 @@
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "check-types": "tsc --project jsconfig.json",
+    "lint": "npm run check-types"
   },
   "engines": {
     "node": "14"
   },
   "main": "index.js",
   "dependencies": {
-    "firebase-admin": "^9.8.0",
-    "firebase-functions": "^3.14.1"
+    "firebase-admin": "^11.9.0",
+    "firebase-functions": "^4.4.0"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"
