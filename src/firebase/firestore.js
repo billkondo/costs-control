@@ -15,6 +15,10 @@ const getExpensesCollection = () => {
   return collection(db, 'expenses');
 };
 
+const getMonthlyExpenses = () => {
+  return collection(db, 'monthlyExpenses');
+};
+
 /**
  * @param {UserExpense} userExpense
  */
@@ -61,6 +65,42 @@ export const latestExpensesListener = (userId, onLatestExpensesChanged) => {
     });
 
     onLatestExpensesChanged(latestExpenses);
+  });
+
+  return unsubscribe;
+};
+
+/**
+ * @param {string} userId
+ * @param {(monthlyExpense: UserMonthlyExpense) => void} onCurrentMonthExpenseChanged
+ */
+export const currentMonthExpenseListener = (
+  userId,
+  onCurrentMonthExpenseChanged
+) => {
+  const now = new Date();
+  const currentMonth = now.getUTCMonth();
+  const currentYear = now.getUTCFullYear();
+
+  const currentMonthExpenseQuery = query(
+    getMonthlyExpenses(),
+    where('month', '==', currentMonth),
+    where('year', '==', currentYear),
+    where('userId', '==', userId)
+  );
+
+  const unsubscribe = onSnapshot(currentMonthExpenseQuery, (querySnapshot) => {
+    if (!querySnapshot.docs.length) {
+      return null;
+    }
+
+    /** @type {UserMonthlyExpenseDBData} */
+    // @ts-ignore
+    const userMonthlyExpenseDBData = querySnapshot.docs[0].data();
+
+    onCurrentMonthExpenseChanged({
+      ...userMonthlyExpenseDBData,
+    });
   });
 
   return unsubscribe;

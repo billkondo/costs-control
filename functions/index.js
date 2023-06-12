@@ -33,6 +33,7 @@ const getUserMonthlyExpenseFromUserExpenseDBData = async (
   const querySnapshot = await userMonthlyExpensesCollection
     .where(Filter.where('month', '==', month))
     .where(Filter.where('year', '==', year))
+    .where(Filter.where('userId', '==', userId))
     .get();
 
   /** @type {UserMonthlyExpense[]} */

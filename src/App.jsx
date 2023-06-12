@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import CurrentMonthExpense from './components/CurrentMonthExpense';
 import ExpenseForm from './components/ExpenseForm';
 import LatestExpensesList from './components/LatestExpensesList';
 import OnlyAuthenticated from './components/OnlyAuthenticated';
@@ -28,6 +29,7 @@ function App() {
 
         <OnlyAuthenticated>
           <ExpensesProvider>
+            <CurrentMonthExpense />
             <ExpenseForm />
             <LatestExpensesList />
           </ExpensesProvider>
