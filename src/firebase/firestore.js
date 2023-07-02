@@ -24,6 +24,10 @@ const getSubscriptionsCollection = () => {
   return collection(db, 'subscriptions');
 };
 
+const getFixedCostsCollection = () => {
+  return collection(db, 'fixedCosts');
+};
+
 /**
  * @param {UserExpense} userExpense
  */
@@ -158,4 +162,29 @@ export const getUserSubscriptions = async (userId) => {
   });
 
   return userSubscriptions;
+};
+
+/**
+ * @param {string} userId
+ * @param {(fixedCost: FixedCost) => void} onFixedCostChanged
+ */
+export const fixedCostListener = (userId, onFixedCostChanged) => {
+  const fixedCostQuery = query(
+    getFixedCostsCollection(),
+    where('userId', '==', userId)
+  );
+
+  const unsubscribe = onSnapshot(fixedCostQuery, (querySnapshot) => {
+    if (!querySnapshot.docs.length) {
+      return null;
+    }
+
+    /** @type {UserFixedCostDBData} */
+    // @ts-ignore
+    const userFixedCostDBData = querySnapshot.docs[0].data();
+
+    onFixedCostChanged({ ...userFixedCostDBData });
+  });
+
+  return unsubscribe;
 };
