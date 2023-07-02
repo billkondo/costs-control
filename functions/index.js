@@ -18,6 +18,8 @@ const db = getFirestore(app);
 
 const userMonthlyExpensesCollection = db.collection('monthlyExpenses');
 
+const fixedCostCollection = db.collection('fixedCosts');
+
 /**
  * @param {UserExpenseDBData} userExpenseDBData
  * @returns {Promise<UserMonthlyExpense>}
@@ -85,6 +87,56 @@ const saveUserMonthlyExpense = async (userMonthlyExpense) => {
   }
 };
 
+/**
+ * @param {string} userId
+ * @returns {Promise<UserFixedCost>}
+ */
+const getUserFixedCost = async (userId) => {
+  const querySnapshot = await fixedCostCollection
+    .where('userId', '==', userId)
+    .get();
+
+  if (!querySnapshot.docs.length) {
+    return {
+      id: null,
+      userId,
+      value: 0,
+    };
+  }
+
+  const fixedCostDoc = querySnapshot.docs[0];
+
+  /** @type {UserSubscriptionDBData} */
+  // @ts-ignore
+  const fixedCostDBData = fixedCostDoc.data();
+
+  return {
+    ...fixedCostDBData,
+  };
+};
+
+/**
+ * @param {UserFixedCost} userFixedCost
+ */
+const saveUserFixedCost = async (userFixedCost) => {
+  const { id } = userFixedCost;
+  const shouldCreateRecord = !id;
+
+  if (shouldCreateRecord) {
+    const userFixedCostRef = fixedCostCollection.doc();
+
+    /** @type {UserFixedCostDBData} */
+    const userFixedCostDBData = {
+      ...userFixedCost,
+      id: userFixedCostRef.id,
+    };
+
+    await userFixedCostRef.set(userFixedCostDBData);
+  } else {
+    await fixedCostCollection.doc(id).update(userFixedCost);
+  }
+};
+
 exports.onUserExpenseCreated = onDocumentCreated(
   'expenses/{docId}',
   async (event) => {
@@ -128,7 +180,7 @@ exports.onUserExpenseUpdated = onDocumentUpdated(
 
     /** @type {UserExpenseDBData} */
     // @ts-ignore
-    const afterUserExpenseDBData = event.data.before.data();
+    const afterUserExpenseDBData = event.data.after.data();
 
     const userMonthlyExpense = await getUserMonthlyExpenseFromUserExpenseDBData(
       afterUserExpenseDBData
@@ -138,5 +190,67 @@ exports.onUserExpenseUpdated = onDocumentUpdated(
       afterUserExpenseDBData.value - beforeUserExpenseDBData.value;
 
     await saveUserMonthlyExpense(userMonthlyExpense);
+  }
+);
+
+exports.onUserSubscriptionCreated = onDocumentCreated(
+  'subscriptions/{docId}',
+  async (event) => {
+    /** @type {UserSubscriptionDBData} */
+    // @ts-ignore
+    const userSubscriptionDBData = event.data.data();
+
+    const { userId, value, type } = userSubscriptionDBData;
+
+    if (type === 'MONTHLY') {
+      const userFixedCost = await getUserFixedCost(userId);
+
+      userFixedCost.value += value;
+
+      await saveUserFixedCost(userFixedCost);
+    }
+  }
+);
+
+exports.onUserSubscriptionDeleted = onDocumentDeleted(
+  'subscriptions/{docId}',
+  async (event) => {
+    /** @type {UserSubscriptionDBData} */
+    // @ts-ignore
+    const userSubscriptionDBData = event.data.data();
+
+    const { userId, value, type } = userSubscriptionDBData;
+
+    if (type === 'MONTHLY') {
+      const userFixedCost = await getUserFixedCost(userId);
+
+      userFixedCost.value -= value;
+
+      await saveUserFixedCost(userFixedCost);
+    }
+  }
+);
+
+exports.onUserSubscriptionUpdated = onDocumentUpdated(
+  'subscriptions/{docId}',
+  async (event) => {
+    /** @type {UserSubscriptionDBData} */
+    // @ts-ignore
+    const beforeUserSubscription = event.data.before.data();
+
+    /** @type {UserSubscriptionDBData} */
+    // @ts-ignore
+    const afterUserSubscription = event.data.after.data();
+
+    const { userId, type } = afterUserSubscription;
+
+    if (type === 'MONTHLY') {
+      const userFixedCost = await getUserFixedCost(userId);
+
+      userFixedCost.value +=
+        afterUserSubscription.value - beforeUserSubscription.value;
+
+      await saveUserFixedCost(userFixedCost);
+    }
   }
 );

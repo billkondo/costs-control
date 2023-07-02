@@ -53,3 +53,16 @@ type UserSubscription = {
 } & Subscription;
 
 type UserSubscriptionDBData = UserSubscription;
+
+// Fixed Cost
+
+type FixedCost = {
+  value: number;
+};
+
+type UserFixedCost = {
+  id: string;
+  userId: string;
+} & FixedCost;
+
+type UserFixedCostDBData = UserFixedCost;
