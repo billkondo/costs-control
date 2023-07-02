@@ -1,11 +1,11 @@
+import { useContext, useRef } from 'react';
+import { ExpensesContext } from '../providers/ExpensesProvider';
+
 /**
  * @typedef {object} FormTarget
  * @property {HTMLInputElement} value
  * @property {HTMLInputElement} date
  */
-
-import { useContext, useRef } from 'react';
-import { ExpensesContext } from '../providers/ExpensesProvider';
 
 const ExpenseForm = () => {
   /** @type {import('react').Ref<HTMLFormElement>} */

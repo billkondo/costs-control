@@ -4,6 +4,8 @@ import CurrentMonthExpense from './components/CurrentMonthExpense';
 import ExpenseForm from './components/ExpenseForm';
 import LatestExpensesList from './components/LatestExpensesList';
 import OnlyAuthenticated from './components/OnlyAuthenticated';
+import SubscriptionForm from './components/SubscriptionForm';
+import SubscriptionsList from './components/SubscriptionsList';
 import UserLoginForm from './components/UserLoginForm';
 import { init } from './firebase';
 import AuthenticationProvider from './providers/AuthenticationProvider';
@@ -30,8 +32,10 @@ function App() {
         <OnlyAuthenticated>
           <ExpensesProvider>
             <CurrentMonthExpense />
+            <SubscriptionForm />
             <ExpenseForm />
             <LatestExpensesList />
+            <SubscriptionsList />
           </ExpensesProvider>
         </OnlyAuthenticated>
       </div>

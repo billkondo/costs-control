@@ -8,6 +8,7 @@ import {
   doc,
   setDoc,
   Timestamp,
+  getDocs,
 } from 'firebase/firestore';
 import { db } from '.';
 
@@ -17,6 +18,10 @@ const getExpensesCollection = () => {
 
 const getMonthlyExpenses = () => {
   return collection(db, 'monthlyExpenses');
+};
+
+const getSubscriptionsCollection = () => {
+  return collection(db, 'subscriptions');
 };
 
 /**
@@ -104,4 +109,53 @@ export const currentMonthExpenseListener = (
   });
 
   return unsubscribe;
+};
+
+/**
+ * @param {UserSubscription} userSubscription
+ */
+export const addUserSubscription = async (userSubscription) => {
+  const userSubscriptionRef = doc(getSubscriptionsCollection());
+
+  userSubscription.id = userSubscriptionRef.id;
+
+  /** @type {UserSubscriptionDBData} */
+  const userSubscriptionDBData = {
+    ...userSubscription,
+  };
+
+  await setDoc(userSubscriptionRef, userSubscriptionDBData);
+};
+
+/**
+ * @param {string} userId
+ */
+export const getUserSubscriptions = async (userId) => {
+  const userSubscriptionsQuery = query(
+    getSubscriptionsCollection(),
+    where('userId', '==', userId)
+  );
+
+  const docs = await getDocs(userSubscriptionsQuery);
+
+  /** @type {UserSubscription[]} */
+  const userSubscriptions = docs.docs.map((doc) => {
+    /** @type {UserSubscriptionDBData} */
+    // @ts-ignore
+    const data = doc.data();
+
+    /** @type {UserSubscription} */
+    const userSubscription = {
+      id: data.id,
+      day: data.day,
+      month: data.month,
+      type: data.type,
+      userId: data.userId,
+      value: data.value,
+    };
+
+    return userSubscription;
+  });
+
+  return userSubscriptions;
 };

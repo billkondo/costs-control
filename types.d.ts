@@ -1,3 +1,5 @@
+// Expenses
+
 type Expense = {
   value: number;
   date: Date;
@@ -33,3 +35,21 @@ type UserMonthlyExpenseDBData = {
   year: number;
   value: number;
 };
+
+// Subscriptions
+
+type SubscriptionType = 'MONTHLY' | 'YEARLY';
+
+type Subscription = {
+  value: number;
+  type: SubscriptionType;
+  day: number;
+  month: number;
+};
+
+type UserSubscription = {
+  id: string;
+  userId: string;
+} & Subscription;
+
+type UserSubscriptionDBData = UserSubscription;
