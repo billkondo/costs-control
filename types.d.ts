@@ -66,3 +66,15 @@ type UserFixedCost = {
 } & FixedCost;
 
 type UserFixedCostDBData = UserFixedCost;
+
+type MonthlyFixedCost = {
+  value: number;
+  month: number;
+};
+
+type UserMonthlyFixedCost = {
+  id: string;
+  userId: string;
+} & MonthlyFixedCost;
+
+type UserMonthlyFixedCostDBData = UserMonthlyFixedCost;

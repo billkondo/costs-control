@@ -17,8 +17,8 @@ const app = initializeApp({
 const db = getFirestore(app);
 
 const userMonthlyExpensesCollection = db.collection('monthlyExpenses');
-
 const fixedCostCollection = db.collection('fixedCosts');
+const monthlyFixedCostCollection = db.collection('monthlyFixedCosts');
 
 /**
  * @param {UserExpenseDBData} userExpenseDBData
@@ -116,6 +116,35 @@ const getUserFixedCost = async (userId) => {
 };
 
 /**
+ * @param {string} userId
+ * @param {number} month
+ * @returns {Promise<UserMonthlyFixedCost>}
+ */
+const getUserMonthlyFixedCost = async (userId, month) => {
+  const querySnapshot = await monthlyFixedCostCollection
+    .where('userId', '==', userId)
+    .where('month', '==', month)
+    .get();
+
+  if (!querySnapshot.docs.length) {
+    return {
+      id: null,
+      month,
+      userId,
+      value: 0,
+    };
+  }
+
+  /** @type {UserMonthlyFixedCostDBData} */
+  // @ts-ignore
+  const monthlyFixedCostDBData = querySnapshot.docs[0].data();
+
+  return {
+    ...monthlyFixedCostDBData,
+  };
+};
+
+/**
  * @param {UserFixedCost} userFixedCost
  */
 const saveUserFixedCost = async (userFixedCost) => {
@@ -134,6 +163,28 @@ const saveUserFixedCost = async (userFixedCost) => {
     await userFixedCostRef.set(userFixedCostDBData);
   } else {
     await fixedCostCollection.doc(id).update(userFixedCost);
+  }
+};
+
+/**
+ * @param {UserMonthlyFixedCost} userMonthlyFixedCost
+ */
+const saveUserMonthlyFixedCost = async (userMonthlyFixedCost) => {
+  const { id } = userMonthlyFixedCost;
+  const shouldCreateRecord = !id;
+
+  if (shouldCreateRecord) {
+    const userMonthlyFixedCostRef = monthlyFixedCostCollection.doc();
+
+    /** @type {UserMonthlyFixedCostDBData} */
+    const userMonthlyFixedCostDBData = {
+      ...userMonthlyFixedCost,
+      id: userMonthlyFixedCostRef.id,
+    };
+
+    await userMonthlyFixedCostRef.set(userMonthlyFixedCostDBData);
+  } else {
+    await monthlyFixedCostCollection.doc(id).update(userMonthlyFixedCost);
   }
 };
 
@@ -200,7 +251,7 @@ exports.onUserSubscriptionCreated = onDocumentCreated(
     // @ts-ignore
     const userSubscriptionDBData = event.data.data();
 
-    const { userId, value, type } = userSubscriptionDBData;
+    const { userId, value, type, month } = userSubscriptionDBData;
 
     if (type === 'MONTHLY') {
       const userFixedCost = await getUserFixedCost(userId);
@@ -208,6 +259,14 @@ exports.onUserSubscriptionCreated = onDocumentCreated(
       userFixedCost.value += value;
 
       await saveUserFixedCost(userFixedCost);
+    }
+
+    if (type === 'YEARLY') {
+      const userMonthlyFixedCost = await getUserMonthlyFixedCost(userId, month);
+
+      userMonthlyFixedCost.value += value;
+
+      await saveUserMonthlyFixedCost(userMonthlyFixedCost);
     }
   }
 );
@@ -219,7 +278,7 @@ exports.onUserSubscriptionDeleted = onDocumentDeleted(
     // @ts-ignore
     const userSubscriptionDBData = event.data.data();
 
-    const { userId, value, type } = userSubscriptionDBData;
+    const { userId, value, type, month } = userSubscriptionDBData;
 
     if (type === 'MONTHLY') {
       const userFixedCost = await getUserFixedCost(userId);
@@ -227,6 +286,14 @@ exports.onUserSubscriptionDeleted = onDocumentDeleted(
       userFixedCost.value -= value;
 
       await saveUserFixedCost(userFixedCost);
+    }
+
+    if (type === 'YEARLY') {
+      const userMonthlyFixedCost = await getUserMonthlyFixedCost(userId, month);
+
+      userMonthlyFixedCost.value -= value;
+
+      await saveUserMonthlyFixedCost(userMonthlyFixedCost);
     }
   }
 );
@@ -242,7 +309,7 @@ exports.onUserSubscriptionUpdated = onDocumentUpdated(
     // @ts-ignore
     const afterUserSubscription = event.data.after.data();
 
-    const { userId, type } = afterUserSubscription;
+    const { userId, type, month } = afterUserSubscription;
 
     if (type === 'MONTHLY') {
       const userFixedCost = await getUserFixedCost(userId);
@@ -251,6 +318,15 @@ exports.onUserSubscriptionUpdated = onDocumentUpdated(
         afterUserSubscription.value - beforeUserSubscription.value;
 
       await saveUserFixedCost(userFixedCost);
+    }
+
+    if (type === 'YEARLY') {
+      const userMonthlyFixedCost = await getUserMonthlyFixedCost(userId, month);
+
+      userMonthlyFixedCost.value +=
+        afterUserSubscription.value - beforeUserSubscription.value;
+
+      await saveUserMonthlyFixedCost(userMonthlyFixedCost);
     }
   }
 );

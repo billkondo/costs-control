@@ -2,6 +2,7 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import {
   currentMonthExpenseListener,
   fixedCostListener,
+  monthlyFixedCostsListener,
 } from '../firebase/firestore';
 import { AuthenticationContext } from '../providers/AuthenticationProvider';
 
@@ -11,6 +12,9 @@ const CurrentMonthExpense = () => {
     /** @type {UserMonthlyExpense} */ (null)
   );
   const [fixedCost, setFixedCost] = useState(/** @type {FixedCost} */ (null));
+  const [monthlyFixedCost, setMonthlyFixedCost] = useState(
+    /** @type {UserMonthlyFixedCost} */ (null)
+  );
 
   const expense = useMemo(() => {
     let cost = 0;
@@ -23,8 +27,12 @@ const CurrentMonthExpense = () => {
       cost += fixedCost.value;
     }
 
+    if (monthlyFixedCost) {
+      cost += monthlyFixedCost.value;
+    }
+
     return cost;
-  }, [currentMonthExpense, fixedCost]);
+  }, [currentMonthExpense, fixedCost, monthlyFixedCost]);
 
   useEffect(() => {
     const unsubscribeMonthExpenseListener = currentMonthExpenseListener(
@@ -41,9 +49,17 @@ const CurrentMonthExpense = () => {
       }
     );
 
+    const unsubscribeMonthlyFixedCostListener = monthlyFixedCostsListener(
+      authenticatedUserId,
+      (monthlyFixedCost) => {
+        setMonthlyFixedCost(monthlyFixedCost);
+      }
+    );
+
     return () => {
       unsubscribeMonthExpenseListener();
       unsubscribeFixedCostListener();
+      unsubscribeMonthlyFixedCostListener();
     };
   }, [authenticatedUserId]);
 
