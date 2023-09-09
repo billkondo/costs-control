@@ -30,13 +30,15 @@ function App() {
         <UserLoginForm />
 
         <OnlyAuthenticated>
-          <ExpensesProvider>
-            <CurrentMonthExpense />
-            <SubscriptionForm />
-            <ExpenseForm />
-            <LatestExpensesList />
-            <SubscriptionsList />
-          </ExpensesProvider>
+          <div style={{ padding: '1rem' }}>
+            <ExpensesProvider>
+              <CurrentMonthExpense />
+              <SubscriptionForm />
+              <ExpenseForm />
+              <LatestExpensesList />
+              <SubscriptionsList />
+            </ExpensesProvider>
+          </div>
         </OnlyAuthenticated>
       </HeaderPage>
     </AuthenticationProvider>

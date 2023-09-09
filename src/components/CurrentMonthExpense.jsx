@@ -1,3 +1,4 @@
+import { Grid, Typography } from '@mui/material';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import {
   currentMonthExpenseListener,
@@ -64,9 +65,14 @@ const CurrentMonthExpense = () => {
   }, [authenticatedUserId]);
 
   return (
-    <div>
-      <div>{`Current month cost: R$${expense.toFixed(2)}`}</div>
-    </div>
+    <Grid container direction="column">
+      <Grid container item>
+        <Typography variant="h5">{`This month's expense`}</Typography>
+      </Grid>
+      <Grid container item>
+        <Typography variant="h6">{`R$ ${expense.toFixed(2)}`}</Typography>
+      </Grid>
+    </Grid>
   );
 };
 

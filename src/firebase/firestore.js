@@ -55,7 +55,7 @@ export const addUserExpense = async (userExpense) => {
 export const latestExpensesListener = (userId, onLatestExpensesChanged) => {
   const latestExpensesQuery = query(
     getExpensesCollection(),
-    orderBy('date'),
+    orderBy('date', 'desc'),
     where('userId', '==', userId),
     limit(10)
   );
