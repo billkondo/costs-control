@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import './App.css';
 import CurrentMonthExpense from './components/CurrentMonthExpense';
 import ExpenseForm from './components/ExpenseForm';
+import HeaderPage from './components/HeaderPage';
 import LatestExpensesList from './components/LatestExpensesList';
 import OnlyAuthenticated from './components/OnlyAuthenticated';
 import SubscriptionForm from './components/SubscriptionForm';
@@ -26,7 +26,7 @@ function App() {
 
   return (
     <AuthenticationProvider>
-      <div>
+      <HeaderPage>
         <UserLoginForm />
 
         <OnlyAuthenticated>
@@ -38,7 +38,7 @@ function App() {
             <SubscriptionsList />
           </ExpensesProvider>
         </OnlyAuthenticated>
-      </div>
+      </HeaderPage>
     </AuthenticationProvider>
   );
 }
