@@ -3,11 +3,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useEffect, useState } from 'react';
 import AddExpenseButton from './components/AddExpenseButton';
+import AddSubscriptionButton from './components/AddSubscriptionButton';
 import CurrentMonthExpense from './components/CurrentMonthExpense';
 import HeaderPage from './components/HeaderPage';
 import LatestExpensesList from './components/LatestExpensesList';
 import OnlyAuthenticated from './components/OnlyAuthenticated';
-import SubscriptionForm from './components/SubscriptionForm';
 import SubscriptionsList from './components/SubscriptionsList';
 import UserLoginForm from './components/UserLoginForm';
 import { init } from './firebase';
@@ -43,11 +43,19 @@ function App() {
                   <Grid item>
                     <CurrentMonthExpense />
                   </Grid>
-                  <Box sx={{ position: 'absolute', right: 0, top: -40 }}>
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      right: 0,
+                      top: -40,
+                      gap: 1,
+                      display: 'flex',
+                    }}
+                  >
                     <AddExpenseButton />
+                    <AddSubscriptionButton />
                   </Box>
                 </Grid>
-                <SubscriptionForm />
                 <LatestExpensesList />
                 <SubscriptionsList />
               </ExpensesProvider>

@@ -1,41 +1,47 @@
-import { useContext, useRef, useState } from 'react';
+import {
+  Box,
+  Button,
+  FilledInput,
+  FormControl,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import PropTypes from 'prop-types';
+import { useContext, useState } from 'react';
 import { ExpensesContext } from '../providers/ExpensesProvider';
 
 /**
- * @typedef {object} FormTarget
- * @property {HTMLInputElement} value
- * @property {HTMLInputElement} type
- * @property {HTMLInputElement} day
- * @property {HTMLInputElement} month
+ * @param {{
+ *  onSubscriptionSaved: () => void
+ * }} props
+ * @returns
  */
-
-const SubscriptionForm = () => {
-  /** @type {import('react').Ref<HTMLFormElement>} */
-  const formRef = useRef(null);
-
+const SubscriptionForm = (props) => {
+  const { onSubscriptionSaved } = props;
   const { addSubscription } = useContext(ExpensesContext);
 
+  const [value, setValue] = useState(/** @type {number} */ (null));
   const [type, setType] = useState(/** @type {SubscriptionType} */ ('MONTHLY'));
+  const [day, setDay] = useState(/** @type {number} */ (null));
+  const [month, setMonth] = useState(/** @type {number} */ (null));
 
   /**
-   * @param {import("react").SyntheticEvent} event
+   * @param {SubscriptionType} newType
    */
-  const onSubmit = async (event) => {
-    event.preventDefault();
+  const onTypeChange = (newType) => {
+    if (newType === 'MONTHLY') {
+      setMonth(null);
+    }
 
-    /** @type {EventTarget & FormTarget} */
-    // @ts-ignore
-    const target = event.target;
+    setType(newType);
+  };
 
-    const value = target.value.valueAsNumber;
-
-    /** @type {SubscriptionType} */
-    // @ts-ignore
-    const type = target.type.value;
-
-    const day = target.day.valueAsNumber;
-    const month = target.month.valueAsNumber;
-
+  const onSubmit = async () => {
     /** @type {Subscription} */
     const subscription = {
       value: isNaN(value) ? null : value,
@@ -46,52 +52,127 @@ const SubscriptionForm = () => {
 
     await addSubscription(subscription);
 
-    formRef.current.reset();
+    resetForm();
+    onSubscriptionSaved();
+  };
+
+  const resetForm = () => {
+    setValue(null);
+    setType('MONTHLY');
+    setDay(null);
+    setMonth(null);
   };
 
   return (
-    <form onSubmit={onSubmit} noValidate ref={formRef}>
-      <label htmlFor="subscription-value">Value</label>
-      <input name="value" id="subscription-value" type="number" />
+    <Grid container direction="column" spacing={1}>
+      <Grid item>
+        <FormControl fullWidth variant="filled">
+          <InputLabel htmlFor="subscription-value">Value</InputLabel>
+          <FilledInput
+            id="subscription-value"
+            startAdornment={
+              <InputAdornment position="start">R$</InputAdornment>
+            }
+            onChange={(e) => {
+              const newValue = parseFloat(e.target.value);
 
-      <label htmlFor="subscription-type-monthly">Monthly</label>
-      <input
-        type="radio"
-        id="subscription-type-monthly"
-        name="type"
-        value="MONTHLY"
-        checked={type === 'MONTHLY'}
-        onChange={() => setType('MONTHLY')}
-      />
+              if (!isNaN(newValue)) {
+                setValue(newValue);
+              } else {
+                setValue(null);
+              }
+            }}
+          />
+        </FormControl>
+      </Grid>
+      <Grid item>
+        <Box sx={{ p: 1 }}>
+          <Typography variant="body2" sx={{ marginBottom: 1 }}>
+            Charge frequency
+          </Typography>
+          <ToggleButtonGroup
+            value={type}
+            exclusive
+            onChange={(_, newType) => {
+              onTypeChange(newType);
+            }}
+          >
+            <ToggleButton value="MONTHLY" sx={{ textTransform: 'none' }}>
+              <Typography variant="body1">Monthly</Typography>
+            </ToggleButton>
+            <ToggleButton value="YEARLY" sx={{ textTransform: 'none' }}>
+              <Typography variant="body1">Yearly</Typography>
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+      </Grid>
+      <Grid item>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <DatePicker
+            views={['day']}
+            disableOpenPicker
+            label="Charge day"
+            onChange={(date) => {
+              if (date) {
+                /** @type {Date} */
+                const dateObj = date.toDate();
+                const newDay = dateObj.getDate();
 
-      <label htmlFor="subscription-type-yearly">Yearly</label>
-      <input
-        type="radio"
-        id="subscription-type-yearly"
-        name="type"
-        value="YEARLY"
-        checked={type === 'YEARLY'}
-        onChange={() => setType('YEARLY')}
-      />
+                setDay(newDay);
+              } else {
+                setDay(null);
+              }
+            }}
+            slotProps={{
+              textField: {
+                variant: 'filled',
+                InputLabelProps: { shrink: true },
+              },
+            }}
+          />
+          {type === 'YEARLY' ? (
+            <DatePicker
+              views={['month']}
+              view="month"
+              label="Charge month"
+              openTo="month"
+              onChange={(date) => {
+                if (date) {
+                  /** @type {Date} */
+                  const dateObj = date.toDate();
+                  const newMonth = dateObj.getMonth();
 
-      <label htmlFor="subscription-day">Charge day</label>
-      <input type="number" id="subscription-day" name="day" min="1" max="31" />
-
-      <label htmlFor="subscription-month" hidden={type !== 'YEARLY'}>
-        Charge month
-      </label>
-      <input
-        type="number"
-        id="subscription-month"
-        name="month"
-        min="1"
-        max="12"
-        hidden={type !== 'YEARLY'}
-      />
-
-      <input type="submit" value="Create subscription" />
-    </form>
+                  setMonth(newMonth + 1);
+                } else {
+                  setMonth(null);
+                }
+              }}
+              slotProps={{
+                textField: {
+                  variant: 'filled',
+                  InputLabelProps: { shrink: true },
+                },
+              }}
+            />
+          ) : null}
+        </Box>
+      </Grid>
+      <Grid item sx={{ marginTop: 3 }}>
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={onSubmit}
+          sx={{ textTransform: 'none' }}
+        >
+          Save subscription
+        </Button>
+      </Grid>
+    </Grid>
   );
+};
+
+SubscriptionForm.propTypes = {
+  onSubscriptionSaved: PropTypes.func,
 };
 
 export default SubscriptionForm;

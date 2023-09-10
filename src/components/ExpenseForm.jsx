@@ -48,7 +48,6 @@ const ExpenseForm = (props) => {
           <InputLabel htmlFor="expense-value">Value</InputLabel>
           <FilledInput
             id="expense-value"
-            name="value"
             startAdornment={
               <InputAdornment position="start">R$</InputAdornment>
             }
@@ -78,14 +77,18 @@ const ExpenseForm = (props) => {
             textField: {
               variant: 'filled',
               fullWidth: true,
-              name: 'date',
               InputLabelProps: { shrink: true },
             },
           }}
         />
       </Grid>
       <Grid item sx={{ marginTop: 3 }}>
-        <Button variant="contained" fullWidth onClick={onSubmit}>
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={onSubmit}
+          sx={{ textTransform: 'none' }}
+        >
           Save expense
         </Button>
       </Grid>

@@ -8,9 +8,9 @@ import {
   Typography,
 } from '@mui/material';
 import { Fragment, useState } from 'react';
-import ExpenseForm from './ExpenseForm';
+import SubscriptionForm from './SubscriptionForm';
 
-const AddExpenseButton = () => {
+const AddSubscriptionButton = () => {
   const [open, setOpen] = useState(false);
 
   const openDialog = () => setOpen(true);
@@ -22,15 +22,16 @@ const AddExpenseButton = () => {
         variant="contained"
         size="small"
         onClick={openDialog}
+        color="secondary"
         sx={{ textTransform: 'none' }}
       >
-        Add expense
+        Add subscription
       </Button>
       <Dialog open={open} fullWidth>
         <DialogContent>
           <Grid container direction="column">
             <Grid item sx={{ position: 'relative', marginBottom: 3 }}>
-              <Typography variant="h6">New expense</Typography>
+              <Typography variant="h6">New subscription</Typography>
               <IconButton
                 size="small"
                 onClick={closeDialog}
@@ -40,7 +41,7 @@ const AddExpenseButton = () => {
               </IconButton>
             </Grid>
             <Grid item>
-              <ExpenseForm onExpenseSaved={closeDialog} />
+              <SubscriptionForm onSubscriptionSaved={closeDialog} />
             </Grid>
           </Grid>
         </DialogContent>
@@ -49,4 +50,4 @@ const AddExpenseButton = () => {
   );
 };
 
-export default AddExpenseButton;
+export default AddSubscriptionButton;
