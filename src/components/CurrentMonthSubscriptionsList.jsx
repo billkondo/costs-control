@@ -1,24 +1,25 @@
-import { Card, Grid, List, ListItem, Typography } from '@mui/material';
+import { ChevronRight } from '@mui/icons-material';
+import { Button, Card, Grid, List, ListItem, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
-import { latestExpensesListener } from '../firebase/firestore';
+import { currentMonthSubscriptionsListener } from '../firebase/firestore';
 import { AuthenticationContext } from '../providers/AuthenticationProvider';
 import padStart from '../utils/padStart';
 
-/** @type {UserExpense[]} */
-const defaultLatestExpenses = [];
-
-const LatestExpensesList = () => {
+const CurrentMonthSubscriptionsList = () => {
   const { authenticatedUserId } = useContext(AuthenticationContext);
 
-  const [latestExpenses, setLatestExpenses] = useState(defaultLatestExpenses);
+  const [currentMonthSubscriptions, setCurrentMonthSubscriptions] = useState(
+    /** @type {UserSubscription[]} */ ([])
+  );
 
-  const hasAnyExpense = latestExpenses.length > 0;
+  const hasAnySubscription = currentMonthSubscriptions.length > 0;
+  const hasManySubscriptions = currentMonthSubscriptions.length > 5;
 
   useEffect(() => {
-    const unsubscribe = latestExpensesListener(
+    const unsubscribe = currentMonthSubscriptionsListener(
       authenticatedUserId,
-      (latestExpenses) => {
-        setLatestExpenses(latestExpenses);
+      (subscriptions) => {
+        setCurrentMonthSubscriptions(subscriptions);
       }
     );
 
@@ -28,21 +29,20 @@ const LatestExpensesList = () => {
   }, [authenticatedUserId]);
 
   /**
-   * @param {Date} date
-   * @returns {string}
+   * @param {UserSubscription} subscription
    */
-  const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDate();
+  const formatDate = (subscription) => {
+    const { day } = subscription;
+    const now = new Date();
+    const currentMonth = now.getMonth();
 
-    return `${padStart(day)} / ${padStart(month)} / ${year}`;
+    return `${padStart(day)} / ${padStart(currentMonth)}`;
   };
 
   return (
     <Grid container direction="column">
       <Grid item>
-        <Typography variant="h5">Lastest expenses</Typography>
+        <Typography variant="h5">{`This month's subscriptions`}</Typography>
       </Grid>
 
       <Grid item>
@@ -54,8 +54,8 @@ const LatestExpensesList = () => {
           }}
         >
           <Card variant="outlined">
-            {latestExpenses.map((userExpense) => {
-              const { id, date, value } = userExpense;
+            {currentMonthSubscriptions.map((userSubscription) => {
+              const { id, value } = userSubscription;
 
               return (
                 <ListItem key={id} divider>
@@ -67,22 +67,21 @@ const LatestExpensesList = () => {
                     </Grid>
                     <Grid
                       item
-                      style={{
+                      sx={{
                         flexGrow: 1,
                         display: 'flex',
                         justifyContent: 'flex-end',
                       }}
                     >
                       <Typography variant="body2">
-                        {formatDate(date)}
+                        {formatDate(userSubscription)}
                       </Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
               );
             })}
-
-            {!hasAnyExpense ? (
+            {!hasAnySubscription ? (
               <Grid
                 container
                 direction="column"
@@ -92,7 +91,7 @@ const LatestExpensesList = () => {
               >
                 <Grid item>
                   <Typography variant="body1">
-                    <i>There are no expenses</i>
+                    <i>There are no subscriptions</i>
                   </Typography>
                 </Grid>
                 <Grid item>
@@ -102,6 +101,18 @@ const LatestExpensesList = () => {
                 </Grid>
               </Grid>
             ) : null}
+            {hasManySubscriptions ? (
+              <ListItem>
+                <Grid container justifyContent="flex-end">
+                  <Button
+                    sx={{ textTransform: 'none' }}
+                    endIcon={<ChevronRight />}
+                  >
+                    View All
+                  </Button>
+                </Grid>
+              </ListItem>
+            ) : null}
           </Card>
         </List>
       </Grid>
@@ -109,4 +120,4 @@ const LatestExpensesList = () => {
   );
 };
 
-export default LatestExpensesList;
+export default CurrentMonthSubscriptionsList;

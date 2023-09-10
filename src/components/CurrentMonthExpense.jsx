@@ -67,7 +67,7 @@ const CurrentMonthExpense = () => {
   return (
     <Grid container direction="column">
       <Grid container item justifyContent="center">
-        <Typography variant="h5">{`This month's expense`}</Typography>
+        <Typography variant="h5">{`This month's total expense`}</Typography>
       </Grid>
       <Grid container item justifyContent="center">
         <Typography variant="h6">{`R$ ${expense.toFixed(2)}`}</Typography>

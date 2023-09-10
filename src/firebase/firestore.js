@@ -9,6 +9,8 @@ import {
   setDoc,
   Timestamp,
   getDocs,
+  or,
+  and,
 } from 'firebase/firestore';
 import { db } from '.';
 
@@ -220,6 +222,48 @@ export const monthlyFixedCostsListener = (
     const monthlyFixedCostDBData = querySnapshot.docs[0].data();
 
     onMonthlyFixedCostChanged(monthlyFixedCostDBData);
+  });
+
+  return unsubscribe;
+};
+
+/**
+ * @param {string} userId
+ * @param {(subscriptions: UserSubscription[]) => void} onCurrentMonthSubscriptionsChanged
+ */
+export const currentMonthSubscriptionsListener = (
+  userId,
+  onCurrentMonthSubscriptionsChanged
+) => {
+  const now = new Date();
+  const currentMonth = now.getUTCMonth();
+
+  const currentMonthSubscriptions = query(
+    getSubscriptionsCollection(),
+    and(
+      where('userId', '==', userId),
+      or(where('month', '==', currentMonth), where('month', '==', null))
+    ),
+    limit(5),
+    orderBy('day')
+  );
+
+  const unsubscribe = onSnapshot(currentMonthSubscriptions, (querySnapshot) => {
+    if (!querySnapshot.docs.length) {
+      return null;
+    }
+
+    /** @type {UserSubscriptionDBData[]} */
+    // @ts-ignore
+    const userSubscriptionDBData = querySnapshot.docs.map((doc) => doc.data());
+
+    onCurrentMonthSubscriptionsChanged(
+      userSubscriptionDBData.map((data) => {
+        return {
+          ...data,
+        };
+      })
+    );
   });
 
   return unsubscribe;

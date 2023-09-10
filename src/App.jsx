@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import AddExpenseButton from './components/AddExpenseButton';
 import AddSubscriptionButton from './components/AddSubscriptionButton';
 import CurrentMonthExpense from './components/CurrentMonthExpense';
+import CurrentMonthSubscriptionsList from './components/CurrentMonthSubscriptionsList';
 import HeaderPage from './components/HeaderPage';
 import LatestExpensesList from './components/LatestExpensesList';
 import OnlyAuthenticated from './components/OnlyAuthenticated';
-import SubscriptionsList from './components/SubscriptionsList';
 import UserLoginForm from './components/UserLoginForm';
 import { init } from './firebase';
 import AuthenticationProvider from './providers/AuthenticationProvider';
@@ -56,8 +56,14 @@ function App() {
                     <AddSubscriptionButton />
                   </Box>
                 </Grid>
-                <LatestExpensesList />
-                <SubscriptionsList />
+                <Grid container spacing={4} sx={{ marginTop: 1 }}>
+                  <Grid item>
+                    <LatestExpensesList />
+                  </Grid>
+                  <Grid item>
+                    <CurrentMonthSubscriptionsList />
+                  </Grid>
+                </Grid>
               </ExpensesProvider>
             </div>
           </OnlyAuthenticated>
