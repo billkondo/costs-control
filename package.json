@@ -18,6 +18,8 @@
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.6",
     "@mui/material": "^5.14.6",
+    "@mui/x-date-pickers": "^6.13.0",
+    "dayjs": "^1.11.9",
     "firebase": "^9.22.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

@@ -66,10 +66,10 @@ const CurrentMonthExpense = () => {
 
   return (
     <Grid container direction="column">
-      <Grid container item>
+      <Grid container item justifyContent="center">
         <Typography variant="h5">{`This month's expense`}</Typography>
       </Grid>
-      <Grid container item>
+      <Grid container item justifyContent="center">
         <Typography variant="h6">{`R$ ${expense.toFixed(2)}`}</Typography>
       </Grid>
     </Grid>

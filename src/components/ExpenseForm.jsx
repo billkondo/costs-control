@@ -1,30 +1,29 @@
-import { useContext, useRef } from 'react';
+import {
+  Button,
+  FilledInput,
+  FormControl,
+  Grid,
+  InputAdornment,
+  InputLabel,
+} from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import PropTypes from 'prop-types';
+import { useContext, useState } from 'react';
 import { ExpensesContext } from '../providers/ExpensesProvider';
 
 /**
- * @typedef {object} FormTarget
- * @property {HTMLInputElement} value
- * @property {HTMLInputElement} date
+ * @param {{
+ *   onExpenseSaved: () => void
+ * }} props
  */
-
-const ExpenseForm = () => {
-  /** @type {import('react').Ref<HTMLFormElement>} */
-  const formRef = useRef(null);
+const ExpenseForm = (props) => {
+  const { onExpenseSaved } = props;
   const { addExpense } = useContext(ExpensesContext);
 
-  /**
-   * @param {import("react").SyntheticEvent} event
-   */
-  const onSubmit = async (event) => {
-    event.preventDefault();
+  const [value, setValue] = useState(/** @type {number} */ (null));
+  const [date, setDate] = useState(/** @type {Date} */ (null));
 
-    /** @type {EventTarget & FormTarget} */
-    // @ts-ignore
-    const target = event.target;
-
-    const value = target.value.valueAsNumber;
-    const date = target.date.valueAsDate;
-
+  const onSubmit = async () => {
     /** @type {Expense} */
     const expense = {
       value,
@@ -33,18 +32,69 @@ const ExpenseForm = () => {
 
     await addExpense(expense);
 
-    formRef.current.reset();
+    resetForm();
+    onExpenseSaved();
+  };
+
+  const resetForm = () => {
+    setValue(null);
+    setDate(null);
   };
 
   return (
-    <form onSubmit={onSubmit} noValidate ref={formRef}>
-      <label htmlFor="expense-value">Value</label>
-      <input name="value" id="expense-value" type="number"></input>
-      <label htmlFor="expense-date">Date</label>
-      <input name="date" id="expense-date" type="date"></input>
-      <input type="submit" value="Create expense" />
-    </form>
+    <Grid container direction="column" spacing={1}>
+      <Grid item>
+        <FormControl fullWidth variant="filled">
+          <InputLabel htmlFor="expense-value">Value</InputLabel>
+          <FilledInput
+            id="expense-value"
+            name="value"
+            startAdornment={
+              <InputAdornment position="start">R$</InputAdornment>
+            }
+            onChange={(e) => {
+              const newValue = parseFloat(e.target.value);
+
+              if (!isNaN(newValue)) {
+                setValue(newValue);
+              } else {
+                setValue(null);
+              }
+            }}
+          />
+        </FormControl>
+      </Grid>
+      <Grid item>
+        <DatePicker
+          label="Date"
+          onChange={(newDate) => {
+            if (newDate) {
+              setDate(newDate.toDate());
+            } else {
+              setDate(null);
+            }
+          }}
+          slotProps={{
+            textField: {
+              variant: 'filled',
+              fullWidth: true,
+              name: 'date',
+              InputLabelProps: { shrink: true },
+            },
+          }}
+        />
+      </Grid>
+      <Grid item sx={{ marginTop: 3 }}>
+        <Button variant="contained" fullWidth onClick={onSubmit}>
+          Save expense
+        </Button>
+      </Grid>
+    </Grid>
   );
+};
+
+ExpenseForm.propTypes = {
+  onExpenseSaved: PropTypes.func,
 };
 
 export default ExpenseForm;
