@@ -11,6 +11,8 @@ const LatestExpensesList = () => {
 
   const [latestExpenses, setLatestExpenses] = useState(defaultLatestExpenses);
 
+  const hasAnyExpense = latestExpenses.length > 0;
+
   useEffect(() => {
     const unsubscribe = latestExpensesListener(
       authenticatedUserId,
@@ -90,6 +92,27 @@ const LatestExpensesList = () => {
                 </ListItem>
               );
             })}
+
+            {!hasAnyExpense ? (
+              <Grid
+                container
+                direction="column"
+                sx={{ p: 3 }}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Grid item>
+                  <Typography variant="body1">
+                    <i>There are no expenses</i>
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography variant="body1">
+                    <i>this month</i>
+                  </Typography>
+                </Grid>
+              </Grid>
+            ) : null}
           </Card>
         </List>
       </Grid>
