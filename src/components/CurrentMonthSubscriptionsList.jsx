@@ -34,14 +34,13 @@ const CurrentMonthSubscriptionsList = () => {
   return (
     <Grid container direction="column">
       <Grid item>
-        <Typography variant="h5">{`This month's subscriptions`}</Typography>
+        <Typography variant="h6">{`This month's subscriptions`}</Typography>
       </Grid>
 
       <Grid item>
         <List
           sx={{
             width: '100%',
-            maxWidth: 360,
             bgcolor: 'background.paper',
           }}
         >

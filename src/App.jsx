@@ -37,35 +37,41 @@ function App() {
             <div style={{ padding: '1rem' }}>
               <SubscriptionsProvider>
                 <ExpensesProvider>
-                  <Grid
-                    container
-                    justifyContent="center"
-                    sx={{ position: 'relative' }}
+                  <Box
+                    sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}
                   >
-                    <Grid item>
-                      <CurrentMonthExpense />
-                    </Grid>
                     <Box
                       sx={{
-                        position: 'absolute',
-                        right: 0,
-                        top: -40,
-                        gap: 1,
+                        position: 'relative',
                         display: 'flex',
+                        justifyContent: 'center',
                       }}
                     >
-                      <AddExpenseButton />
-                      <AddSubscriptionButton />
+                      <Grid item>
+                        <CurrentMonthExpense />
+                      </Grid>
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          right: 0,
+                          top: -40,
+                          gap: 1,
+                          display: 'flex',
+                        }}
+                      >
+                        <AddExpenseButton />
+                        <AddSubscriptionButton />
+                      </Box>
                     </Box>
-                  </Grid>
-                  <Grid container spacing={4} sx={{ marginTop: 1 }}>
-                    <Grid item>
-                      <LatestExpensesList />
-                    </Grid>
-                    <Grid item>
-                      <CurrentMonthSubscriptionsList />
-                    </Grid>
-                  </Grid>
+                    <Box sx={{ display: 'flex', gap: 4 }}>
+                      <Grid item xs={12} md={4}>
+                        <LatestExpensesList />
+                      </Grid>
+                      <Grid item xs={12} md={4}>
+                        <CurrentMonthSubscriptionsList />
+                      </Grid>
+                    </Box>
+                  </Box>
                 </ExpensesProvider>
               </SubscriptionsProvider>
             </div>

@@ -32,24 +32,22 @@ const LatestExpensesList = () => {
    * @returns {string}
    */
   const formatDate = (date) => {
-    const year = date.getFullYear();
     const month = date.getMonth();
     const day = date.getDate();
 
-    return `${padStart(day)} / ${padStart(month)} / ${year}`;
+    return `${padStart(day)} / ${padStart(month)}`;
   };
 
   return (
     <Grid container direction="column">
       <Grid item>
-        <Typography variant="h5">Lastest expenses</Typography>
+        <Typography variant="h6">Lastest expenses</Typography>
       </Grid>
 
       <Grid item>
         <List
           sx={{
             width: '100%',
-            maxWidth: 360,
             bgcolor: 'background.paper',
           }}
         >

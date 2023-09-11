@@ -17,7 +17,11 @@ const HeaderPage = (props) => {
         <Typography variant="h6">Expenses Manager</Typography>
       </Grid>
 
-      <Grid item style={{ padding: '1rem', flexGrow: 1 }} xs={12}>
+      <Grid
+        item
+        style={{ paddingLeft: '1rem', paddingRight: '1rem', flexGrow: 1 }}
+        xs={12}
+      >
         {children}
       </Grid>
     </Grid>
