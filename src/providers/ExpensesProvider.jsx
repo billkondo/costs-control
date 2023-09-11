@@ -6,14 +6,12 @@ import { AuthenticationContext } from './AuthenticationProvider';
 /**
  * @typedef {object} ExpensesState
  * @property {(expense: Expense) => Promise<void>} addExpense
- * @property {(subscription: Subscription) => Promise<void>} addSubscription
  * @property {UserSubscription[]} subscriptions
  */
 
 /** @type {import("react").Context<ExpensesState>} */
 export const ExpensesContext = createContext({
   addExpense: async () => {},
-  addSubscription: async () => {},
   subscriptions: [],
 });
 
@@ -55,26 +53,8 @@ const ExpensesProvider = (props) => {
     await FirebaseFirestore.addUserExpense(userExpense);
   };
 
-  /**
-   * @param {Subscription} subscription
-   */
-  const addSubscription = async (subscription) => {
-    /** @type {UserSubscription} */
-    const userSubscription = {
-      ...subscription,
-      userId: authenticatedUserId,
-      id: null,
-    };
-
-    await FirebaseFirestore.addUserSubscription(userSubscription);
-
-    setSubscriptions(subscriptions.concat([userSubscription]));
-  };
-
   return (
-    <ExpensesContext.Provider
-      value={{ addExpense, addSubscription, subscriptions }}
-    >
+    <ExpensesContext.Provider value={{ addExpense, subscriptions }}>
       {children}
     </ExpensesContext.Provider>
   );

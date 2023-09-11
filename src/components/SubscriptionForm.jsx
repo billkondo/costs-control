@@ -12,8 +12,8 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import PropTypes from 'prop-types';
-import { useContext, useState } from 'react';
-import { ExpensesContext } from '../providers/ExpensesProvider';
+import { useState } from 'react';
+import useSubscriptions from '../providers/useSubscriptions';
 
 /**
  * @param {{
@@ -23,7 +23,7 @@ import { ExpensesContext } from '../providers/ExpensesProvider';
  */
 const SubscriptionForm = (props) => {
   const { onSubscriptionSaved } = props;
-  const { addSubscription } = useContext(ExpensesContext);
+  const { addSubscription } = useSubscriptions();
 
   const [value, setValue] = useState(/** @type {number} */ (null));
   const [type, setType] = useState(/** @type {SubscriptionType} */ ('MONTHLY'));
