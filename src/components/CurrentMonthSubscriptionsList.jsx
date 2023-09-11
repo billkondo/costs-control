@@ -1,11 +1,14 @@
-import { ChevronRight } from '@mui/icons-material';
-import { Button, Card, Grid, List, ListItem, Typography } from '@mui/material';
+import { Card, Grid, List, ListItem, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { currentMonthSubscriptionsListener } from '../firebase/firestore';
 import { AuthenticationContext } from '../providers/AuthenticationProvider';
-import padStart from '../utils/padStart';
+import useSubscriptions from '../providers/useSubscriptions';
+import formatSubscriptionDate from '../usecases/formatSubscriptionDate';
+import PriceText from './PriceText';
+import ViewAllCurrentMonthSubscriptionsButton from './ViewAllCurrentMonthSubscriptionsButton';
 
 const CurrentMonthSubscriptionsList = () => {
+  const { currentMonthSubscriptionsCount } = useSubscriptions();
   const { authenticatedUserId } = useContext(AuthenticationContext);
 
   const [currentMonthSubscriptions, setCurrentMonthSubscriptions] = useState(
@@ -13,7 +16,7 @@ const CurrentMonthSubscriptionsList = () => {
   );
 
   const hasAnySubscription = currentMonthSubscriptions.length > 0;
-  const hasManySubscriptions = currentMonthSubscriptions.length > 5;
+  const hasManySubscriptions = currentMonthSubscriptionsCount > 5;
 
   useEffect(() => {
     const unsubscribe = currentMonthSubscriptionsListener(
@@ -27,17 +30,6 @@ const CurrentMonthSubscriptionsList = () => {
       unsubscribe();
     };
   }, [authenticatedUserId]);
-
-  /**
-   * @param {UserSubscription} subscription
-   */
-  const formatDate = (subscription) => {
-    const { day } = subscription;
-    const now = new Date();
-    const currentMonth = now.getMonth();
-
-    return `${padStart(day)} / ${padStart(currentMonth)}`;
-  };
 
   return (
     <Grid container direction="column">
@@ -61,9 +53,7 @@ const CurrentMonthSubscriptionsList = () => {
                 <ListItem key={id} divider>
                   <Grid container spacing={1}>
                     <Grid item>
-                      <Typography variant="body1">
-                        <b>{`R$ ${value.toFixed(2)}`}</b>
-                      </Typography>
+                      <PriceText value={value} />
                     </Grid>
                     <Grid
                       item
@@ -74,7 +64,7 @@ const CurrentMonthSubscriptionsList = () => {
                       }}
                     >
                       <Typography variant="body2">
-                        {formatDate(userSubscription)}
+                        {formatSubscriptionDate(userSubscription)}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -104,12 +94,7 @@ const CurrentMonthSubscriptionsList = () => {
             {hasManySubscriptions ? (
               <ListItem>
                 <Grid container justifyContent="flex-end">
-                  <Button
-                    sx={{ textTransform: 'none' }}
-                    endIcon={<ChevronRight />}
-                  >
-                    View All
-                  </Button>
+                  <ViewAllCurrentMonthSubscriptionsButton />
                 </Grid>
               </ListItem>
             ) : null}

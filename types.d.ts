@@ -1,3 +1,11 @@
+// Firestore
+
+type FirestoreQuery<T> = import('firebase/firestore').Query<T>;
+type FirestoreCollectionReference<T> =
+  import('firebase/firestore').CollectionReference<T>;
+type FirestoreQueryDocumentSnapshot<T> =
+  import('firebase/firestore').QueryDocumentSnapshot<T>;
+
 // Expenses
 
 type Expense = {

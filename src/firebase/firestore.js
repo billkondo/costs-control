@@ -11,6 +11,8 @@ import {
   getDocs,
   or,
   and,
+  getCountFromServer,
+  startAfter,
 } from 'firebase/firestore';
 import { db } from '.';
 
@@ -22,7 +24,11 @@ const getMonthlyExpenses = () => {
   return collection(db, 'monthlyExpenses');
 };
 
+/**
+ * @returns {FirestoreCollectionReference<UserSubscriptionDBData>}
+ */
 const getSubscriptionsCollection = () => {
+  // @ts-ignore
   return collection(db, 'subscriptions');
 };
 
@@ -148,10 +154,7 @@ export const getUserSubscriptions = async (userId) => {
 
   const docs = await getDocs(userSubscriptionsQuery);
 
-  /** @type {UserSubscription[]} */
   const userSubscriptions = docs.docs.map((doc) => {
-    /** @type {UserSubscriptionDBData} */
-    // @ts-ignore
     const data = doc.data();
 
     /** @type {UserSubscription} */
@@ -235,36 +238,96 @@ export const currentMonthSubscriptionsListener = (
   userId,
   onCurrentMonthSubscriptionsChanged
 ) => {
+  const query = getCurrentMonthSubscriptionsBaseQuery(userId);
+
+  const unsubscribe = onSnapshot(query, (querySnapshot) => {
+    if (!querySnapshot.docs.length) {
+      return null;
+    }
+
+    const userSubscriptionDBData = querySnapshot.docs.map((doc) => doc.data());
+
+    onCurrentMonthSubscriptionsChanged(userSubscriptionDBData);
+  });
+
+  return unsubscribe;
+};
+
+/**
+ * @param {string} userId
+ * @returns {Promise<number>}
+ */
+export const getCurrentMonthSubscriptionsLength = async (userId) => {
+  const query = getCurrentMonthSubscriptionsAllRecordsQuery(userId);
+  const snapshot = await getCountFromServer(query);
+
+  return snapshot.data().count;
+};
+
+/**
+ * @param {string} userId
+ */
+const getCurrentMonthSubscriptionsAllRecordsQuery = (userId) => {
+  return getCurrentMonthSubscriptionsBaseQuery(userId, null, null);
+};
+
+/**
+ * @param {string} userId
+ */
+export const CurrentMonthSubscriptionsPager = (userId) => {
+  /** @type {{ [index: number]: FirestoreQueryDocumentSnapshot<UserSubscription>}} */
+  const cache = {};
+
+  /**
+   * @param {number} start
+   */
+  const callback = async (start = 0) => {
+    const lastDocument = start ? cache[start] : null;
+    const query = getCurrentMonthSubscriptionsBaseQuery(userId, lastDocument);
+    const snapshot = await getDocs(query);
+    const docs = snapshot.docs;
+    const userSubscriptionDBData = docs.map((doc) => doc.data());
+    const lastDocumentInQuery = docs[docs.length - 1];
+    const lastIndex = start + userSubscriptionDBData.length;
+
+    cache[lastIndex] = lastDocumentInQuery;
+
+    return userSubscriptionDBData;
+  };
+
+  return callback;
+};
+
+/**
+ * @param {string} userId
+ * @param {FirestoreQueryDocumentSnapshot<UserSubscription>=} start
+ * @param {number=} maxSize
+ */
+const getCurrentMonthSubscriptionsBaseQuery = (
+  userId,
+  start = null,
+  maxSize = 5
+) => {
   const now = new Date();
   const currentMonth = now.getUTCMonth();
 
-  const currentMonthSubscriptions = query(
+  /** @type {import('firebase/firestore').QueryNonFilterConstraint[]} */
+  const constraints = [orderBy('day')];
+
+  if (maxSize) {
+    constraints.push(limit(maxSize));
+  }
+
+  if (start) {
+    constraints.push(startAfter(start));
+  }
+
+  return query(
     getSubscriptionsCollection(),
     and(
       where('userId', '==', userId),
       or(where('month', '==', currentMonth), where('month', '==', null))
     ),
-    limit(5),
-    orderBy('day')
+    ...constraints
   );
-
-  const unsubscribe = onSnapshot(currentMonthSubscriptions, (querySnapshot) => {
-    if (!querySnapshot.docs.length) {
-      return null;
-    }
-
-    /** @type {UserSubscriptionDBData[]} */
-    // @ts-ignore
-    const userSubscriptionDBData = querySnapshot.docs.map((doc) => doc.data());
-
-    onCurrentMonthSubscriptionsChanged(
-      userSubscriptionDBData.map((data) => {
-        return {
-          ...data,
-        };
-      })
-    );
-  });
-
-  return unsubscribe;
 };
