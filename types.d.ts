@@ -6,6 +6,10 @@ type FirestoreCollectionReference<T> =
 type FirestoreQueryDocumentSnapshot<T> =
   import('firebase/firestore').QueryDocumentSnapshot<T>;
 
+// Payments
+
+type PaymentType = 'DEBIT' | 'CREDIT' | 'CASH';
+
 // Expenses
 
 type Expense = {
