@@ -9,7 +9,6 @@ const ViewAllCurrentMonthExpensesButton = () => {
       dialogTitle="This month's expenses"
       buttonText="View All"
       dialogBody={<CurrentMonthExpensesDialogBody />}
-      fullScreen
     />
   );
 };

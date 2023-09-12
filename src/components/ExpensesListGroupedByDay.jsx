@@ -58,14 +58,11 @@ const ExpensesListGroupedByDay = (props) => {
           <Box key={label} sx={{ display: 'flex', flexDirection: 'column' }}>
             <Box
               sx={{
-                backgroundColor: colors.blue[700],
+                backgroundColor: colors.blue[100],
                 p: 1,
-                color: colors.grey[50],
               }}
             >
-              <Typography variant="body2">
-                <b>{label}</b>
-              </Typography>
+              <Typography variant="body1">{label}</Typography>
             </Box>
             {expenses.map((expense) => {
               const { id, value } = expense;
