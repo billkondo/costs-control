@@ -85,7 +85,7 @@ const CurrentMonthSubscriptionsList = () => {
                 </Grid>
                 <Grid item>
                   <Typography variant="body1">
-                    <i>this month</i>
+                    <i>to be paid this month</i>
                   </Typography>
                 </Grid>
               </Grid>
