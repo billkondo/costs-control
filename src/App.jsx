@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 import AddExpenseButton from './components/AddExpenseButton';
 import AddSubscriptionButton from './components/AddSubscriptionButton';
 import CurrentMonthExpense from './components/CurrentMonthExpense';
+import CurrentMonthExpensesList from './components/CurrentMonthExpensesList';
 import CurrentMonthSubscriptionsList from './components/CurrentMonthSubscriptionsList';
 import HeaderPage from './components/HeaderPage';
-import LatestExpensesList from './components/LatestExpensesList';
 import OnlyAuthenticated from './components/OnlyAuthenticated';
 import UserLoginForm from './components/UserLoginForm';
 import { init } from './firebase';
@@ -65,7 +65,7 @@ function App() {
                     </Box>
                     <Box sx={{ display: 'flex', gap: 4 }}>
                       <Grid item xs={12} md={4}>
-                        <LatestExpensesList />
+                        <CurrentMonthExpensesList />
                       </Grid>
                       <Grid item xs={12} md={4}>
                         <CurrentMonthSubscriptionsList />

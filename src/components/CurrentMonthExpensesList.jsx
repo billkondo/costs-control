@@ -1,24 +1,25 @@
 import { Card, Grid, List, ListItem, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
-import { latestExpensesListener } from '../firebase/firestore';
+import { currentMonthExpensesListener } from '../firebase/firestore';
 import { AuthenticationContext } from '../providers/AuthenticationProvider';
+import useExpenses from '../providers/useExpenses';
 import padStart from '../utils/padStart';
+import ViewAllCurrentMonthExpensesButton from './ViewAllCurrentMonthExpensesButton';
 
-/** @type {UserExpense[]} */
-const defaultLatestExpenses = [];
-
-const LatestExpensesList = () => {
+const CurrentMonthExpensesList = () => {
+  const { currentMonthExpensesCount } = useExpenses();
   const { authenticatedUserId } = useContext(AuthenticationContext);
 
-  const [latestExpenses, setLatestExpenses] = useState(defaultLatestExpenses);
+  const [expenses, setExpenses] = useState(/** @type {UserExpense[]} */ ([]));
 
-  const hasAnyExpense = latestExpenses.length > 0;
+  const hasAnyExpense = expenses.length > 0;
+  const hasManyExpenses = currentMonthExpensesCount > 5;
 
   useEffect(() => {
-    const unsubscribe = latestExpensesListener(
+    const unsubscribe = currentMonthExpensesListener(
       authenticatedUserId,
-      (latestExpenses) => {
-        setLatestExpenses(latestExpenses);
+      (expenses) => {
+        setExpenses(expenses);
       }
     );
 
@@ -41,7 +42,7 @@ const LatestExpensesList = () => {
   return (
     <Grid container direction="column">
       <Grid item>
-        <Typography variant="h6">Lastest expenses</Typography>
+        <Typography variant="h6">{`This month's expenses`}</Typography>
       </Grid>
 
       <Grid item>
@@ -52,8 +53,8 @@ const LatestExpensesList = () => {
           }}
         >
           <Card variant="outlined">
-            {latestExpenses.map((userExpense) => {
-              const { id, date, value } = userExpense;
+            {expenses.map((expense) => {
+              const { id, date, value } = expense;
 
               return (
                 <ListItem key={id} divider>
@@ -79,7 +80,6 @@ const LatestExpensesList = () => {
                 </ListItem>
               );
             })}
-
             {!hasAnyExpense ? (
               <Grid
                 container
@@ -100,6 +100,13 @@ const LatestExpensesList = () => {
                 </Grid>
               </Grid>
             ) : null}
+            {hasManyExpenses ? (
+              <ListItem>
+                <Grid container justifyContent="flex-end">
+                  <ViewAllCurrentMonthExpensesButton />
+                </Grid>
+              </ListItem>
+            ) : null}
           </Card>
         </List>
       </Grid>
@@ -107,4 +114,4 @@ const LatestExpensesList = () => {
   );
 };
 
-export default LatestExpensesList;
+export default CurrentMonthExpensesList;
