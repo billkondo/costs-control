@@ -9,6 +9,7 @@ import { init } from './firebase';
 import CardsPage from './pages/CardsPage';
 import MainPage from './pages/MainPage';
 import AuthenticationProvider from './providers/AuthenticationProvider';
+import CardsProvider from './providers/CardsProvider';
 import ExpensesProvider from './providers/ExpensesProvider';
 import SubscriptionsProvider from './providers/SubscriptionsProvider';
 
@@ -34,14 +35,16 @@ function App() {
             <div style={{ padding: '1rem' }}>
               <SubscriptionsProvider>
                 <ExpensesProvider>
-                  <Switch>
-                    <Route path="/">
-                      <MainPage />
-                    </Route>
-                    <Route path="/cards">
-                      <CardsPage />
-                    </Route>
-                  </Switch>
+                  <CardsProvider>
+                    <Switch>
+                      <Route path="/">
+                        <MainPage />
+                      </Route>
+                      <Route path="/cards">
+                        <CardsPage />
+                      </Route>
+                    </Switch>
+                  </CardsProvider>
                 </ExpensesProvider>
               </SubscriptionsProvider>
             </div>

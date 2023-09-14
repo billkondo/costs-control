@@ -1,10 +1,11 @@
-import { Button, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
+import CardsList from '../components/CardsList';
 
 const CardsPage = () => {
   return (
-    <Grid container direction="column">
-      <Grid item>
-        <Button>Add Credit Card</Button>
+    <Grid container>
+      <Grid item xs={12} sm={10} md={4}>
+        <CardsList />
       </Grid>
     </Grid>
   );

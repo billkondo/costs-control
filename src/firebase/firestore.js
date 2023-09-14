@@ -48,6 +48,14 @@ const getMonthlyFixedCostsCollection = () => {
 };
 
 /**
+ * @returns {FirestoreCollectionReference<UserCardDBData>}
+ */
+const getCardsCollection = () => {
+  // @ts-ignore
+  return collection(db, 'cards');
+};
+
+/**
  * @param {UserExpense} userExpense
  */
 export const addUserExpense = async (userExpense) => {
@@ -389,4 +397,37 @@ const mapUserExpenseDocToUserExpense = (doc) => {
   };
 
   return userExpense;
+};
+
+/**
+ * @param {UserCard} userCard
+ * @returns {Promise<UserCard}
+ */
+export const addUserCard = async (userCard) => {
+  const userCardRef = doc(getCardsCollection());
+
+  /** @type {UserCardDBData} */
+  const userCardDBData = {
+    ...userCard,
+    id: userCardRef.id,
+  };
+
+  await setDoc(userCardRef, userCardDBData);
+
+  return userCardDBData;
+};
+
+/**
+ * @param {string} userId
+ * @returns {Promise<UserCard[]>}
+ */
+export const getUserCards = async (userId) => {
+  const userCardsQuery = query(
+    getCardsCollection(),
+    where('userId', '==', userId)
+  );
+
+  const snapshot = await getDocs(userCardsQuery);
+
+  return snapshot.docs.map((doc) => doc.data());
 };

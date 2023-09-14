@@ -10,6 +10,21 @@ type FirestoreQueryDocumentSnapshot<T> =
 
 type PaymentType = 'DEBIT' | 'CREDIT' | 'CASH';
 
+// Cards
+
+type Card = {
+  name: string;
+  lastFourDigits: number;
+  lastBuyDay: number;
+};
+
+type UserCard = {
+  id: string;
+  userId: string;
+} & Card;
+
+type UserCardDBData = UserCard;
+
 // Expenses
 
 type Expense = {

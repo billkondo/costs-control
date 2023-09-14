@@ -5,6 +5,7 @@ import {
   DialogContent,
   Grid,
   IconButton,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import PropTypes from 'prop-types';
@@ -13,34 +14,52 @@ import { Fragment, useState } from 'react';
 /**
  * @param {{
  *  buttonProps?: import('@mui/material').ButtonProps,
- *  buttonText: string,
+ *  buttonText?: string,
+ *  dialogBody: JSX.Element,
  *  dialogTitle: string,
- *  dialogBody: JSX.Element
- *  fullScreen?: boolean
+ *  fullScreen?: boolean,
+ *  hintText?: string,
+ *  icon?: React.ReactNode,
  * }} props
  */
 const DialogButton = (props) => {
   const {
     buttonProps = {},
     buttonText,
-    dialogTitle,
     dialogBody,
+    dialogTitle,
     fullScreen = false,
+    hintText,
+    icon,
   } = props;
   const [open, setOpen] = useState(false);
 
   const openDialog = () => setOpen(true);
   const closeDialog = () => setOpen(false);
 
+  const isIconButton = !!icon;
+
+  const iconButton = (
+    <Tooltip title={hintText}>
+      <IconButton onClick={openDialog} {...buttonProps}>
+        {icon}
+      </IconButton>
+    </Tooltip>
+  );
+
+  const button = (
+    <Button
+      sx={{ textTransform: 'none' }}
+      onClick={openDialog}
+      {...buttonProps}
+    >
+      {buttonText}
+    </Button>
+  );
+
   return (
     <Fragment>
-      <Button
-        sx={{ textTransform: 'none' }}
-        onClick={openDialog}
-        {...buttonProps}
-      >
-        {buttonText}
-      </Button>
+      {isIconButton ? iconButton : button}
       <Dialog open={open} fullWidth fullScreen={fullScreen}>
         <DialogContent>
           <Grid container direction="column">
@@ -65,9 +84,11 @@ const DialogButton = (props) => {
 DialogButton.propTypes = {
   buttonProps: PropTypes.object,
   buttonText: PropTypes.string,
-  dialogTitle: PropTypes.string,
   dialogBody: PropTypes.node,
+  dialogTitle: PropTypes.string,
   fullScreen: PropTypes.bool,
+  hintText: PropTypes.string,
+  icon: PropTypes.node,
 };
 
 export default DialogButton;
