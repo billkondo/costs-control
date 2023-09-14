@@ -1,18 +1,10 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@mui/material';
+import { Box, Button, Grid, InputAdornment } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import { ExpensesContext } from '../providers/ExpensesProvider';
 import FilledDatePicker from './common/FilledDatePicker';
 import FilledInput from './common/FilledInput';
+import FilledSelector from './common/FilledSelector';
 import Switch from './common/Switch';
 
 /**
@@ -60,6 +52,7 @@ const ExpenseForm = (props) => {
   };
 
   const isCreditPayment = paymentType === 'CREDIT';
+  const isCardPayment = paymentType === 'CREDIT' || paymentType === 'DEBIT';
 
   return (
     <Grid container direction="column" spacing={3}>
@@ -80,44 +73,42 @@ const ExpenseForm = (props) => {
         />
       </Grid>
       <Grid item>
-        <FormControl fullWidth variant="filled">
-          <InputLabel htmlFor="expense-payment-type" shrink>
-            Payment Type
-          </InputLabel>
-          <Select
-            id="expense-payment-type"
-            value={paymentType}
-            onChange={(event) => {
-              const newPaymentType = event.target.value;
-
-              // @ts-ignore
-              changePaymentType(newPaymentType);
-            }}
-            sx={{ paddingTop: 1 }}
-          >
-            <MenuItem value="CASH">Cash</MenuItem>
-            <MenuItem value="DEBIT">Debit</MenuItem>
-            <MenuItem value="CREDIT">Credit</MenuItem>
-          </Select>
-        </FormControl>
+        <FilledDatePicker
+          datePickerProps={{
+            disableFuture: true,
+            label: 'Spent date',
+            onChange: (newDate) => {
+              if (newDate) {
+                setDate(newDate.toDate());
+              } else {
+                setDate(null);
+              }
+            },
+          }}
+        />
       </Grid>
-      {paymentType ? (
-        <Grid item>
-          <FilledDatePicker
-            datePickerProps={{
-              disableFuture: true,
-              label: 'Spent date',
-              onChange: (newDate) => {
-                if (newDate) {
-                  setDate(newDate.toDate());
-                } else {
-                  setDate(null);
-                }
-              },
-            }}
-          />
-        </Grid>
-      ) : null}
+      <Grid item>
+        <FilledSelector
+          id="expense-payment-type"
+          items={[
+            {
+              label: 'Cash',
+              value: 'CASH',
+            },
+            {
+              label: 'Debit',
+              value: 'DEBIT',
+            },
+            {
+              label: 'Credit',
+              value: 'CREDIT',
+            },
+          ]}
+          label="Payment Type"
+          value={paymentType}
+          onChange={changePaymentType}
+        />
+      </Grid>
       {isCreditPayment ? (
         <Grid item sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Box sx={{ maxWidth: '200px' }}>
