@@ -1,5 +1,6 @@
 import { Grid, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
+import AppMenuButton from './AppMenuButton';
 
 /**
  * @param {import("react").PropsWithChildren} props
@@ -13,8 +14,19 @@ const HeaderPage = (props) => {
       direction="column"
       style={{ minHeight: '100vh', height: '100%' }}
     >
-      <Grid item style={{ padding: '1rem' }}>
-        <Typography variant="h6">Expenses Manager</Typography>
+      <Grid
+        container
+        item
+        style={{ padding: '1rem' }}
+        alignItems="center"
+        spacing={1}
+      >
+        <Grid item>
+          <AppMenuButton />
+        </Grid>
+        <Grid item>
+          <Typography variant="h6">Expenses Manager</Typography>
+        </Grid>
       </Grid>
 
       <Grid
