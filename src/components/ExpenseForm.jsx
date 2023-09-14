@@ -81,7 +81,9 @@ const ExpenseForm = (props) => {
       </Grid>
       <Grid item>
         <FormControl fullWidth variant="filled">
-          <InputLabel htmlFor="expense-payment-type">Payment Type</InputLabel>
+          <InputLabel htmlFor="expense-payment-type" shrink>
+            Payment Type
+          </InputLabel>
           <Select
             id="expense-payment-type"
             value={paymentType}
@@ -91,6 +93,7 @@ const ExpenseForm = (props) => {
               // @ts-ignore
               changePaymentType(newPaymentType);
             }}
+            sx={{ paddingTop: 1 }}
           >
             <MenuItem value="CASH">Cash</MenuItem>
             <MenuItem value="DEBIT">Debit</MenuItem>

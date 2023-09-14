@@ -27,12 +27,15 @@ const FilledInput = (props) => {
 
   return (
     <FormControl fullWidth={fullWidth} variant="filled">
-      <InputLabel htmlFor={id}>{label}</InputLabel>
+      <InputLabel htmlFor={id} shrink>
+        {label}
+      </InputLabel>
       <MUIFilledInput
         id={id}
         value={value}
         startAdornment={startAdornment}
         onChange={onChange}
+        sx={{ paddingTop: 1 }}
       />
     </FormControl>
   );

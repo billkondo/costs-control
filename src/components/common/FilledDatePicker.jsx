@@ -17,6 +17,11 @@ const FilledDatePicker = (props) => {
           variant: 'filled',
           fullWidth,
           InputLabelProps: { shrink: true },
+          InputProps: {
+            sx: {
+              paddingTop: 1,
+            },
+          },
         },
       }}
       {...datePickerProps}
