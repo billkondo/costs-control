@@ -1,5 +1,6 @@
 import { Grid, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
+import { Link } from 'wouter';
 import AppMenuButton from './AppMenuButton';
 
 /**
@@ -25,7 +26,11 @@ const HeaderPage = (props) => {
           <AppMenuButton />
         </Grid>
         <Grid item>
-          <Typography variant="h6">Expenses Manager</Typography>
+          <Link href="/">
+            <Typography variant="h6" sx={{ cursor: 'pointer' }}>
+              Expenses Manager
+            </Typography>
+          </Link>
         </Grid>
       </Grid>
 

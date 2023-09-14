@@ -10,6 +10,7 @@ import {
   ListItemText,
 } from '@mui/material';
 import { Fragment, useState } from 'react';
+import { Link } from 'wouter';
 
 const AppMenuButton = () => {
   const [open, setOpen] = useState(false);
@@ -26,12 +27,14 @@ const AppMenuButton = () => {
         <Box sx={{ width: 250 }}>
           <List>
             <ListItem>
-              <ListItemButton>
-                <ListItemIcon>
-                  <CreditCard />
-                </ListItemIcon>
-                <ListItemText primary="Cards" />
-              </ListItemButton>
+              <Link href="/cards">
+                <ListItemButton>
+                  <ListItemIcon>
+                    <CreditCard />
+                  </ListItemIcon>
+                  <ListItemText primary="Cards" />
+                </ListItemButton>
+              </Link>
             </ListItem>
           </List>
         </Box>
