@@ -2,6 +2,7 @@ import { Box, Button, Grid, InputAdornment } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import { ExpensesContext } from '../providers/ExpensesProvider';
+import AddCardButton from './AddCardButton';
 import CardSelector from './CardSelector';
 import FilledDatePicker from './common/FilledDatePicker';
 import FilledInput from './common/FilledInput';
@@ -113,13 +114,18 @@ const ExpenseForm = (props) => {
         />
       </Grid>
       {isCardPayment ? (
-        <Grid item>
-          <CardSelector
-            baseId="expense"
-            label={isCreditPayment ? 'Credit card' : 'Debit card'}
-            onCardSelect={setCard}
-            card={card}
-          />
+        <Grid container item alignItems="center" spacing={1}>
+          <Grid item sx={{ flexGrow: 1 }}>
+            <CardSelector
+              baseId="expense"
+              label={isCreditPayment ? 'Credit card' : 'Debit card'}
+              onCardSelect={setCard}
+              card={card}
+            />
+          </Grid>
+          <Grid item>
+            <AddCardButton />
+          </Grid>
         </Grid>
       ) : null}
       {isCreditPayment ? (

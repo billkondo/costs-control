@@ -1,9 +1,7 @@
-import { Add } from '@mui/icons-material';
-import { Grid, List, ListItem, Tooltip, Typography } from '@mui/material';
+import { Grid, List, ListItem, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import useCards from '../providers/useCards';
-import CardsForm from './CardsForm';
-import DialogButton from './common/DialogButton';
+import AddCardButton from './AddCardButton';
 
 const CardsList = () => {
   const { cards, loadCards } = useCards();
@@ -20,15 +18,9 @@ const CardsList = () => {
           <Grid item sx={{ flexGrow: 1 }}>
             <Typography variant="h6">Your cards</Typography>
           </Grid>
-
-          <Tooltip title="Add Card">
-            <DialogButton
-              dialogTitle="New card"
-              icon={<Add />}
-              hintText="Add Card"
-              dialogBody={<CardsForm />}
-            />
-          </Tooltip>
+          <Grid item>
+            <AddCardButton />
+          </Grid>
         </Grid>
       </ListItem>
       {hasAnyCard ? (
