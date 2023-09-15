@@ -15,7 +15,7 @@ import { Fragment, useState } from 'react';
  * @param {{
  *  buttonProps?: import('@mui/material').ButtonProps,
  *  buttonText?: string,
- *  dialogBody: JSX.Element,
+ *  renderDialogBody: (closeDialog: () => void) => JSX.Element,
  *  dialogTitle: string,
  *  fullScreen?: boolean,
  *  hintText?: string,
@@ -26,7 +26,7 @@ const DialogButton = (props) => {
   const {
     buttonProps = {},
     buttonText,
-    dialogBody,
+    renderDialogBody,
     dialogTitle,
     fullScreen = false,
     hintText,
@@ -73,7 +73,7 @@ const DialogButton = (props) => {
                 <Close />
               </IconButton>
             </Grid>
-            <Grid item>{dialogBody}</Grid>
+            <Grid item>{renderDialogBody(closeDialog)}</Grid>
           </Grid>
         </DialogContent>
       </Dialog>
@@ -84,7 +84,7 @@ const DialogButton = (props) => {
 DialogButton.propTypes = {
   buttonProps: PropTypes.object,
   buttonText: PropTypes.string,
-  dialogBody: PropTypes.node,
+  renderDialogBody: PropTypes.node,
   dialogTitle: PropTypes.string,
   fullScreen: PropTypes.bool,
   hintText: PropTypes.string,

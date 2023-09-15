@@ -1,9 +1,19 @@
 import { Box, Button } from '@mui/material';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import useCards from '../providers/useCards';
 import FilledInput from './common/FilledInput';
 
-const CardsForm = () => {
+/**
+ * @typedef {object} CardFormProps
+ * @property {() => void} [onSubmitted]
+ */
+
+/**
+ * @param {CardFormProps} props
+ */
+const CardsForm = (props) => {
+  const { onSubmitted } = props;
   const { addCard } = useCards();
   const [lastFourDigits, setLastFourDigits] = useState(
     /** @type {number} */ (null)
@@ -20,6 +30,10 @@ const CardsForm = () => {
     };
 
     await addCard(card);
+
+    if (onSubmitted) {
+      onSubmitted();
+    }
   };
 
   return (
@@ -68,6 +82,10 @@ const CardsForm = () => {
       </Button>
     </Box>
   );
+};
+
+CardsForm.propTypes = {
+  onSubmitted: PropTypes.func,
 };
 
 export default CardsForm;

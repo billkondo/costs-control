@@ -10,7 +10,9 @@ const AddCardButton = () => {
         dialogTitle="New card"
         icon={<Add />}
         hintText="Add Card"
-        dialogBody={<CardsForm />}
+        renderDialogBody={(closeDialog) => (
+          <CardsForm onSubmitted={closeDialog} />
+        )}
       />
     </Tooltip>
   );

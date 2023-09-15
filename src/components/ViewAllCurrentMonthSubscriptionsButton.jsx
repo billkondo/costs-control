@@ -6,7 +6,7 @@ const ViewAllCurrentMonthSubscriptionsButton = () => {
     <DialogButton
       dialogTitle="This month's subscriptions"
       buttonText="View All"
-      dialogBody={<CurrentMonthSubscriptionsTable />}
+      renderDialogBody={() => <CurrentMonthSubscriptionsTable />}
     />
   );
 };
