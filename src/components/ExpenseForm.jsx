@@ -2,6 +2,7 @@ import { Box, Button, Grid, InputAdornment } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import { ExpensesContext } from '../providers/ExpensesProvider';
+import CardSelector from './CardSelector';
 import FilledDatePicker from './common/FilledDatePicker';
 import FilledInput from './common/FilledInput';
 import FilledSelector from './common/FilledSelector';
@@ -23,6 +24,7 @@ const ExpenseForm = (props) => {
   );
   const [installment, setInstallment] = useState(false);
   const [partsCount, setPartsCount] = useState(/** @type {number} */ (null));
+  const [card, setCard] = useState(/** @type {UserCard} */ (null));
 
   const onSubmit = async () => {
     /** @type {Expense} */
@@ -48,6 +50,7 @@ const ExpenseForm = (props) => {
   const changePaymentType = (paymentType) => {
     setInstallment(false);
     setPartsCount(null);
+    setCard(null);
     setPaymentType(paymentType);
   };
 
@@ -109,6 +112,16 @@ const ExpenseForm = (props) => {
           onChange={changePaymentType}
         />
       </Grid>
+      {isCardPayment ? (
+        <Grid item>
+          <CardSelector
+            baseId="expense"
+            label={isCreditPayment ? 'Credit card' : 'Debit card'}
+            onCardSelect={setCard}
+            card={card}
+          />
+        </Grid>
+      ) : null}
       {isCreditPayment ? (
         <Grid item sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Box sx={{ maxWidth: '200px' }}>
