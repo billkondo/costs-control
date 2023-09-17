@@ -1,3 +1,13 @@
+// QueryParams
+
+type QueryParams<T> = {
+  userId: string;
+  maxSize?: number;
+  lastDocument?: QueryDocumentSnapshot<
+    import('firebase/firestore').QueryDocumentSnapshot<T>
+  >;
+};
+
 // Firestore
 
 type FirestoreQuery<T> = import('firebase/firestore').Query<T>;
