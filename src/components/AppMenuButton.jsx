@@ -46,7 +46,7 @@ const AppMenuButton = () => {
     const { icon, label, link } = item;
 
     return (
-      <ListItem key={label}>
+      <ListItem key={label} onClick={closeMenu}>
         <Link href={link}>
           <ListItemButton>
             <ListItemIcon>{icon}</ListItemIcon>
