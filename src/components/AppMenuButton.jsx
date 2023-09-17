@@ -1,4 +1,4 @@
-import { CreditCard, Menu } from '@mui/icons-material';
+import { CreditCard, Menu, Storefront } from '@mui/icons-material';
 import {
   Box,
   Drawer,
@@ -12,11 +12,50 @@ import {
 import { Fragment, useState } from 'react';
 import { Link } from 'wouter';
 
+/**
+ * @typedef {object} AppMenuItem
+ * @property {React.ReactNode} icon
+ * @property {string} label
+ * @property {string} link
+ */
+
+/** @type {AppMenuItem[]} */
+const items = [
+  {
+    icon: <CreditCard />,
+    label: 'Cards',
+    link: '/cards',
+  },
+  {
+    icon: <Storefront />,
+    label: 'Stores',
+    link: '/stores',
+  },
+];
+
 const AppMenuButton = () => {
   const [open, setOpen] = useState(false);
 
   const openMenu = () => setOpen(true);
   const closeMenu = () => setOpen(false);
+
+  /**
+   * @param {AppMenuItem} item
+   */
+  const renderItem = (item) => {
+    const { icon, label, link } = item;
+
+    return (
+      <ListItem key={label}>
+        <Link href={link}>
+          <ListItemButton>
+            <ListItemIcon>{icon}</ListItemIcon>
+            <ListItemText primary={label} />
+          </ListItemButton>
+        </Link>
+      </ListItem>
+    );
+  };
 
   return (
     <Fragment>
@@ -25,18 +64,7 @@ const AppMenuButton = () => {
       </IconButton>
       <Drawer open={open} onClose={closeMenu}>
         <Box sx={{ width: 250 }}>
-          <List>
-            <ListItem>
-              <Link href="/cards">
-                <ListItemButton>
-                  <ListItemIcon>
-                    <CreditCard />
-                  </ListItemIcon>
-                  <ListItemText primary="Cards" />
-                </ListItemButton>
-              </Link>
-            </ListItem>
-          </List>
+          <List>{items.map((item) => renderItem(item))}</List>
         </Box>
       </Drawer>
     </Fragment>

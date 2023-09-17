@@ -401,7 +401,7 @@ const mapUserExpenseDocToUserExpense = (doc) => {
 
 /**
  * @param {UserCard} userCard
- * @returns {Promise<UserCard}
+ * @returns {Promise<UserCard>}
  */
 export const addUserCard = async (userCard) => {
   const userCardRef = doc(getCardsCollection());

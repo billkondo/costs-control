@@ -8,9 +8,11 @@ import UserLoginForm from './components/UserLoginForm';
 import { init } from './firebase';
 import CardsPage from './pages/CardsPage';
 import MainPage from './pages/MainPage';
+import StoresPage from './pages/StoresPage';
 import AuthenticationProvider from './providers/AuthenticationProvider';
 import CardsProvider from './providers/CardsProvider';
 import ExpensesProvider from './providers/ExpensesProvider';
+import StoresProvider from './providers/StoresProvider';
 import SubscriptionsProvider from './providers/SubscriptionsProvider';
 
 function App() {
@@ -36,14 +38,19 @@ function App() {
               <SubscriptionsProvider>
                 <ExpensesProvider>
                   <CardsProvider>
-                    <Switch>
-                      <Route path="/">
-                        <MainPage />
-                      </Route>
-                      <Route path="/cards">
-                        <CardsPage />
-                      </Route>
-                    </Switch>
+                    <StoresProvider>
+                      <Switch>
+                        <Route path="/">
+                          <MainPage />
+                        </Route>
+                        <Route path="/cards">
+                          <CardsPage />
+                        </Route>
+                        <Route path="/stores">
+                          <StoresPage />
+                        </Route>
+                      </Switch>
+                    </StoresProvider>
                   </CardsProvider>
                 </ExpensesProvider>
               </SubscriptionsProvider>

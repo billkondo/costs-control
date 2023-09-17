@@ -12,7 +12,7 @@ const CardsList = () => {
   }, [loadCards]);
 
   return (
-    <List sx={{ border: '1px solid rgba(0, 0, 0, 0.12)' }}>
+    <List sx={{ border: '1px solid rgba(0, 0, 0, 0.12)', borderRadius: 1 }}>
       <ListItem>
         <Grid container alignItems="center">
           <Grid item sx={{ flexGrow: 1 }}>

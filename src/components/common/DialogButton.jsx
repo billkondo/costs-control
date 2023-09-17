@@ -84,7 +84,7 @@ const DialogButton = (props) => {
 DialogButton.propTypes = {
   buttonProps: PropTypes.object,
   buttonText: PropTypes.string,
-  renderDialogBody: PropTypes.node,
+  renderDialogBody: PropTypes.func,
   dialogTitle: PropTypes.string,
   fullScreen: PropTypes.bool,
   hintText: PropTypes.string,
