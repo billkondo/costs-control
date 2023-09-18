@@ -30,15 +30,15 @@ const ExpensesListGroupedByDay = (props) => {
     const dates = [];
 
     for (const expense of expenses) {
-      const { date } = expense;
-      const label = getLabel(date);
+      const { buyDate } = expense;
+      const label = getLabel(buyDate);
 
       if (!groupedExpenses[label]) {
         groupedExpenses[label] = [];
       }
 
       groupedExpenses[label].push(expense);
-      dates.push(date);
+      dates.push(buyDate);
     }
 
     dates.sort().reverse();

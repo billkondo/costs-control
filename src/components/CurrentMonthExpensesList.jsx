@@ -54,7 +54,7 @@ const CurrentMonthExpensesList = () => {
         >
           <Card variant="outlined">
             {expenses.map((expense) => {
-              const { id, date, value } = expense;
+              const { id, buyDate, value } = expense;
 
               return (
                 <ListItem key={id} divider>
@@ -73,7 +73,7 @@ const CurrentMonthExpensesList = () => {
                       }}
                     >
                       <Typography variant="body2">
-                        {formatDate(date)}
+                        {formatDate(buyDate)}
                       </Typography>
                     </Grid>
                   </Grid>

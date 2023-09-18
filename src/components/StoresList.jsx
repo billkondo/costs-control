@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useEffect, useMemo, useState } from 'react';
-import Pager from '../firebase/firestore/pager';
+import Pager from '../firebase/firestore/Pager';
 import {
   getUserStoresBaseQuery,
   getUserStoresTotal,
