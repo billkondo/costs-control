@@ -1,3 +1,4 @@
+/// <reference path="./types.d.ts"/>
 /// <reference path="../types.d.ts"/>
 
 const {
@@ -16,8 +17,16 @@ const app = initializeApp({
 });
 const db = getFirestore(app);
 
+/** @type {FirebaseCollection<UserMonthlyExpenseDBData>} */
+// @ts-ignore
 const userMonthlyExpensesCollection = db.collection('monthlyExpenses');
+
+/** @type {FirebaseCollection<UserFixedCostDBData>} */
+// @ts-ignore
 const fixedCostCollection = db.collection('fixedCosts');
+
+/** @type {FirebaseCollection<UserMonthlyFixedCostDBData>} */
+// @ts-ignore
 const monthlyFixedCostCollection = db.collection('monthlyFixedCosts');
 
 /**
@@ -38,8 +47,6 @@ const getUserMonthlyExpenseFromUserExpenseDBData = async (
     .where(Filter.where('userId', '==', userId))
     .get();
 
-  /** @type {UserMonthlyExpense[]} */
-  // @ts-ignore
   const docs = querySnapshot.docs;
 
   if (!docs.length) {
@@ -54,8 +61,6 @@ const getUserMonthlyExpenseFromUserExpenseDBData = async (
 
   const userMonthlyExpenseDoc = querySnapshot.docs[0];
 
-  /** @type {UserMonthlyExpenseDBData} */
-  // @ts-ignore
   const userMonthlyExpenseDBData = userMonthlyExpenseDoc.data();
 
   return {
@@ -106,8 +111,6 @@ const getUserFixedCost = async (userId) => {
 
   const fixedCostDoc = querySnapshot.docs[0];
 
-  /** @type {UserSubscriptionDBData} */
-  // @ts-ignore
   const fixedCostDBData = fixedCostDoc.data();
 
   return {
@@ -135,8 +138,6 @@ const getUserMonthlyFixedCost = async (userId, month) => {
     };
   }
 
-  /** @type {UserMonthlyFixedCostDBData} */
-  // @ts-ignore
   const monthlyFixedCostDBData = querySnapshot.docs[0].data();
 
   return {
@@ -190,9 +191,10 @@ const saveUserMonthlyFixedCost = async (userMonthlyFixedCost) => {
 
 exports.onUserExpenseCreated = onDocumentCreated(
   'expenses/{docId}',
+  /**
+   * @param {CreateEvent<UserExpenseDBData>} event
+   */
   async (event) => {
-    /** @type {UserExpenseDBData} */
-    // @ts-ignore
     const userExpenseDBData = event.data.data();
 
     const userMonthlyExpense = await getUserMonthlyExpenseFromUserExpenseDBData(
@@ -207,9 +209,10 @@ exports.onUserExpenseCreated = onDocumentCreated(
 
 exports.onUserExpenseDeleted = onDocumentDeleted(
   'expenses/{docId}',
+  /**
+   * @param {DeleteEvent<UserExpenseDBData>} event
+   */
   async (event) => {
-    /** @type {UserExpenseDBData} */
-    // @ts-ignore
     const userExpenseDBData = event.data.data();
 
     const userMonthlyExpense = await getUserMonthlyExpenseFromUserExpenseDBData(
@@ -224,13 +227,11 @@ exports.onUserExpenseDeleted = onDocumentDeleted(
 
 exports.onUserExpenseUpdated = onDocumentUpdated(
   'expenses/{docId}',
+  /**
+   * @param {UpdateEvent<UserExpenseDBData>} event
+   */
   async (event) => {
-    /** @type {UserExpenseDBData} */
-    // @ts-ignore
     const beforeUserExpenseDBData = event.data.before.data();
-
-    /** @type {UserExpenseDBData} */
-    // @ts-ignore
     const afterUserExpenseDBData = event.data.after.data();
 
     const userMonthlyExpense = await getUserMonthlyExpenseFromUserExpenseDBData(
@@ -246,9 +247,10 @@ exports.onUserExpenseUpdated = onDocumentUpdated(
 
 exports.onUserSubscriptionCreated = onDocumentCreated(
   'subscriptions/{docId}',
+  /**
+   * @param {CreateEvent<UserSubscriptionDBData>} event
+   */
   async (event) => {
-    /** @type {UserSubscriptionDBData} */
-    // @ts-ignore
     const userSubscriptionDBData = event.data.data();
 
     const { userId, value, type, month } = userSubscriptionDBData;
@@ -273,9 +275,10 @@ exports.onUserSubscriptionCreated = onDocumentCreated(
 
 exports.onUserSubscriptionDeleted = onDocumentDeleted(
   'subscriptions/{docId}',
+  /**
+   * @param {DeleteEvent<UserSubscriptionDBData>} event
+   */
   async (event) => {
-    /** @type {UserSubscriptionDBData} */
-    // @ts-ignore
     const userSubscriptionDBData = event.data.data();
 
     const { userId, value, type, month } = userSubscriptionDBData;
@@ -300,13 +303,11 @@ exports.onUserSubscriptionDeleted = onDocumentDeleted(
 
 exports.onUserSubscriptionUpdated = onDocumentUpdated(
   'subscriptions/{docId}',
+  /**
+   * @param {UpdateEvent<UserSubscriptionDBData>} event
+   */
   async (event) => {
-    /** @type {UserSubscriptionDBData} */
-    // @ts-ignore
     const beforeUserSubscription = event.data.before.data();
-
-    /** @type {UserSubscriptionDBData} */
-    // @ts-ignore
     const afterUserSubscription = event.data.after.data();
 
     const { userId, type, month } = afterUserSubscription;
