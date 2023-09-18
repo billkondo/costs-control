@@ -63,11 +63,15 @@ export const addUserExpense = async (userExpense) => {
 
   /** @type {UserExpenseDBData} */
   const userExpenseDBData = {
-    ...userExpense,
     id: userExpenseRef.id,
+    userId: userExpense.userId,
     buyDate: Timestamp.fromDate(userExpense.buyDate),
     storeId: userExpense.store.id,
     cardId: userExpense.card.id,
+    isInstallment: userExpense.isInstallment,
+    partsCount: userExpense.partsCount,
+    paymentType: userExpense.paymentType,
+    value: userExpense.value,
   };
 
   await setDoc(userExpenseRef, userExpenseDBData);

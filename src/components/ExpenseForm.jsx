@@ -38,7 +38,7 @@ const ExpenseForm = (props) => {
       card,
       isInstallment: installment,
       partsCount,
-      type: paymentType,
+      paymentType,
     };
 
     await addExpense(expense);
