@@ -23,7 +23,6 @@ const SearchStoreButton = (props) => {
 
   return (
     <DialogButton
-      dialogTitle="Stores"
       hintText="Search store"
       icon={<Search />}
       renderDialogBody={(closeDialog) => {

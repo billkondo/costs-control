@@ -16,7 +16,7 @@ import { Fragment, useState } from 'react';
  *  buttonProps?: import('@mui/material').ButtonProps,
  *  buttonText?: string,
  *  renderDialogBody: (closeDialog: () => void) => JSX.Element,
- *  dialogTitle: string,
+ *  dialogTitle?: string,
  *  fullScreen?: boolean,
  *  hintText?: string,
  *  icon?: React.ReactNode,
@@ -57,6 +57,8 @@ const DialogButton = (props) => {
     </Button>
   );
 
+  const titleLess = !dialogTitle;
+
   return (
     <Fragment>
       {isIconButton ? iconButton : button}
@@ -73,7 +75,9 @@ const DialogButton = (props) => {
                 <Close />
               </IconButton>
             </Grid>
-            <Grid item>{renderDialogBody(closeDialog)}</Grid>
+            <Grid item sx={{ paddingTop: titleLess ? 2 : 0 }}>
+              {renderDialogBody(closeDialog)}
+            </Grid>
           </Grid>
         </DialogContent>
       </Dialog>
