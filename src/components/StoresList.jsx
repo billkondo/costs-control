@@ -1,4 +1,11 @@
-import { Grid, List, ListItem, Typography } from '@mui/material';
+import {
+  Grid,
+  List,
+  ListItem,
+  ListItemButton,
+  Typography,
+} from '@mui/material';
+import PropTypes from 'prop-types';
 import { useEffect, useMemo, useState } from 'react';
 import Pager from '../firebase/firestore/pager';
 import {
@@ -37,7 +44,18 @@ const useStoresTable = () => {
   };
 };
 
-const StoresList = () => {
+/**
+ * @typedef {object} StoresListProps
+ * @property {boolean} [selectable]
+ * @property {(store: UserStore) => void} [onSelect]
+ */
+
+/**
+ * @param {StoresListProps} props
+ */
+
+const StoresList = (props) => {
+  const { selectable, onSelect } = props;
   const {
     startItem,
     endItem,
@@ -49,6 +67,8 @@ const StoresList = () => {
     total,
   } = useStoresTable();
   const hasAnyStore = total > 0;
+
+  const ItemComponent = selectable ? ListItemButton : ListItem;
 
   return (
     <List sx={{ border: '1px solid rgba(0, 0, 0, 0.12)', borderRadius: 1 }}>
@@ -77,13 +97,22 @@ const StoresList = () => {
             const { id, name } = item;
 
             return (
-              <ListItem key={id}>
+              <ItemComponent
+                key={id}
+                onClick={() => {
+                  if (!selectable) {
+                    return;
+                  }
+
+                  onSelect(item);
+                }}
+              >
                 <Grid container>
                   <Grid item>
                     <Typography variant="body1">{name}</Typography>
                   </Grid>
                 </Grid>
-              </ListItem>
+              </ItemComponent>
             );
           })}
           <ListItem>
@@ -101,6 +130,11 @@ const StoresList = () => {
       ) : null}
     </List>
   );
+};
+
+StoresList.propTypes = {
+  selectable: PropTypes.bool,
+  onSelect: PropTypes.func,
 };
 
 export default StoresList;

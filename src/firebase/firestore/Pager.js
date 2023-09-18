@@ -29,8 +29,6 @@ const Pager = (userId, getQuery) => {
 
     cache[lastIndex] = lastDocumentInQuery;
 
-    console.log(start, lastIndex, cache);
-
     return userSubscriptionDBData;
   };
 

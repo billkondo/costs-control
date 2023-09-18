@@ -1,16 +1,20 @@
 import PropTypes from 'prop-types';
-import { createContext } from 'react';
-import { addUserStore } from '../firebase/firestore/stores';
+import { createContext, useCallback, useState } from 'react';
+import { addUserStore, getUserStores } from '../firebase/firestore/stores';
 import useAuthentication from './useAuthentication';
 
 /**
  * @typedef {object} StoresState
  * @property {(store:Store) => Promise<void>} addStore
+ * @property {() => Promise<void>} loadStores
+ * @property {UserStore[]} stores
  */
 
 /** @type {import("react").Context<StoresState>} */
 export const StoresContext = createContext({
   addStore: async () => {},
+  loadStores: async () => {},
+  stores: [],
 });
 
 /**
@@ -19,6 +23,20 @@ export const StoresContext = createContext({
 const StoresProvider = (props) => {
   const { children } = props;
   const { authenticatedUserId } = useAuthentication();
+  const [loaded, setLoaded] = useState(false);
+  const [stores, setStores] = useState(/** @type {UserStore[]} */ ([]));
+
+  const loadStores = useCallback(async () => {
+    if (loaded) {
+      return;
+    }
+
+    setLoaded(true);
+
+    const stores = await getUserStores(authenticatedUserId);
+
+    setStores(stores);
+  }, [authenticatedUserId, loaded]);
 
   /**
    * @param {Store} store
@@ -32,10 +50,20 @@ const StoresProvider = (props) => {
     };
 
     await addUserStore(userStore);
+    await updateStoresWithNewStore(userStore);
+  };
+
+  /**
+   * @param {UserStore} store
+   */
+  const updateStoresWithNewStore = async (store) => {
+    await loadStores();
+
+    setStores((stores) => stores.concat(store));
   };
 
   return (
-    <StoresContext.Provider value={{ addStore }}>
+    <StoresContext.Provider value={{ addStore, loadStores, stores }}>
       {children}
     </StoresContext.Provider>
   );

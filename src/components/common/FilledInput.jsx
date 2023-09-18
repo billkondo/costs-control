@@ -6,14 +6,18 @@ import {
 import PropTypes from 'prop-types';
 
 /**
- * @param {{
- *  id: string,
- *  label: string,
- *  value?: unknown,
- *  fullWidth?: boolean,
- *  onChange?: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>,
- *  startAdornment?: React.ReactNode
- * }} props
+ * @typedef {object} FilledInputProps
+ * @property {string} id
+ * @property {string} label
+ * @property {unknown} [value]
+ * @property {boolean} [fullWidth]
+ * @property {React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>} [onChange]
+ * @property {boolean} [readOnly]
+ * @property {React.ReactNode} [startAdornment]
+ */
+
+/**
+ * @param {FilledInputProps} props
  */
 const FilledInput = (props) => {
   const {
@@ -22,6 +26,7 @@ const FilledInput = (props) => {
     value,
     fullWidth = true,
     onChange,
+    readOnly = false,
     startAdornment,
   } = props;
 
@@ -35,6 +40,7 @@ const FilledInput = (props) => {
         value={value}
         startAdornment={startAdornment}
         onChange={onChange}
+        readOnly={readOnly}
         sx={{ paddingTop: 1 }}
       />
     </FormControl>
@@ -47,6 +53,7 @@ FilledInput.propTypes = {
   value: PropTypes.any,
   fullWidth: PropTypes.bool,
   onChange: PropTypes.func,
+  readOnly: PropTypes.bool,
   startAdornment: PropTypes.node,
 };
 

@@ -4,6 +4,7 @@ import { useContext, useState } from 'react';
 import { ExpensesContext } from '../providers/ExpensesProvider';
 import AddCardButton from './AddCardButton';
 import CardSelector from './CardSelector';
+import StoreSelector from './StoreSelector';
 import FilledDatePicker from './common/FilledDatePicker';
 import FilledInput from './common/FilledInput';
 import FilledSelector from './common/FilledSelector';
@@ -21,11 +22,12 @@ const ExpenseForm = (props) => {
   const [value, setValue] = useState(/** @type {number} */ (null));
   const [date, setDate] = useState(/** @type {Date} */ (null));
   const [paymentType, setPaymentType] = useState(
-    /** @type {PaymentType} */ (null)
+    /** @type {PaymentType} */ ('')
   );
   const [installment, setInstallment] = useState(false);
   const [partsCount, setPartsCount] = useState(/** @type {number} */ (null));
   const [card, setCard] = useState(/** @type {UserCard} */ (null));
+  const [store, setStore] = useState(/** @type {UserStore} */ (null));
 
   const onSubmit = async () => {
     /** @type {Expense} */
@@ -90,6 +92,9 @@ const ExpenseForm = (props) => {
             },
           }}
         />
+      </Grid>
+      <Grid item>
+        <StoreSelector store={store} onSelect={setStore} />
       </Grid>
       <Grid item>
         <FilledSelector
