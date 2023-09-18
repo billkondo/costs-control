@@ -373,7 +373,7 @@ const getCurrentMonthExpensesBaseQuery = (userId, maxSize = 5) => {
   );
 
   /** @type {import('firebase/firestore').QueryNonFilterConstraint[]} */
-  const constraints = [orderBy('date', 'desc')];
+  const constraints = [orderBy('buyDate', 'desc')];
 
   if (maxSize) {
     constraints.push(limit(maxSize));
@@ -381,7 +381,7 @@ const getCurrentMonthExpensesBaseQuery = (userId, maxSize = 5) => {
 
   return query(
     getExpensesCollection(),
-    where('date', '>=', firstDateOfCurrentMonth),
+    where('buyDate', '>=', firstDateOfCurrentMonth),
     where('userId', '==', userId),
     ...constraints
   );
