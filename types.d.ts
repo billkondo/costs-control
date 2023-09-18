@@ -88,13 +88,7 @@ type UserMonthlyExpense = {
   userId: string;
 } & MonthlyExpense;
 
-type UserMonthlyExpenseDBData = {
-  id: string;
-  userId: string;
-  month: number;
-  year: number;
-  value: number;
-};
+type UserMonthlyExpenseDBData = UserMonthlyExpense;
 
 // Subscriptions
 

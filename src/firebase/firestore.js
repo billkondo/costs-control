@@ -67,12 +67,16 @@ export const addUserExpense = async (userExpense) => {
     userId: userExpense.userId,
     buyDate: Timestamp.fromDate(userExpense.buyDate),
     storeId: userExpense.store.id,
-    cardId: userExpense.card.id,
+    cardId: null,
     isInstallment: userExpense.isInstallment,
     partsCount: userExpense.partsCount,
     paymentType: userExpense.paymentType,
     value: userExpense.value,
   };
+
+  if (userExpense.card) {
+    userExpenseDBData.cardId = userExpense.card.id;
+  }
 
   await setDoc(userExpenseRef, userExpenseDBData);
 };

@@ -6,16 +6,11 @@ const {
   onDocumentDeleted,
   onDocumentUpdated,
 } = require('firebase-functions/v2/firestore');
-const { initializeApp, cert } = require('firebase-admin/app');
-const { getFirestore, Filter } = require('firebase-admin/firestore');
+const { Filter } = require('firebase-admin/firestore');
 
-const serviceAccount = require('./serviceAccount.json');
-
-const app = initializeApp({
-  // @ts-ignore
-  credential: cert(serviceAccount),
-});
-const db = getFirestore(app);
+const { db } = require('./firestore');
+const { getCardById } = require('./firestore/Cards');
+const MonthlyExpenses = require('./firestore/MonthlyExpenses');
 
 /** @type {FirebaseCollection<UserMonthlyExpenseDBData>} */
 // @ts-ignore
@@ -67,29 +62,6 @@ const getUserMonthlyExpenseFromUserExpenseDBData = async (
     ...userMonthlyExpenseDBData,
     id: userMonthlyExpenseDoc.id,
   };
-};
-
-/**
- * @param {UserMonthlyExpense} userMonthlyExpense
- * @returns {Promise<void>}
- */
-const saveUserMonthlyExpense = async (userMonthlyExpense) => {
-  const { id } = userMonthlyExpense;
-  const shouldCreateRecord = !id;
-
-  if (shouldCreateRecord) {
-    const userMonthlyExpenseRef = userMonthlyExpensesCollection.doc();
-
-    /** @type {UserMonthlyExpenseDBData} */
-    const userMonthlyExpenseDBData = {
-      ...userMonthlyExpense,
-      id: userMonthlyExpenseRef.id,
-    };
-
-    await userMonthlyExpenseRef.set(userMonthlyExpenseDBData);
-  } else {
-    await userMonthlyExpensesCollection.doc(id).update(userMonthlyExpense);
-  }
 };
 
 /**
@@ -189,6 +161,80 @@ const saveUserMonthlyFixedCost = async (userMonthlyFixedCost) => {
   }
 };
 
+/**
+ * @param {UserExpenseDBData} userExpenseDBData
+ * @param {boolean?} increment
+ */
+const updateMonthlyExpenses = async (userExpenseDBData, increment = true) => {
+  const { paymentType, cardId } = userExpenseDBData;
+  const isImmediateExpense = paymentType === 'CASH' || paymentType === 'DEBIT';
+
+  if (isImmediateExpense) {
+    const monthlyExpense = await getUserMonthlyExpenseFromUserExpenseDBData(
+      userExpenseDBData
+    );
+
+    if (increment) {
+      monthlyExpense.value += userExpenseDBData.value;
+    } else {
+      monthlyExpense.value -= userExpenseDBData.value;
+    }
+
+    await MonthlyExpenses.save(monthlyExpense);
+  } else {
+    const card = await getCardById(cardId);
+    const { lastBuyDay } = card;
+    const {
+      buyDate: buyTimestamp,
+      partsCount,
+      isInstallment,
+      userId,
+      value,
+    } = userExpenseDBData;
+    const buyDate = buyTimestamp.toDate();
+    const buyMonth = buyDate.getUTCMonth();
+    const buyDay = buyDate.getUTCDate();
+    const buyYear = buyDate.getUTCFullYear();
+
+    let month = buyMonth;
+    let year = buyYear;
+
+    const incrementMonth = () => {
+      month++;
+
+      if (month === 12) {
+        month = 0;
+        year++;
+      }
+    };
+
+    if (buyDay > lastBuyDay) {
+      incrementMonth();
+    }
+
+    const partsTotal = isInstallment ? partsCount : 1;
+    const partValue = value / partsTotal;
+
+    for (let i = 0; i < partsTotal; i++) {
+      const monthlyExpense = await MonthlyExpenses.getByMonthAndYear(
+        userId,
+        month,
+        year
+      );
+
+      if (increment) {
+        monthlyExpense.value += partValue;
+      } else {
+        monthlyExpense.value -= partValue;
+      }
+
+      await MonthlyExpenses.save(monthlyExpense);
+
+      incrementMonth();
+    }
+  }
+};
+
 exports.onUserExpenseCreated = onDocumentCreated(
   'expenses/{docId}',
   /**
@@ -197,13 +243,7 @@ exports.onUserExpenseCreated = onDocumentCreated(
   async (event) => {
     const userExpenseDBData = event.data.data();
 
-    const userMonthlyExpense = await getUserMonthlyExpenseFromUserExpenseDBData(
-      userExpenseDBData
-    );
-
-    userMonthlyExpense.value += userExpenseDBData.value;
-
-    await saveUserMonthlyExpense(userMonthlyExpense);
+    await updateMonthlyExpenses(userExpenseDBData);
   }
 );
 
@@ -215,13 +255,7 @@ exports.onUserExpenseDeleted = onDocumentDeleted(
   async (event) => {
     const userExpenseDBData = event.data.data();
 
-    const userMonthlyExpense = await getUserMonthlyExpenseFromUserExpenseDBData(
-      userExpenseDBData
-    );
-
-    userMonthlyExpense.value -= userExpenseDBData.value;
-
-    await saveUserMonthlyExpense(userMonthlyExpense);
+    await updateMonthlyExpenses(userExpenseDBData, false);
   }
 );
 
@@ -234,14 +268,8 @@ exports.onUserExpenseUpdated = onDocumentUpdated(
     const beforeUserExpenseDBData = event.data.before.data();
     const afterUserExpenseDBData = event.data.after.data();
 
-    const userMonthlyExpense = await getUserMonthlyExpenseFromUserExpenseDBData(
-      afterUserExpenseDBData
-    );
-
-    userMonthlyExpense.value +=
-      afterUserExpenseDBData.value - beforeUserExpenseDBData.value;
-
-    await saveUserMonthlyExpense(userMonthlyExpense);
+    await updateMonthlyExpenses(beforeUserExpenseDBData, false);
+    await updateMonthlyExpenses(afterUserExpenseDBData);
   }
 );
 
