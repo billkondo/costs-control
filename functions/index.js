@@ -36,7 +36,7 @@ const monthlyFixedCostCollection = db.collection('monthlyFixedCosts');
 const getUserMonthlyExpenseFromUserExpenseDBData = async (
   userExpenseDBData
 ) => {
-  const { userId, date: timestamp } = userExpenseDBData;
+  const { userId, buyDate: timestamp } = userExpenseDBData;
   const date = timestamp.toDate();
   const month = date.getUTCMonth();
   const year = date.getUTCFullYear();

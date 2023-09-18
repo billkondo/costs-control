@@ -65,7 +65,9 @@ export const addUserExpense = async (userExpense) => {
   const userExpenseDBData = {
     ...userExpense,
     id: userExpenseRef.id,
-    date: Timestamp.fromDate(userExpense.date),
+    buyDate: Timestamp.fromDate(userExpense.buyDate),
+    storeId: userExpense.store.id,
+    cardId: userExpense.card.id,
   };
 
   await setDoc(userExpenseRef, userExpenseDBData);
@@ -390,10 +392,12 @@ const mapUserExpenseDocToUserExpense = (doc) => {
 
   /** @type {UserExpense} */
   const userExpense = {
+    ...data,
     id: doc.id,
     userId: data.userId,
-    date: data.date.toDate(),
-    value: data.value,
+    buyDate: data.buyDate.toDate(),
+    store: null,
+    card: null,
   };
 
   return userExpense;

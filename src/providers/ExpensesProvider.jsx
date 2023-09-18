@@ -88,10 +88,9 @@ const ExpensesProvider = (props) => {
   const addExpense = async (expense) => {
     /** @type {UserExpense} */
     const userExpense = {
+      ...expense,
       id: null,
       userId: authenticatedUserId,
-      date: expense.date,
-      value: expense.value,
     };
 
     await FirebaseFirestore.addUserExpense(userExpense);

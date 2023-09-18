@@ -52,7 +52,12 @@ type UserCardDBData = UserCard;
 
 type Expense = {
   value: number;
-  date: Date;
+  buyDate: Date;
+  store: UserStore;
+  type: PaymentType;
+  isInstallment: boolean;
+  partsCount: number;
+  card: UserCard;
 };
 
 type UserExpense = {
@@ -64,7 +69,12 @@ type UserExpenseDBData = {
   id: string;
   userId: string;
   value: number;
-  date: import('firebase/firestore').Timestamp;
+  buyDate: import('firebase/firestore').Timestamp;
+  storeId: string;
+  type: PaymentType;
+  isInstallment: boolean;
+  partsCount: number;
+  cardId: string;
 };
 
 type MonthlyExpense = {

@@ -20,7 +20,7 @@ const ExpenseForm = (props) => {
   const { addExpense } = useContext(ExpensesContext);
 
   const [value, setValue] = useState(/** @type {number} */ (null));
-  const [date, setDate] = useState(/** @type {Date} */ (null));
+  const [buyDate, setBuyDate] = useState(/** @type {Date} */ (null));
   const [paymentType, setPaymentType] = useState(
     /** @type {PaymentType} */ ('')
   );
@@ -33,18 +33,17 @@ const ExpenseForm = (props) => {
     /** @type {Expense} */
     const expense = {
       value,
-      date,
+      buyDate,
+      store,
+      card,
+      isInstallment: installment,
+      partsCount,
+      type: paymentType,
     };
 
     await addExpense(expense);
 
-    resetForm();
     onExpenseSaved();
-  };
-
-  const resetForm = () => {
-    setValue(null);
-    setDate(null);
   };
 
   /**
@@ -85,9 +84,9 @@ const ExpenseForm = (props) => {
             label: 'Spent date',
             onChange: (newDate) => {
               if (newDate) {
-                setDate(newDate.toDate());
+                setBuyDate(newDate.toDate());
               } else {
-                setDate(null);
+                setBuyDate(null);
               }
             },
           }}
