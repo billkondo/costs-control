@@ -14,15 +14,15 @@ const Expenses = require('./firestore/Expenses');
 const MonthlyExpenses = require('./firestore/MonthlyExpenses');
 const { onCall } = require('firebase-functions/v2/https');
 
-/** @type {FirebaseCollection<UserMonthlyExpenseDBData>} */
+/** @type {Collection<UserMonthlyExpenseDBData>} */
 // @ts-ignore
 const userMonthlyExpensesCollection = db.collection('monthlyExpenses');
 
-/** @type {FirebaseCollection<UserFixedCostDBData>} */
+/** @type {Collection<UserFixedCostDBData>} */
 // @ts-ignore
 const fixedCostCollection = db.collection('fixedCosts');
 
-/** @type {FirebaseCollection<UserMonthlyFixedCostDBData>} */
+/** @type {Collection<UserMonthlyFixedCostDBData>} */
 // @ts-ignore
 const monthlyFixedCostCollection = db.collection('monthlyFixedCosts');
 

@@ -1,6 +1,6 @@
 const { db } = require('.');
 
-/** @type {FirebaseCollection<UserCardDBData>} */
+/** @type {Collection<UserCardDBData>} */
 // @ts-ignore
 const cardsCollection = db.collection('cards');
 

@@ -15,8 +15,7 @@ type UpdateEvent<T> = import('firebase-functions/v2').firestore.FirestoreEvent<
   { docId: string }
 >;
 
-type FirebaseCollection<T> =
-  import('firebase-admin/firestore').CollectionReference<T>;
+type Collection<T> = import('firebase-admin/firestore').CollectionReference<T>;
 
 type FunctionCall<T> = import('firebase-functions/v2/https').CallableRequest<T>;
 

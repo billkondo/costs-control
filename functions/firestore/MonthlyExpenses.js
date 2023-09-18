@@ -1,6 +1,6 @@
 const { db } = require('.');
 
-/** @type {FirebaseCollection<UserMonthlyExpenseDBData>} */
+/** @type {Collection<UserMonthlyExpenseDBData>} */
 // @ts-ignore
 const collection = db.collection('monthlyExpenses');
 

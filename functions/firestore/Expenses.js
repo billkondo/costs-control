@@ -1,7 +1,7 @@
 const { Timestamp } = require('firebase-admin/firestore');
 const { db } = require('.');
 
-/** @type {FirebaseCollection<UserExpenseDBData>} */
+/** @type {Collection<UserExpenseDBData>} */
 // @ts-ignore
 const collection = db.collection('expenses');
 
