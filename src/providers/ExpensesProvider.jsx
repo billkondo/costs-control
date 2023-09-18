@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import * as FirebaseFirestore from '../firebase/firestore';
+import FirebaseFunctions from '../firebase/functions';
 import { AuthenticationContext } from './AuthenticationProvider';
 
 /**
@@ -93,7 +94,7 @@ const ExpensesProvider = (props) => {
       userId: authenticatedUserId,
     };
 
-    await FirebaseFirestore.addUserExpense(userExpense);
+    await FirebaseFunctions.expenses.add(userExpense);
   };
 
   return (

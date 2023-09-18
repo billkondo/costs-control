@@ -6,6 +6,7 @@ import HeaderPage from './components/HeaderPage';
 import OnlyAuthenticated from './components/OnlyAuthenticated';
 import UserLoginForm from './components/UserLoginForm';
 import { init } from './firebase';
+import FirebaseFunctions from './firebase/functions';
 import CardsPage from './pages/CardsPage';
 import MainPage from './pages/MainPage';
 import StoresPage from './pages/StoresPage';
@@ -20,6 +21,7 @@ function App() {
 
   useEffect(() => {
     init();
+    FirebaseFunctions.init();
 
     setInitialized(true);
   }, []);

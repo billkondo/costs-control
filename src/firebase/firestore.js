@@ -72,6 +72,7 @@ export const addUserExpense = async (userExpense) => {
     partsCount: userExpense.partsCount,
     paymentType: userExpense.paymentType,
     value: userExpense.value,
+    paymentDates: [],
   };
 
   if (userExpense.card) {

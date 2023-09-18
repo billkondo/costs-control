@@ -10,7 +10,9 @@ const { Filter } = require('firebase-admin/firestore');
 
 const { db } = require('./firestore');
 const { getCardById } = require('./firestore/Cards');
+const Expenses = require('./firestore/Expenses');
 const MonthlyExpenses = require('./firestore/MonthlyExpenses');
+const { onCall } = require('firebase-functions/v2/https');
 
 /** @type {FirebaseCollection<UserMonthlyExpenseDBData>} */
 // @ts-ignore
@@ -234,6 +236,23 @@ const updateMonthlyExpenses = async (userExpenseDBData, increment = true) => {
     }
   }
 };
+
+exports.addExpense = onCall(
+  /**
+   * @param {FunctionCall<UserExpenseRequest>} request
+   */
+  async (request) => {
+    const data = request.data;
+
+    /** @type {UserExpense} */
+    const userExpense = {
+      ...data,
+      buyDate: new Date(data.buyDate),
+    };
+
+    await Expenses.add(userExpense);
+  }
+);
 
 exports.onUserExpenseCreated = onDocumentCreated(
   'expenses/{docId}',

@@ -1,3 +1,7 @@
+// Utils
+
+type Override<What, With> = Omit<What, keyof With> & With;
+
 // QueryParams
 
 type QueryParams<T> = {
@@ -15,6 +19,11 @@ type FirestoreCollectionReference<T> =
   import('firebase/firestore').CollectionReference<T>;
 type FirestoreQueryDocumentSnapshot<T> =
   import('firebase/firestore').QueryDocumentSnapshot<T>;
+
+// Functions
+
+type FunctionCall<RequestData, ResponseData> =
+  import('firebase/functions').HttpsCallable<RequestData, ResponseData>;
 
 // Payments
 
@@ -65,6 +74,13 @@ type UserExpense = {
   userId: string;
 } & Expense;
 
+type UserExpenseRequest = Override<
+  UserExpense,
+  {
+    buyDate: string;
+  }
+>;
+
 type UserExpenseDBData = {
   id: string;
   userId: string;
@@ -75,6 +91,7 @@ type UserExpenseDBData = {
   isInstallment: boolean;
   partsCount: number;
   cardId: string;
+  paymentDates: string[];
 };
 
 type MonthlyExpense = {

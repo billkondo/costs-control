@@ -17,3 +17,20 @@ type UpdateEvent<T> = import('firebase-functions/v2').firestore.FirestoreEvent<
 
 type FirebaseCollection<T> =
   import('firebase-admin/firestore').CollectionReference<T>;
+
+type FunctionCall<T> = import('firebase-functions/v2/https').CallableRequest<T>;
+
+// Expenses
+
+type UserExpenseDBData = {
+  id: string;
+  userId: string;
+  value: number;
+  buyDate: import('firebase-admin/firestore').Timestamp;
+  storeId: string;
+  paymentType: PaymentType;
+  isInstallment: boolean;
+  partsCount: number;
+  cardId: string;
+  paymentDates: string[];
+};
