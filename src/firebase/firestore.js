@@ -15,9 +15,7 @@ import {
   startAfter,
 } from 'firebase/firestore';
 import { db } from '.';
-import getFirstDateOfMonth from '../utils/date/getFirstDateOfMonth';
-import getCurrentMonth from '../utils/date/getCurrentMonth';
-import getCurrentYear from '../utils/date/getCurrentYear';
+import getCurrentMonthDateString from '../utils/date/getCurrentMonthDateString';
 
 /**
  * @returns {FirestoreCollectionReference<UserExpenseDBData>}
@@ -372,10 +370,7 @@ const getCurrentMonthSubscriptionsBaseQuery = (
  * @param {number=} maxSize
  */
 const getCurrentMonthExpensesBaseQuery = (userId, maxSize = 5) => {
-  const firstDateOfCurrentMonth = getFirstDateOfMonth(
-    getCurrentMonth(),
-    getCurrentYear()
-  );
+  const currentMonthDateString = getCurrentMonthDateString();
 
   /** @type {import('firebase/firestore').QueryNonFilterConstraint[]} */
   const constraints = [orderBy('buyDate', 'desc')];
@@ -384,9 +379,11 @@ const getCurrentMonthExpensesBaseQuery = (userId, maxSize = 5) => {
     constraints.push(limit(maxSize));
   }
 
+  console.log(currentMonthDateString);
+
   return query(
     getExpensesCollection(),
-    where('buyDate', '>=', firstDateOfCurrentMonth),
+    where('paymentDates', 'array-contains', currentMonthDateString),
     where('userId', '==', userId),
     ...constraints
   );

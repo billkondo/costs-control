@@ -33,7 +33,7 @@ const CurrentMonthExpensesList = () => {
    * @returns {string}
    */
   const formatDate = (date) => {
-    const month = date.getMonth();
+    const month = date.getMonth() + 1;
     const day = date.getDate();
 
     return `${padStart(day)} / ${padStart(month)}`;

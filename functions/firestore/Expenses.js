@@ -7,6 +7,7 @@ const collection = db.collection('expenses');
 
 /**
  * @param {UserExpense} expense
+ * @returns {string[]}
  */
 const getPaymentDates = (expense) => {
   const { paymentType, buyDate } = expense;
@@ -61,12 +62,15 @@ const getPaymentDates = (expense) => {
 
     incrementMonth();
   }
+
+  return dates;
 };
 
 /**
  * @param {UserExpense} expense
  */
 const add = async (expense) => {
+  const { card } = expense;
   const doc = collection.doc();
 
   /** @type {UserExpenseDBData} */
@@ -82,6 +86,10 @@ const add = async (expense) => {
     value: expense.value,
     paymentDates: getPaymentDates(expense),
   };
+
+  if (card) {
+    expenseDBData.cardId = card.id;
+  }
 
   await doc.set(expenseDBData);
 };
