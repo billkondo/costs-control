@@ -130,28 +130,3 @@ type UserSubscription = {
 } & Subscription;
 
 type UserSubscriptionDBData = UserSubscription;
-
-// Fixed Cost
-
-type FixedCost = {
-  value: number;
-};
-
-type UserFixedCost = {
-  id: string | null;
-  userId: string;
-} & FixedCost;
-
-type UserFixedCostDBData = UserFixedCost;
-
-type MonthlyFixedCost = {
-  value: number;
-  month: number;
-};
-
-type UserMonthlyFixedCost = {
-  id: string | null;
-  userId: string;
-} & MonthlyFixedCost;
-
-type UserMonthlyFixedCostDBData = UserMonthlyFixedCost;

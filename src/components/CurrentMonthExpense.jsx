@@ -1,9 +1,5 @@
 import { Grid, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  fixedCostListener,
-  monthlyFixedCostsListener,
-} from '../firebase/_firestore';
 import FirebaseFirestore from '../firebase/firestore';
 import useAuthentication from '../providers/useAuthentication';
 
@@ -11,12 +7,6 @@ const CurrentMonthExpense = () => {
   const { authenticatedUserId } = useAuthentication();
   const [currentMonthExpense, setCurrentMonthExpense] = useState(
     /** @type {UserMonthlyExpense | null} */ (null)
-  );
-  const [fixedCost, setFixedCost] = useState(
-    /** @type {FixedCost | null} */ (null)
-  );
-  const [monthlyFixedCost, setMonthlyFixedCost] = useState(
-    /** @type {UserMonthlyFixedCost | null} */ (null)
   );
 
   const expense = useMemo(() => {
@@ -26,16 +16,8 @@ const CurrentMonthExpense = () => {
       cost += currentMonthExpense.value;
     }
 
-    if (fixedCost) {
-      cost += fixedCost.value;
-    }
-
-    if (monthlyFixedCost) {
-      cost += monthlyFixedCost.value;
-    }
-
     return cost;
-  }, [currentMonthExpense, fixedCost, monthlyFixedCost]);
+  }, [currentMonthExpense]);
 
   useEffect(() => {
     const unsubscribeMonthExpenseListener =
@@ -46,24 +28,8 @@ const CurrentMonthExpense = () => {
         }
       );
 
-    const unsubscribeFixedCostListener = fixedCostListener(
-      authenticatedUserId,
-      (fixedCost) => {
-        setFixedCost(fixedCost);
-      }
-    );
-
-    const unsubscribeMonthlyFixedCostListener = monthlyFixedCostsListener(
-      authenticatedUserId,
-      (monthlyFixedCost) => {
-        setMonthlyFixedCost(monthlyFixedCost);
-      }
-    );
-
     return () => {
       unsubscribeMonthExpenseListener();
-      unsubscribeFixedCostListener();
-      unsubscribeMonthlyFixedCostListener();
     };
   }, [authenticatedUserId]);
 
