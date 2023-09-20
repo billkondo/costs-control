@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import * as FirebaseFirestore from '../firebase/firestore';
+import FirebaseFirestore from '../firebase/firestore';
 import FirebaseFunctions from '../firebase/functions';
 import { AuthenticationContext } from './AuthenticationProvider';
 
@@ -42,7 +42,7 @@ const ExpensesProvider = (props) => {
   const [currentMonthExpensesCount, setCurrentMonthExpensesCount] = useState(0);
 
   const loadCurrentMonthExpensesCount = useCallback(async () => {
-    const count = await FirebaseFirestore.getCurrentMonthSubscriptionsLength(
+    const count = await FirebaseFirestore.expenses.currentMonth.getCount(
       authenticatedUserId
     );
 
@@ -63,7 +63,7 @@ const ExpensesProvider = (props) => {
       return;
     }
 
-    const expenses = await FirebaseFirestore.getAllCurrentMonthExpenses(
+    const expenses = await FirebaseFirestore.expenses.currentMonth.getAll(
       authenticatedUserId
     );
 
@@ -73,7 +73,7 @@ const ExpensesProvider = (props) => {
 
   useEffect(() => {
     const loadSubscriptions = async () => {
-      const subscriptions = await FirebaseFirestore.getUserSubscriptions(
+      const subscriptions = await FirebaseFirestore.Subscriptions.getAll(
         authenticatedUserId
       );
 

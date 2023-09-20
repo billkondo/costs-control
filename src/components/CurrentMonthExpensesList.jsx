@@ -1,6 +1,6 @@
 import { Card, Grid, List, ListItem, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
-import { currentMonthExpensesListener } from '../firebase/firestore';
+import FirebaseFirestore from '../firebase/firestore';
 import { AuthenticationContext } from '../providers/AuthenticationProvider';
 import useExpenses from '../providers/useExpenses';
 import padStart from '../utils/padStart';
@@ -16,7 +16,7 @@ const CurrentMonthExpensesList = () => {
   const hasManyExpenses = currentMonthExpensesCount > 5;
 
   useEffect(() => {
-    const unsubscribe = currentMonthExpensesListener(
+    const unsubscribe = FirebaseFirestore.expenses.currentMonth.listener(
       authenticatedUserId,
       (expenses) => {
         setExpenses(expenses);

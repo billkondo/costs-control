@@ -1,6 +1,6 @@
 import { Card, Grid, List, ListItem, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
-import { currentMonthSubscriptionsListener } from '../firebase/firestore';
+import FirebaseFirestore from '../firebase/firestore';
 import { AuthenticationContext } from '../providers/AuthenticationProvider';
 import useSubscriptions from '../providers/useSubscriptions';
 import formatSubscriptionDate from '../usecases/formatSubscriptionDate';
@@ -19,7 +19,7 @@ const CurrentMonthSubscriptionsList = () => {
   const hasManySubscriptions = currentMonthSubscriptionsCount > 5;
 
   useEffect(() => {
-    const unsubscribe = currentMonthSubscriptionsListener(
+    const unsubscribe = FirebaseFirestore.Subscriptions.currentMonth.listener(
       authenticatedUserId,
       (subscriptions) => {
         setCurrentMonthSubscriptions(subscriptions);

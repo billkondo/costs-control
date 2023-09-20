@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { CurrentMonthSubscriptionsPager } from '../firebase/firestore';
+import { CurrentMonthSubscriptionsPager } from '../firebase/firestore/Subscriptions';
 import { AuthenticationContext } from '../providers/AuthenticationProvider';
 import useSubscriptions from '../providers/useSubscriptions';
 import formatSubscriptionDate from '../usecases/formatSubscriptionDate';

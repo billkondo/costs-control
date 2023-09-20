@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { createContext, useCallback, useState } from 'react';
-import * as FirebaseFirestore from '../firebase/firestore';
+import FirebaseFirestore from '../firebase/firestore';
 import useAuthentication from './useAuthentication';
 
 /**
@@ -34,7 +34,7 @@ const CardsProvider = (props) => {
 
     setLoaded(true);
 
-    const cards = await FirebaseFirestore.getUserCards(authenticatedUserId);
+    const cards = await FirebaseFirestore.cards.getAll(authenticatedUserId);
 
     setCards(cards);
   }, [authenticatedUserId, loaded]);
@@ -50,7 +50,7 @@ const CardsProvider = (props) => {
       id: null,
     };
 
-    const newCard = await FirebaseFirestore.addUserCard(userCard);
+    const newCard = await FirebaseFirestore.cards.add(userCard);
 
     updateCardsWithNewCard(newCard);
   };

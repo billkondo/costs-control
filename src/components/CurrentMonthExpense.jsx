@@ -1,10 +1,10 @@
 import { Grid, Typography } from '@mui/material';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import {
-  currentMonthExpenseListener,
   fixedCostListener,
   monthlyFixedCostsListener,
-} from '../firebase/firestore';
+} from '../firebase/_firestore';
+import FirebaseFirestore from '../firebase/firestore';
 import { AuthenticationContext } from '../providers/AuthenticationProvider';
 
 const CurrentMonthExpense = () => {
@@ -36,12 +36,13 @@ const CurrentMonthExpense = () => {
   }, [currentMonthExpense, fixedCost, monthlyFixedCost]);
 
   useEffect(() => {
-    const unsubscribeMonthExpenseListener = currentMonthExpenseListener(
-      authenticatedUserId,
-      (currentMonthExpense) => {
-        setCurrentMonthExpense(currentMonthExpense);
-      }
-    );
+    const unsubscribeMonthExpenseListener =
+      FirebaseFirestore.MonthlyExpenses.listener(
+        authenticatedUserId,
+        (currentMonthExpense) => {
+          setCurrentMonthExpense(currentMonthExpense);
+        }
+      );
 
     const unsubscribeFixedCostListener = fixedCostListener(
       authenticatedUserId,

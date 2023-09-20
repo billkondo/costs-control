@@ -6,8 +6,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import * as FirebaseFirestore from '../firebase/firestore';
-import { getCurrentMonthSubscriptionsLength } from '../firebase/firestore';
+import FirebaseFirestore from '../firebase/firestore';
 import { AuthenticationContext } from './AuthenticationProvider';
 
 /**
@@ -32,7 +31,9 @@ const SubscriptionsProvider = (props) => {
     useState(0);
 
   const loadCurrentMonthSubscriptionsLength = useCallback(async () => {
-    const count = await getCurrentMonthSubscriptionsLength(authenticatedUserId);
+    const count = await FirebaseFirestore.Subscriptions.currentMonth.count(
+      authenticatedUserId
+    );
 
     setCurrentMonthSubscriptionsCount(count);
   }, [authenticatedUserId]);
@@ -52,7 +53,7 @@ const SubscriptionsProvider = (props) => {
       id: null,
     };
 
-    await FirebaseFirestore.addUserSubscription(userSubscription);
+    await FirebaseFirestore.Subscriptions.add(userSubscription);
     await loadCurrentMonthSubscriptionsLength();
   };
 
