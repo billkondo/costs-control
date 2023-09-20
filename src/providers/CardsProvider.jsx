@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { createContext, useCallback, useState } from 'react';
 import FirebaseFirestore from '../firebase/firestore';
+import FirebaseFunctions from '../firebase/functions';
 import useAuthentication from './useAuthentication';
 
 /**
@@ -45,14 +46,7 @@ const CardsProvider = (props) => {
    * @param {Card} card
    */
   const addCard = async (card) => {
-    /** @type {UserCard} */
-    const userCard = {
-      ...card,
-      userId: authenticatedUserId,
-      id: null,
-    };
-
-    const newCard = await FirebaseFirestore.cards.add(userCard);
+    const newCard = await FirebaseFunctions.cards.add(card);
 
     updateCardsWithNewCard(newCard);
   };

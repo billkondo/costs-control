@@ -10,9 +10,11 @@ const { Filter } = require('firebase-admin/firestore');
 
 const { db } = require('./firestore');
 const { getCardById } = require('./firestore/Cards');
+const Card = require('./firestore/Cards');
 const Expenses = require('./firestore/Expenses');
 const MonthlyExpenses = require('./firestore/MonthlyExpenses');
-const { onCall } = require('firebase-functions/v2/https');
+const Stores = require('./firestore/Stores');
+const { onCall, HttpsError } = require('firebase-functions/v2/https');
 
 /** @type {Collection<UserMonthlyExpenseDBData>} */
 // @ts-ignore
@@ -239,18 +241,59 @@ const updateMonthlyExpenses = async (userExpenseDBData, increment = true) => {
 
 exports.addExpense = onCall(
   /**
-   * @param {FunctionCall<UserExpenseRequest>} request
+   * @param {FunctionCall<AddExpenseRequest>} request
    */
   async (request) => {
-    const data = request.data;
+    if (!request.auth) {
+      throw new HttpsError('unauthenticated', 'Request is not authenticated');
+    }
 
-    /** @type {UserExpense} */
-    const userExpense = {
+    const data = request.data;
+    const userId = request.auth.uid;
+
+    /** @type {Expense} */
+    const expense = {
       ...data,
       buyDate: new Date(data.buyDate),
     };
 
-    await Expenses.add(userExpense);
+    await Expenses.add(userId, expense);
+  }
+);
+
+exports.addCard = onCall(
+  /**
+   * @param {FunctionCall<AddCardRequest>} request
+   * @returns {Promise<AddCardResponse>}
+   */
+  async (request) => {
+    if (!request.auth) {
+      throw new HttpsError('unauthenticated', 'Request is not authenticated');
+    }
+
+    const card = request.data;
+    const userId = request.auth.uid;
+    const userCard = await Card.add(userId, card);
+
+    return userCard;
+  }
+);
+
+exports.addStore = onCall(
+  /**
+   * @param {FunctionCall<AddStoreRequest>} request
+   * @returns {Promise<AddStoreResponse>}
+   */
+  async (request) => {
+    if (!request.auth) {
+      throw new HttpsError('unauthenticated', 'Request is not authenticated');
+    }
+
+    const store = request.data;
+    const userId = request.auth.uid;
+    const userStore = await Stores.add(userId, store);
+
+    return userStore;
   }
 );
 

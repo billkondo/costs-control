@@ -6,7 +6,7 @@ const { db } = require('.');
 const collection = db.collection('expenses');
 
 /**
- * @param {UserExpense} expense
+ * @param {Expense} expense
  * @returns {string[]}
  */
 const getPaymentDates = (expense) => {
@@ -72,19 +72,19 @@ const getPaymentDates = (expense) => {
 };
 
 /**
- * @param {UserExpense} expense
+ * @param {string} userId
+ * @param {Expense} expense
  */
-const add = async (expense) => {
+const add = async (userId, expense) => {
   const { card } = expense;
   const doc = collection.doc();
 
   /** @type {UserExpenseDBData} */
   const expenseDBData = {
     id: doc.id,
-    userId: expense.userId,
+    userId: userId,
     buyDate: Timestamp.fromDate(expense.buyDate),
-    // TODO review this
-    storeId: /** @type {string} */ (expense.store.id),
+    storeId: expense.store.id,
     cardId: null,
     isInstallment: expense.isInstallment,
     partsCount: expense.partsCount,

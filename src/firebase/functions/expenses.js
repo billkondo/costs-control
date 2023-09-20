@@ -1,7 +1,7 @@
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '..';
 
-/** @type {FunctionCall<UserExpenseRequest, undefined>} */
+/** @type {FunctionCall<AddExpenseRequest, undefined>} */
 let addExpenseFunction;
 
 const init = () => {
@@ -9,7 +9,7 @@ const init = () => {
 };
 
 /**
- * @param {UserExpense} expense
+ * @param {Expense} expense
  * @returns {Promise<void>}
  */
 const add = async (expense) => {

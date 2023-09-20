@@ -83,14 +83,7 @@ const ExpensesProvider = (props) => {
    * @param {Expense} expense
    */
   const addExpense = async (expense) => {
-    /** @type {UserExpense} */
-    const userExpense = {
-      ...expense,
-      id: null,
-      userId: authenticatedUserId,
-    };
-
-    await FirebaseFunctions.expenses.add(userExpense);
+    await FirebaseFunctions.expenses.add(expense);
   };
 
   return (

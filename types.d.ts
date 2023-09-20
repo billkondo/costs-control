@@ -36,11 +36,14 @@ type Store = {
 };
 
 type UserStore = {
-  id: string | null;
+  id: string;
   userId: string;
 } & Store;
 
 type UserStoreDBData = UserStore;
+
+type AddStoreRequest = Store;
+type AddStoreResponse = UserStore;
 
 // Cards
 
@@ -51,11 +54,14 @@ type Card = {
 };
 
 type UserCard = {
-  id: string | null;
+  id: string;
   userId: string;
 } & Card;
 
 type UserCardDBData = UserCard;
+
+type AddCardRequest = Card;
+type AddCardResponse = UserCard;
 
 // Expenses
 
@@ -70,16 +76,9 @@ type Expense = {
 };
 
 type UserExpense = {
-  id: string | null;
+  id: string;
   userId: string;
 } & Expense;
-
-type UserExpenseRequest = Override<
-  UserExpense,
-  {
-    buyDate: string;
-  }
->;
 
 type UserExpenseDBData = {
   id: string;
@@ -93,6 +92,13 @@ type UserExpenseDBData = {
   cardId: string;
   paymentDates: string[];
 };
+
+type AddExpenseRequest = Override<
+  Expense,
+  {
+    buyDate: string;
+  }
+>;
 
 type MonthlyExpense = {
   month: number;

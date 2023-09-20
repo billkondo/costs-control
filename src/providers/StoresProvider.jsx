@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { createContext, useCallback, useState } from 'react';
-import { addUserStore, getUserStores } from '../firebase/firestore/stores';
+import { getUserStores } from '../firebase/firestore/stores';
+import FirebaseFunctions from '../firebase/functions';
 import useAuthentication from './useAuthentication';
 
 /**
@@ -44,14 +45,8 @@ const StoresProvider = (props) => {
    * @param {Store} store
    */
   const addStore = async (store) => {
-    /** @type {UserStore} */
-    const userStore = {
-      ...store,
-      id: null,
-      userId: authenticatedUserId,
-    };
+    const userStore = await FirebaseFunctions.stores.add(store);
 
-    await addUserStore(userStore);
     await updateStoresWithNewStore(userStore);
   };
 
