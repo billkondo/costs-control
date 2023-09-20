@@ -33,6 +33,11 @@ const getPaymentDates = (expense) => {
   }
 
   const { card } = expense;
+
+  if (!card) {
+    throw new Error('Expense does not have card');
+  }
+
   const { lastBuyDay } = card;
   const { partsCount, isInstallment } = expense;
 
@@ -78,7 +83,8 @@ const add = async (expense) => {
     id: doc.id,
     userId: expense.userId,
     buyDate: Timestamp.fromDate(expense.buyDate),
-    storeId: expense.store.id,
+    // TODO review this
+    storeId: /** @type {string} */ (expense.store.id),
     cardId: null,
     isInstallment: expense.isInstallment,
     partsCount: expense.partsCount,

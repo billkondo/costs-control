@@ -95,6 +95,7 @@ const mapUserExpenseDocToUserExpense = (doc) => {
     id: doc.id,
     userId: data.userId,
     buyDate: data.buyDate.toDate(),
+    // @ts-ignore
     store: null,
     card: null,
   };

@@ -30,6 +30,6 @@ type UserExpenseDBData = {
   paymentType: PaymentType;
   isInstallment: boolean;
   partsCount: number;
-  cardId: string;
+  cardId: string | null;
   paymentDates: string[];
 };

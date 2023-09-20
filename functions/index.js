@@ -184,7 +184,7 @@ const updateMonthlyExpenses = async (userExpenseDBData, increment = true) => {
 
     await MonthlyExpenses.save(monthlyExpense);
   } else {
-    const card = await getCardById(cardId);
+    const card = await getCardById(/** @type {string} */ (cardId));
     const { lastBuyDay } = card;
     const {
       buyDate: buyTimestamp,
@@ -254,6 +254,7 @@ exports.addExpense = onCall(
   }
 );
 
+// @ts-ignore
 exports.onUserExpenseCreated = onDocumentCreated(
   'expenses/{docId}',
   /**
@@ -266,6 +267,7 @@ exports.onUserExpenseCreated = onDocumentCreated(
   }
 );
 
+// @ts-ignore
 exports.onUserExpenseDeleted = onDocumentDeleted(
   'expenses/{docId}',
   /**
@@ -278,6 +280,7 @@ exports.onUserExpenseDeleted = onDocumentDeleted(
   }
 );
 
+// @ts-ignore
 exports.onUserExpenseUpdated = onDocumentUpdated(
   'expenses/{docId}',
   /**
@@ -292,6 +295,7 @@ exports.onUserExpenseUpdated = onDocumentUpdated(
   }
 );
 
+// @ts-ignore
 exports.onUserSubscriptionCreated = onDocumentCreated(
   'subscriptions/{docId}',
   /**
@@ -320,6 +324,7 @@ exports.onUserSubscriptionCreated = onDocumentCreated(
   }
 );
 
+// @ts-ignore
 exports.onUserSubscriptionDeleted = onDocumentDeleted(
   'subscriptions/{docId}',
   /**
@@ -348,6 +353,7 @@ exports.onUserSubscriptionDeleted = onDocumentDeleted(
   }
 );
 
+// @ts-ignore
 exports.onUserSubscriptionUpdated = onDocumentUpdated(
   'subscriptions/{docId}',
   /**

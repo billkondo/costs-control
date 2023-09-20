@@ -62,7 +62,7 @@ type UserCardDBData = UserCard;
 type Expense = {
   value: number;
   buyDate: Date;
-  store: UserStore | null;
+  store: UserStore;
   paymentType: PaymentType;
   isInstallment: boolean;
   partsCount: number;
@@ -101,7 +101,7 @@ type MonthlyExpense = {
 };
 
 type UserMonthlyExpense = {
-  id: string;
+  id: string | null;
   userId: string;
 } & MonthlyExpense;
 
@@ -132,7 +132,7 @@ type FixedCost = {
 };
 
 type UserFixedCost = {
-  id: string;
+  id: string | null;
   userId: string;
 } & FixedCost;
 
@@ -144,7 +144,7 @@ type MonthlyFixedCost = {
 };
 
 type UserMonthlyFixedCost = {
-  id: string;
+  id: string | null;
   userId: string;
 } & MonthlyFixedCost;
 
