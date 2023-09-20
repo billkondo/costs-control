@@ -1,7 +1,7 @@
 import { Card, Grid, List, ListItem, Typography } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import FirebaseFirestore from '../firebase/firestore';
-import { AuthenticationContext } from '../providers/AuthenticationProvider';
+import useAuthentication from '../providers/useAuthentication';
 import useSubscriptions from '../providers/useSubscriptions';
 import formatSubscriptionDate from '../usecases/formatSubscriptionDate';
 import PriceText from './PriceText';
@@ -9,7 +9,7 @@ import ViewAllCurrentMonthSubscriptionsButton from './ViewAllCurrentMonthSubscri
 
 const CurrentMonthSubscriptionsList = () => {
   const { currentMonthSubscriptionsCount } = useSubscriptions();
-  const { authenticatedUserId } = useContext(AuthenticationContext);
+  const { authenticatedUserId } = useAuthentication();
 
   const [currentMonthSubscriptions, setCurrentMonthSubscriptions] = useState(
     /** @type {UserSubscription[]} */ ([])

@@ -140,8 +140,8 @@ export const CurrentMonthSubscriptionsPager = (userId) => {
 
 /**
  * @param {string} userId
- * @param {FirestoreQueryDocumentSnapshot<UserSubscription>=} start
- * @param {number=} maxSize
+ * @param {FirestoreQueryDocumentSnapshot<UserSubscription> |  null} start
+ * @param {number | null} maxSize
  */
 const getCurrentMonthSubscriptionsBaseQuery = (
   userId,

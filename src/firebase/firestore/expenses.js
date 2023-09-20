@@ -62,7 +62,7 @@ const currentMonthGetAll = async (userId) => {
 
 /**
  * @param {string} userId
- * @param {number=} maxSize
+ * @param {number | null} maxSize
  */
 const getCurrentMonthExpensesBaseQuery = (userId, maxSize = 5) => {
   const currentMonthDateString = getCurrentMonthDateString();

@@ -1,20 +1,22 @@
 import { Grid, Typography } from '@mui/material';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   fixedCostListener,
   monthlyFixedCostsListener,
 } from '../firebase/_firestore';
 import FirebaseFirestore from '../firebase/firestore';
-import { AuthenticationContext } from '../providers/AuthenticationProvider';
+import useAuthentication from '../providers/useAuthentication';
 
 const CurrentMonthExpense = () => {
-  const { authenticatedUserId } = useContext(AuthenticationContext);
+  const { authenticatedUserId } = useAuthentication();
   const [currentMonthExpense, setCurrentMonthExpense] = useState(
-    /** @type {UserMonthlyExpense} */ (null)
+    /** @type {UserMonthlyExpense | null} */ (null)
   );
-  const [fixedCost, setFixedCost] = useState(/** @type {FixedCost} */ (null));
+  const [fixedCost, setFixedCost] = useState(
+    /** @type {FixedCost | null} */ (null)
+  );
   const [monthlyFixedCost, setMonthlyFixedCost] = useState(
-    /** @type {UserMonthlyFixedCost} */ (null)
+    /** @type {UserMonthlyFixedCost | null} */ (null)
   );
 
   const expense = useMemo(() => {

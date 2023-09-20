@@ -10,12 +10,14 @@ import useAuthentication from './useAuthentication';
  * @property {UserStore[]} stores
  */
 
-/** @type {import("react").Context<StoresState>} */
-export const StoresContext = createContext({
+/** @type {StoresState} */
+const defaultStoresState = {
+  stores: [],
   addStore: async () => {},
   loadStores: async () => {},
-  stores: [],
-});
+};
+
+export const StoresContext = createContext(defaultStoresState);
 
 /**
  * @param {import('react').PropsWithChildren} props

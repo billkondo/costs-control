@@ -11,16 +11,16 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CurrentMonthSubscriptionsPager } from '../firebase/firestore/Subscriptions';
-import { AuthenticationContext } from '../providers/AuthenticationProvider';
+import useAuthentication from '../providers/useAuthentication';
 import useSubscriptions from '../providers/useSubscriptions';
 import formatSubscriptionDate from '../usecases/formatSubscriptionDate';
 import PriceText from './PriceText';
 
 const CurrentMonthSubscriptionsTable = () => {
   const { currentMonthSubscriptionsCount: total } = useSubscriptions();
-  const { authenticatedUserId } = useContext(AuthenticationContext);
+  const { authenticatedUserId } = useAuthentication();
 
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState(/** @type {UserSubscription[]} */ ([]));

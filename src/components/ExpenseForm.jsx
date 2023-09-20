@@ -19,25 +19,27 @@ const ExpenseForm = (props) => {
   const { onExpenseSaved } = props;
   const { addExpense } = useContext(ExpensesContext);
 
-  const [value, setValue] = useState(/** @type {number} */ (null));
-  const [buyDate, setBuyDate] = useState(/** @type {Date} */ (null));
+  const [value, setValue] = useState(/** @type {number | null} */ (null));
+  const [buyDate, setBuyDate] = useState(/** @type {Date | null} */ (null));
   const [paymentType, setPaymentType] = useState(
     /** @type {PaymentType} */ ('')
   );
   const [installment, setInstallment] = useState(false);
-  const [partsCount, setPartsCount] = useState(/** @type {number} */ (null));
-  const [card, setCard] = useState(/** @type {UserCard} */ (null));
-  const [store, setStore] = useState(/** @type {UserStore} */ (null));
+  const [partsCount, setPartsCount] = useState(
+    /** @type {number | null} */ (null)
+  );
+  const [card, setCard] = useState(/** @type {UserCard | null} */ (null));
+  const [store, setStore] = useState(/** @type {UserStore | null} */ (null));
 
   const onSubmit = async () => {
     /** @type {Expense} */
     const expense = {
-      value,
-      buyDate,
-      store,
-      card,
+      value: /** @type {number} */ (value),
+      buyDate: /** @type {Date} */ (buyDate),
+      store: /** @type {UserStore} */ (store),
+      card: /** @type {UserCard} */ (card),
       isInstallment: installment,
-      partsCount,
+      partsCount: /** @type {number} */ (partsCount),
       paymentType,
     };
 

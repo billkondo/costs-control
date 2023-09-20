@@ -1,14 +1,14 @@
 import { Card, Grid, List, ListItem, Typography } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import FirebaseFirestore from '../firebase/firestore';
-import { AuthenticationContext } from '../providers/AuthenticationProvider';
+import useAuthentication from '../providers/useAuthentication';
 import useExpenses from '../providers/useExpenses';
 import padStart from '../utils/padStart';
 import ViewAllCurrentMonthExpensesButton from './ViewAllCurrentMonthExpensesButton';
 
 const CurrentMonthExpensesList = () => {
   const { currentMonthExpensesCount } = useExpenses();
-  const { authenticatedUserId } = useContext(AuthenticationContext);
+  const { authenticatedUserId } = useAuthentication();
 
   const [expenses, setExpenses] = useState(/** @type {UserExpense[]} */ ([]));
 

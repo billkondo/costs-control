@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 /**
  * @param {{
  *  fullWidth?: boolean,
- *  datePickerProps: import('@mui/x-date-pickers').DatePickerProps
+ *  datePickerProps: import('@mui/x-date-pickers').DatePickerProps<import('dayjs').Dayjs>
  * }} props
  */
 const FilledDatePicker = (props) => {

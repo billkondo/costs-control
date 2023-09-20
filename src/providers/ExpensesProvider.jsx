@@ -1,14 +1,8 @@
 import PropTypes from 'prop-types';
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 import FirebaseFirestore from '../firebase/firestore';
 import FirebaseFunctions from '../firebase/functions';
-import { AuthenticationContext } from './AuthenticationProvider';
+import useAuthentication from './useAuthentication';
 
 /**
  * @typedef {object} ExpensesState
@@ -19,21 +13,23 @@ import { AuthenticationContext } from './AuthenticationProvider';
  * @property {() => Promise<void>} loadCurrentMonthExpenses
  */
 
-/** @type {import("react").Context<ExpensesState>} */
-export const ExpensesContext = createContext({
+/** @type {ExpensesState} */
+const defaultExpensesState = {
   addExpense: async () => {},
   subscriptions: [],
   currentMonthExpensesCount: 0,
   currentMonthExpenses: [],
   loadCurrentMonthExpenses: async () => {},
-});
+};
+
+export const ExpensesContext = createContext(defaultExpensesState);
 
 /**
  * @param {import('react').PropsWithChildren} props
  */
 const ExpensesProvider = (props) => {
   const { children } = props;
-  const { authenticatedUserId } = useContext(AuthenticationContext);
+  const { authenticatedUserId } = useAuthentication();
 
   const [subscriptions, setSubscriptions] = useState(
     /** @type {UserSubscription[]} /*/ ([])

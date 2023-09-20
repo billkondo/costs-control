@@ -36,7 +36,7 @@ type Store = {
 };
 
 type UserStore = {
-  id: string;
+  id: string | null;
   userId: string;
 } & Store;
 
@@ -51,7 +51,7 @@ type Card = {
 };
 
 type UserCard = {
-  id: string;
+  id: string | null;
   userId: string;
 } & Card;
 
@@ -62,15 +62,15 @@ type UserCardDBData = UserCard;
 type Expense = {
   value: number;
   buyDate: Date;
-  store: UserStore;
+  store: UserStore | null;
   paymentType: PaymentType;
   isInstallment: boolean;
   partsCount: number;
-  card: UserCard;
+  card: UserCard | null;
 };
 
 type UserExpense = {
-  id: string;
+  id: string | null;
   userId: string;
 } & Expense;
 
@@ -119,7 +119,7 @@ type Subscription = {
 };
 
 type UserSubscription = {
-  id: string;
+  id: string | null;
   userId: string;
 } & Subscription;
 

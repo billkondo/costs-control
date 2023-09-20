@@ -9,7 +9,7 @@ import FilledSelector from './common/FilledSelector';
  * @property {string} baseId
  * @property {string} label
  * @property {(card: UserCard) => void} onCardSelect
- * @property {UserCard} card
+ * @property {UserCard | null} card
  */
 
 /**
@@ -29,7 +29,9 @@ const CardSelector = (props) => {
   const onChange = (cardId) => {
     const selectedCard = cards.find((card) => card.id === cardId);
 
-    onCardSelect(selectedCard);
+    if (selectedCard) {
+      onCardSelect(selectedCard);
+    }
   };
 
   return (

@@ -68,7 +68,40 @@ const StoresList = (props) => {
   } = useStoresTable();
   const hasAnyStore = total > 0;
 
-  const ItemComponent = selectable ? ListItemButton : ListItem;
+  /**
+   * @param {UserStore} item
+   * @returns {React.ReactElement}
+   */
+  const renderItem = (item) => {
+    const { id, name } = item;
+
+    const props = {
+      key: id,
+      onClick: () => {
+        if (!selectable) {
+          return;
+        }
+
+        if (onSelect) {
+          onSelect(item);
+        }
+      },
+    };
+
+    const common = (
+      <Grid container>
+        <Grid item>
+          <Typography variant="body1">{name}</Typography>
+        </Grid>
+      </Grid>
+    );
+
+    if (selectable) {
+      return <ListItemButton {...props}>{common}</ListItemButton>;
+    }
+
+    return <ListItem {...props}>{common}</ListItem>;
+  };
 
   return (
     <List sx={{ border: '1px solid rgba(0, 0, 0, 0.12)', borderRadius: 1 }}>
@@ -94,26 +127,7 @@ const StoresList = (props) => {
             </Grid>
           </ListItem>
           {items.map((item) => {
-            const { id, name } = item;
-
-            return (
-              <ItemComponent
-                key={id}
-                onClick={() => {
-                  if (!selectable) {
-                    return;
-                  }
-
-                  onSelect(item);
-                }}
-              >
-                <Grid container>
-                  <Grid item>
-                    <Typography variant="body1">{name}</Typography>
-                  </Grid>
-                </Grid>
-              </ItemComponent>
-            );
+            return renderItem(item);
           })}
           <ListItem>
             <TableControl

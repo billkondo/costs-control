@@ -12,7 +12,9 @@ import App from './App.jsx';
 
 import './main.css';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const root = /** @type {HTMLElement} */ (document.getElementById('root'));
+
+ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <CssBaseline />
     <App />

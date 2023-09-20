@@ -10,12 +10,14 @@ import useAuthentication from './useAuthentication';
  * @property {() => Promise<void>} loadCards
  */
 
-/** @type {import('react').Context<CardsState>} */
-export const CardsContext = createContext({
+/** @type {CardsState} */
+const defaultCardsState = {
   cards: [],
   addCard: async () => {},
   loadCards: async () => {},
-});
+};
+
+export const CardsContext = createContext(defaultCardsState);
 
 /**
  * @param {import('react').PropsWithChildren} props

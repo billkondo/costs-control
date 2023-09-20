@@ -16,17 +16,19 @@ const CardsForm = (props) => {
   const { onSubmitted } = props;
   const { addCard } = useCards();
   const [lastFourDigits, setLastFourDigits] = useState(
-    /** @type {number} */ (null)
+    /** @type {number | null} */ (null)
   );
   const [name, setName] = useState('');
-  const [lastBuyDay, setLastBuyDay] = useState(/** @type {number} */ (null));
+  const [lastBuyDay, setLastBuyDay] = useState(
+    /** @type {number | null} */ (null)
+  );
 
   const onSubmit = async () => {
     /** @type {Card} */
     const card = {
       name,
-      lastBuyDay,
-      lastFourDigits,
+      lastBuyDay: /** @type {number} */ (lastBuyDay),
+      lastFourDigits: /** @type {number} */ (lastFourDigits),
     };
 
     await addCard(card);

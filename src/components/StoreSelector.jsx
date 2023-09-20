@@ -6,7 +6,7 @@ import FilledInput from './common/FilledInput';
 
 /**
  * @typedef {object} StoreSelectorProps
- * @property {UserStore} store
+ * @property {UserStore | null} store
  * @property {(store: UserStore) => void} onSelect
  */
 

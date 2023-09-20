@@ -25,10 +25,10 @@ const SubscriptionForm = (props) => {
   const { onSubscriptionSaved } = props;
   const { addSubscription } = useSubscriptions();
 
-  const [value, setValue] = useState(/** @type {number} */ (null));
+  const [value, setValue] = useState(/** @type {number | null} */ (null));
   const [type, setType] = useState(/** @type {SubscriptionType} */ ('MONTHLY'));
-  const [day, setDay] = useState(/** @type {number} */ (null));
-  const [month, setMonth] = useState(/** @type {number} */ (null));
+  const [day, setDay] = useState(/** @type {number | null} */ (null));
+  const [month, setMonth] = useState(/** @type {number | null} */ (null));
 
   /**
    * @param {SubscriptionType} newType
@@ -44,10 +44,10 @@ const SubscriptionForm = (props) => {
   const onSubmit = async () => {
     /** @type {Subscription} */
     const subscription = {
-      value: isNaN(value) ? null : value,
+      value: /** @type {number} */ (value),
       type,
-      day: isNaN(day) ? null : day,
-      month: isNaN(month) ? null : month,
+      day: /** @type {number} */ (day),
+      month: /** @type {number} */ (month),
     };
 
     await addSubscription(subscription);
