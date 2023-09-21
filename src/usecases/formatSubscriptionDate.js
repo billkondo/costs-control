@@ -1,3 +1,4 @@
+import getCurrentMonth from '../utils/date/getCurrentMonth';
 import padStart from '../utils/padStart';
 
 /**
@@ -5,8 +6,7 @@ import padStart from '../utils/padStart';
  */
 const formatSubscriptionDate = (subscription) => {
   const { day } = subscription;
-  const now = new Date();
-  const currentMonth = now.getMonth();
+  const currentMonth = getCurrentMonth() + 1;
 
   return `${padStart(day)} / ${padStart(currentMonth)}`;
 };
