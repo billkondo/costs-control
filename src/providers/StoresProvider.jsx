@@ -56,7 +56,7 @@ const StoresProvider = (props) => {
   const updateStoresWithNewStore = async (store) => {
     await loadStores();
 
-    setStores((stores) => stores.concat(store));
+    setStores((stores) => [store].concat(stores));
   };
 
   return (

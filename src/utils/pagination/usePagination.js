@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
  * @template T
  * @param {Params<T>} params
  */
-const useTable = (
+const usePagination = (
   params = {
     pageSize: 5,
     getItems: async () => [],
@@ -51,7 +51,8 @@ const useTable = (
     startItem,
     endItem,
     inLastPage,
+    total,
   };
 };
 
-export default useTable;
+export default usePagination;

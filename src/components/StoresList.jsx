@@ -6,43 +6,11 @@ import {
   Typography,
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import { useEffect, useMemo, useState } from 'react';
-import Pager from '../firebase/firestore/Pager';
-import {
-  getUserStoresBaseQuery,
-  getUserStoresTotal,
-} from '../firebase/firestore/stores';
-import useAuthentication from '../providers/useAuthentication';
+import { useEffect } from 'react';
+import useStores from '../providers/useStores';
+import useMemoryPagination from '../utils/pagination/useMemoryPagination';
 import AddStoreButton from './AddStoreButton';
 import TableControl from './common/Table/TableControl';
-import useTable from './common/Table/useTable';
-
-const useStoresTable = () => {
-  const { authenticatedUserId } = useAuthentication();
-  const [total, setTotal] = useState(0);
-
-  const pager = useMemo(() => {
-    return Pager(authenticatedUserId, getUserStoresBaseQuery);
-  }, [authenticatedUserId]);
-
-  useEffect(() => {
-    const load = async () => {
-      const newTotal = await getUserStoresTotal(authenticatedUserId);
-
-      setTotal(newTotal);
-    };
-
-    load();
-  }, [authenticatedUserId]);
-
-  return {
-    ...useTable({
-      total,
-      getItems: pager,
-    }),
-    total,
-  };
-};
 
 /**
  * @typedef {object} StoresListProps
@@ -56,6 +24,7 @@ const useStoresTable = () => {
 
 const StoresList = (props) => {
   const { selectable, onSelect } = props;
+  const { stores, loadStores } = useStores();
   const {
     startItem,
     endItem,
@@ -65,8 +34,14 @@ const StoresList = (props) => {
     inLastPage,
     items,
     total,
-  } = useStoresTable();
+  } = useMemoryPagination({
+    items: stores,
+  });
   const hasAnyStore = total > 0;
+
+  useEffect(() => {
+    loadStores();
+  }, [loadStores]);
 
   /**
    * @param {UserStore} item
