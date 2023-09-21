@@ -2,6 +2,10 @@
 
 type Override<What, With> = Omit<What, keyof With> & With;
 
+type Without<T, K> = {
+  [L in Exclude<keyof T, K>]: T[L];
+};
+
 // QueryParams
 
 type QueryParams<T> = {
@@ -78,20 +82,20 @@ type Expense = {
 type UserExpense = {
   id: string;
   userId: string;
+  paymentDates: string[];
 } & Expense;
 
-type UserExpenseDBData = {
-  id: string;
-  userId: string;
-  value: number;
-  buyDate: import('firebase/firestore').Timestamp;
+type IncompleteUserExpense = Omit<UserExpense, 'store' | 'card'> & {
   storeId: string;
-  paymentType: PaymentType;
-  isInstallment: boolean;
-  partsCount: number;
-  cardId: string;
-  paymentDates: string[];
+  cardId: string | null;
 };
+
+type UserExpenseDBData = Override<
+  IncompleteUserExpense,
+  {
+    buyDate: import('firebase/firestore').Timestamp;
+  }
+>;
 
 type AddExpenseRequest = Override<
   Expense,

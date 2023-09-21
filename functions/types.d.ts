@@ -21,15 +21,9 @@ type FunctionCall<T> = import('firebase-functions/v2/https').CallableRequest<T>;
 
 // Expenses
 
-type UserExpenseDBData = {
-  id: string;
-  userId: string;
-  value: number;
-  buyDate: import('firebase-admin/firestore').Timestamp;
-  storeId: string;
-  paymentType: PaymentType;
-  isInstallment: boolean;
-  partsCount: number;
-  cardId: string | null;
-  paymentDates: string[];
-};
+type ServerUserExpenseDBData = Override<
+  UserExpenseDBData,
+  {
+    buyDate: import('firebase-admin/firestore').Timestamp;
+  }
+>;

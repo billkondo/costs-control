@@ -1,15 +1,10 @@
 import { Grid, List, ListItem, Typography } from '@mui/material';
-import { useEffect } from 'react';
 import useCards from '../providers/useCards';
 import AddCardButton from './AddCardButton';
 
 const CardsList = () => {
-  const { cards, loadCards } = useCards();
+  const { cards } = useCards();
   const hasAnyCard = cards.length > 0;
-
-  useEffect(() => {
-    loadCards();
-  }, [loadCards]);
 
   return (
     <List sx={{ border: '1px solid rgba(0, 0, 0, 0.12)', borderRadius: 1 }}>

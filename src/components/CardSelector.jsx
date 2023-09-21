@@ -1,6 +1,5 @@
 import { Grid } from '@mui/material';
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
 import useCards from '../providers/useCards';
 import FilledSelector from './common/FilledSelector';
 
@@ -17,11 +16,9 @@ import FilledSelector from './common/FilledSelector';
  */
 const CardSelector = (props) => {
   const { baseId, label, onCardSelect, card } = props;
-  const { cards, loadCards } = useCards();
+  const { cards } = useCards();
 
-  useEffect(() => {
-    loadCards();
-  }, [loadCards]);
+  const selectedCardId = card?.id ?? '';
 
   /**
    * @param {string} cardId
@@ -50,7 +47,7 @@ const CardSelector = (props) => {
           })}
           label={label}
           onChange={onChange}
-          value={card?.id}
+          value={selectedCardId}
         />
       </Grid>
     </Grid>

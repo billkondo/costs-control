@@ -1,19 +1,21 @@
 import PropTypes from 'prop-types';
-import { createContext, useCallback, useState } from 'react';
+import { createContext, useCallback, useMemo, useState } from 'react';
 import { getUserStores } from '../firebase/firestore/stores';
 import FirebaseFunctions from '../firebase/functions';
 import useAuthentication from './useAuthentication';
 
 /**
  * @typedef {object} StoresState
+ * @property {UserStore[]} stores
+ * @property {{ [storeId: string]: UserStore }} storesById
  * @property {(store:Store) => Promise<void>} addStore
  * @property {() => Promise<void>} loadStores
- * @property {UserStore[]} stores
  */
 
 /** @type {StoresState} */
 const defaultStoresState = {
   stores: [],
+  storesById: {},
   addStore: async () => {},
   loadStores: async () => {},
 };
@@ -28,6 +30,19 @@ const StoresProvider = (props) => {
   const { authenticatedUserId } = useAuthentication();
   const [loaded, setLoaded] = useState(false);
   const [stores, setStores] = useState(/** @type {UserStore[]} */ ([]));
+
+  const storesById = useMemo(() => {
+    /** @type {{ [storeId: string]: UserStore }} */
+    const storesById = {};
+
+    for (const store of stores) {
+      const { id } = store;
+
+      storesById[id] = store;
+    }
+
+    return storesById;
+  }, [stores]);
 
   const loadStores = useCallback(async () => {
     if (loaded) {
@@ -60,7 +75,9 @@ const StoresProvider = (props) => {
   };
 
   return (
-    <StoresContext.Provider value={{ addStore, loadStores, stores }}>
+    <StoresContext.Provider
+      value={{ addStore, storesById, loadStores, stores }}
+    >
       {children}
     </StoresContext.Provider>
   );

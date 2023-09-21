@@ -79,7 +79,7 @@ const add = async (userId, expense) => {
   const { card } = expense;
   const doc = collection.doc();
 
-  /** @type {UserExpenseDBData} */
+  /** @type {ServerUserExpenseDBData} */
   const expenseDBData = {
     id: doc.id,
     userId: userId,

@@ -17,14 +17,14 @@ const expensesCollection = collection(db, 'expenses');
 
 /**
  * @param {string} userId
- * @param {(currentMonthExpenses: UserExpense[]) => void} onCurrentMonthExpensesChanged
+ * @param {(currentMonthExpenses: IncompleteUserExpense[]) => void} onCurrentMonthExpensesChanged
  */
 const currentMonthListener = (userId, onCurrentMonthExpensesChanged) => {
   const expensesQuery = getCurrentMonthExpensesBaseQuery(userId);
 
   const unsubscribe = onSnapshot(expensesQuery, (querySnapshot) => {
     const currentMonthExpenses = querySnapshot.docs.map(
-      mapUserExpenseDocToUserExpense
+      mapUserExpenseDocToIncompleteUserExpense
     );
 
     onCurrentMonthExpensesChanged(currentMonthExpenses);
@@ -46,12 +46,12 @@ const currentMonthGetCount = async (userId) => {
 
 /**
  * @param {string} userId
- * @returns {Promise<UserExpense[]>}
+ * @returns {Promise<IncompleteUserExpense[]>}
  */
 const currentMonthGetAll = async (userId) => {
   const query = getCurrentMonthExpensesBaseQuery(userId, null);
   const snapshot = await getDocs(query);
-  const expenses = snapshot.docs.map(mapUserExpenseDocToUserExpense);
+  const expenses = snapshot.docs.map(mapUserExpenseDocToIncompleteUserExpense);
 
   return expenses;
 };
@@ -80,23 +80,20 @@ const getCurrentMonthExpensesBaseQuery = (userId, maxSize = 5) => {
 
 /**
  * @param {FirestoreQueryDocumentSnapshot<UserExpenseDBData>} doc
- * @returns {UserExpense}
+ * @returns {IncompleteUserExpense}
  */
-const mapUserExpenseDocToUserExpense = (doc) => {
+const mapUserExpenseDocToIncompleteUserExpense = (doc) => {
   const data = doc.data();
 
-  /** @type {UserExpense} */
-  const userExpense = {
+  /** @type {IncompleteUserExpense} */
+  const incompleteUserExpense = {
     ...data,
     id: doc.id,
     userId: data.userId,
     buyDate: data.buyDate.toDate(),
-    // @ts-ignore
-    store: null,
-    card: null,
   };
 
-  return userExpense;
+  return incompleteUserExpense;
 };
 
 export default {

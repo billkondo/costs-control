@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { createContext, useCallback, useEffect, useState } from 'react';
 import FirebaseFirestore from '../firebase/firestore';
 import FirebaseFunctions from '../firebase/functions';
+import useIncompleteExpenses from '../usecases/useIncompleteExpenses';
 import useAuthentication from './useAuthentication';
 
 /**
@@ -49,9 +50,11 @@ const ExpensesProvider = (props) => {
     loadCurrentMonthExpensesCount();
   }, [loadCurrentMonthExpensesCount]);
 
-  const [currentMonthExpenses, setCurrentMonthExpenses] = useState(
-    /** @type {UserExpense[]} */ ([])
-  );
+  const {
+    expenses: currentMonthExpenses,
+    setIncompleteExpenses: setCurrentMonthExpenses,
+  } = useIncompleteExpenses();
+
   const [loaded, setLoaded] = useState(false);
 
   const loadCurrentMonthExpenses = useCallback(async () => {
@@ -65,7 +68,7 @@ const ExpensesProvider = (props) => {
 
     setLoaded(true);
     setCurrentMonthExpenses(expenses);
-  }, [authenticatedUserId, loaded]);
+  }, [authenticatedUserId, loaded, setCurrentMonthExpenses]);
 
   useEffect(() => {
     const loadSubscriptions = async () => {
