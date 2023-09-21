@@ -1,7 +1,6 @@
 import {
   and,
   collection,
-  doc,
   getCountFromServer,
   getDocs,
   limit,
@@ -9,42 +8,21 @@ import {
   or,
   orderBy,
   query,
-  setDoc,
   startAfter,
   where,
 } from 'firebase/firestore';
 import { db } from '..';
 
-/**
- * @returns {FirestoreCollectionReference<UserSubscriptionDBData>}
- */
-const getSubscriptionsCollection = () => {
-  // @ts-ignore
-  return collection(db, 'subscriptions');
-};
-
-/**
- * @param {UserSubscription} userSubscription
- */
-const add = async (userSubscription) => {
-  const userSubscriptionRef = doc(getSubscriptionsCollection());
-
-  userSubscription.id = userSubscriptionRef.id;
-
-  /** @type {UserSubscriptionDBData} */
-  const userSubscriptionDBData = {
-    ...userSubscription,
-  };
-
-  await setDoc(userSubscriptionRef, userSubscriptionDBData);
-};
+/** @type {FirestoreCollectionReference<UserSubscriptionDBData>} */
+// @ts-ignore
+const subscriptionsCollection = collection(db, 'subscriptions');
 
 /**
  * @param {string} userId
  */
 const getAll = async (userId) => {
   const userSubscriptionsQuery = query(
-    getSubscriptionsCollection(),
+    subscriptionsCollection,
     where('userId', '==', userId)
   );
 
@@ -74,10 +52,7 @@ const getAll = async (userId) => {
  * @param {(subscriptions: UserSubscription[]) => void} onCurrentMonthSubscriptionsChanged
  * @returns {import('firebase/firestore').Unsubscribe}
  */
-export const currentMonthListener = (
-  userId,
-  onCurrentMonthSubscriptionsChanged
-) => {
+const currentMonthListener = (userId, onCurrentMonthSubscriptionsChanged) => {
   const query = getCurrentMonthSubscriptionsBaseQuery(userId);
 
   const unsubscribe = onSnapshot(query, (querySnapshot) => {
@@ -97,7 +72,7 @@ export const currentMonthListener = (
  * @param {string} userId
  * @returns {Promise<number>}
  */
-export const currentMonthCount = async (userId) => {
+const currentMonthCount = async (userId) => {
   const query = getCurrentMonthSubscriptionsAllRecordsQuery(userId);
   const snapshot = await getCountFromServer(query);
 
@@ -163,7 +138,7 @@ const getCurrentMonthSubscriptionsBaseQuery = (
   }
 
   return query(
-    getSubscriptionsCollection(),
+    subscriptionsCollection,
     and(
       where('userId', '==', userId),
       or(where('month', '==', currentMonth), where('month', '==', null))
@@ -173,7 +148,6 @@ const getCurrentMonthSubscriptionsBaseQuery = (
 };
 
 export default {
-  add,
   getAll,
   currentMonth: {
     listener: currentMonthListener,

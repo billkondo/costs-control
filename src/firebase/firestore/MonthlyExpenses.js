@@ -1,13 +1,9 @@
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '..';
 
-/**
- * @returns {FirestoreCollectionReference<UserMonthlyExpenseDBData>}
- */
-const getMonthlyExpenses = () => {
-  // @ts-ignore
-  return collection(db, 'monthlyExpenses');
-};
+/** @type {FirestoreCollectionReference<UserMonthlyExpenseDBData>} */
+// @ts-ignore
+const monthlyExpensesCollection = collection(db, 'monthlyExpenses');
 
 /**
  * @param {string} userId
@@ -20,7 +16,7 @@ const listener = (userId, onCurrentMonthExpenseChanged) => {
   const currentYear = now.getUTCFullYear();
 
   const currentMonthExpenseQuery = query(
-    getMonthlyExpenses(),
+    monthlyExpensesCollection,
     where('month', '==', currentMonth),
     where('year', '==', currentYear),
     where('userId', '==', userId)

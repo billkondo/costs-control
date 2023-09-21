@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { createContext, useCallback, useEffect, useState } from 'react';
 import FirebaseFirestore from '../firebase/firestore';
+import FirebaseFunctions from '../firebase/functions';
 import useAuthentication from './useAuthentication';
 
 /**
@@ -42,14 +43,7 @@ const SubscriptionsProvider = (props) => {
    * @param {Subscription} subscription
    */
   const addSubscription = async (subscription) => {
-    /** @type {UserSubscription} */
-    const userSubscription = {
-      ...subscription,
-      userId: authenticatedUserId,
-      id: null,
-    };
-
-    await FirebaseFirestore.Subscriptions.add(userSubscription);
+    await FirebaseFunctions.subscriptions.add(subscription);
     await loadCurrentMonthSubscriptionsLength();
   };
 

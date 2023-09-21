@@ -2,11 +2,7 @@ import { httpsCallable } from 'firebase/functions';
 import { functions } from '..';
 
 /** @type {FunctionCall<AddCardRequest, AddCardResponse>} */
-let addCardFunction;
-
-const init = () => {
-  addCardFunction = httpsCallable(functions, 'addCard');
-};
+const addCardFunction = httpsCallable(functions, 'addCard');
 
 /**
  * @param {Card} card
@@ -21,5 +17,4 @@ const add = async (card) => {
 
 export default {
   add,
-  init,
 };

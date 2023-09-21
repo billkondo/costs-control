@@ -2,11 +2,7 @@ import { httpsCallable } from 'firebase/functions';
 import { functions } from '..';
 
 /** @type {FunctionCall<AddExpenseRequest, undefined>} */
-let addExpenseFunction;
-
-const init = () => {
-  addExpenseFunction = httpsCallable(functions, 'addExpense');
-};
+const addExpenseFunction = httpsCallable(functions, 'addExpense');
 
 /**
  * @param {Expense} expense
@@ -21,5 +17,4 @@ const add = async (expense) => {
 
 export default {
   add,
-  init,
 };

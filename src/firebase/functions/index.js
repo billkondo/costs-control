@@ -1,16 +1,13 @@
 import cards from './cards';
 import expenses from './expenses';
 import stores from './stores';
+import subscriptions from './subscriptions';
 
 const FirebaseFunctions = {
   cards,
   expenses,
   stores,
-  init: () => {
-    cards.init();
-    expenses.init();
-    stores.init();
-  },
+  subscriptions,
 };
 
 export default FirebaseFunctions;

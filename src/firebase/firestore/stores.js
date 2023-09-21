@@ -8,13 +8,9 @@ import {
 import { db } from '..';
 import getConstraints from './getConstraints';
 
-/**
- * @returns {FirestoreCollectionReference<UserStoreDBData>}
- */
-const getStoresCollection = () => {
-  // @ts-ignore
-  return collection(db, 'stores');
-};
+/** @type {FirestoreCollectionReference<UserStoreDBData>} */
+// @ts-ignore
+const storesCollection = collection(db, 'stores');
 
 /**
  * @param {string} userId
@@ -51,9 +47,5 @@ export const getUserStoresBaseQuery = (params) => {
 
   const constraints = getConstraints(params);
 
-  return query(
-    getStoresCollection(),
-    where('userId', '==', userId),
-    ...constraints
-  );
+  return query(storesCollection, where('userId', '==', userId), ...constraints);
 };

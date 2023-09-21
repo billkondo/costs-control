@@ -125,8 +125,11 @@ type Subscription = {
 };
 
 type UserSubscription = {
-  id: string | null;
+  id: string;
   userId: string;
 } & Subscription;
 
 type UserSubscriptionDBData = UserSubscription;
+
+type AddSubscriptionRequest = Subscription;
+type AddSubscriptionResponse = UserSubscription;

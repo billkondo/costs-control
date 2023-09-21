@@ -2,11 +2,7 @@ import { httpsCallable } from 'firebase/functions';
 import { functions } from '..';
 
 /** @type {FunctionCall<AddStoreRequest, AddStoreResponse>} */
-let addStoreFunction;
-
-const init = () => {
-  addStoreFunction = httpsCallable(functions, 'addStore');
-};
+const addStoreFunction = httpsCallable(functions, 'addStore');
 
 /**
  * @param {Store} store
@@ -21,5 +17,4 @@ const add = async (store) => {
 
 export default {
   add,
-  init,
 };

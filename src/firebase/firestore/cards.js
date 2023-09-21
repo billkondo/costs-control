@@ -1,23 +1,16 @@
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '..';
 
-/**
- * @returns {FirestoreCollectionReference<UserCardDBData>}
- */
-const getCardsCollection = () => {
-  // @ts-ignore
-  return collection(db, 'cards');
-};
+/** @type {FirestoreCollectionReference<UserCardDBData>} */
+// @ts-ignore
+const cardsCollection = collection(db, 'cards');
 
 /**
  * @param {string} userId
  * @returns {Promise<UserCard[]>}
  */
 const getAll = async (userId) => {
-  const userCardsQuery = query(
-    getCardsCollection(),
-    where('userId', '==', userId)
-  );
+  const userCardsQuery = query(cardsCollection, where('userId', '==', userId));
 
   const snapshot = await getDocs(userCardsQuery);
 

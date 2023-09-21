@@ -11,13 +11,9 @@ import {
 import { db } from '..';
 import getCurrentMonthDateString from '../../utils/date/getCurrentMonthDateString';
 
-/**
- * @returns {FirestoreCollectionReference<UserExpenseDBData>}
- */
-const getExpensesCollection = () => {
-  // @ts-ignore
-  return collection(db, 'expenses');
-};
+/** @type {FirestoreCollectionReference<UserExpenseDBData>} */
+// @ts-ignore
+const expensesCollection = collection(db, 'expenses');
 
 /**
  * @param {string} userId
@@ -75,7 +71,7 @@ const getCurrentMonthExpensesBaseQuery = (userId, maxSize = 5) => {
   }
 
   return query(
-    getExpensesCollection(),
+    expensesCollection,
     where('paymentDates', 'array-contains', currentMonthDateString),
     where('userId', '==', userId),
     ...constraints

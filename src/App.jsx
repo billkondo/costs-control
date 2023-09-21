@@ -1,12 +1,9 @@
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { useEffect, useState } from 'react';
 import { Route, Switch } from 'wouter';
 import HeaderPage from './components/HeaderPage';
 import OnlyAuthenticated from './components/OnlyAuthenticated';
 import UserLoginForm from './components/UserLoginForm';
-import { init } from './firebase';
-import FirebaseFunctions from './firebase/functions';
 import CardsPage from './pages/CardsPage';
 import MainPage from './pages/MainPage';
 import StoresPage from './pages/StoresPage';
@@ -17,19 +14,6 @@ import StoresProvider from './providers/StoresProvider';
 import SubscriptionsProvider from './providers/SubscriptionsProvider';
 
 function App() {
-  const [initialized, setInitialized] = useState(false);
-
-  useEffect(() => {
-    init();
-    FirebaseFunctions.init();
-
-    setInitialized(true);
-  }, []);
-
-  if (!initialized) {
-    return null;
-  }
-
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <AuthenticationProvider>

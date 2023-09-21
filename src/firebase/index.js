@@ -4,29 +4,15 @@ import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import firebaseConfig from './firebaseConfig';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 
-/** @type {import('firebase/app').FirebaseApp} */
-let app;
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const functions = getFunctions(app);
 
-/** @type {import('firebase/firestore').Firestore} */
-let db;
+if (import.meta.env.MODE === 'development') {
+  connectFirestoreEmulator(db, 'localhost', 8080);
+  connectFunctionsEmulator(functions, 'localhost', 5001);
+  connectAuthEmulator(auth, 'http://localhost:9099');
+}
 
-/** @type {import('firebase/auth').Auth} */
-let auth;
-
-/** @type {import('firebase/functions').Functions} */
-let functions;
-
-const init = () => {
-  app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
-  functions = getFunctions(app);
-  auth = getAuth(app);
-
-  if (import.meta.env.MODE === 'development') {
-    connectFirestoreEmulator(db, 'localhost', 8080);
-    connectFunctionsEmulator(functions, 'localhost', 5001);
-    connectAuthEmulator(auth, 'http://localhost:9099');
-  }
-};
-
-export { init, app, db, functions, auth };
+export { app, db, functions, auth };

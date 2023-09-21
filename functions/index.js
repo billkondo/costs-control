@@ -15,6 +15,7 @@ const Expenses = require('./firestore/Expenses');
 const MonthlyExpenses = require('./firestore/MonthlyExpenses');
 const Stores = require('./firestore/Stores');
 const { onCall, HttpsError } = require('firebase-functions/v2/https');
+const Subscriptions = require('./firestore/Subscriptions');
 
 /** @type {Collection<UserMonthlyExpenseDBData>} */
 // @ts-ignore
@@ -189,6 +190,24 @@ exports.addStore = onCall(
     const userStore = await Stores.add(userId, store);
 
     return userStore;
+  }
+);
+
+exports.addSubscription = onCall(
+  /**
+   * @param {FunctionCall<AddSubscriptionRequest>} request
+   * @returns {Promise<AddSubscriptionResponse>}
+   */
+  async (request) => {
+    if (!request.auth) {
+      throw new HttpsError('unauthenticated', 'Request is not authenticated');
+    }
+
+    const subscription = request.data;
+    const userId = request.auth.uid;
+    const userSubscription = Subscriptions.add(userId, subscription);
+
+    return userSubscription;
   }
 );
 
