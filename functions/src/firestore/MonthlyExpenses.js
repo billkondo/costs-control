@@ -1,4 +1,4 @@
-const { db } = require('.');
+import { db } from '.';
 
 /** @type {Collection<UserMonthlyExpenseDBData>} */
 // @ts-ignore
@@ -54,7 +54,9 @@ const save = async (data) => {
   }
 };
 
-module.exports = {
+const MonthlyExpenses = {
   getByMonthAndYear,
   save,
 };
+
+export default MonthlyExpenses;

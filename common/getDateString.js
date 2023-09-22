@@ -1,4 +1,4 @@
-import padStart from '../padStart';
+import padStart from './padStart';
 
 /**
  * @param {number} month

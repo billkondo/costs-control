@@ -1,4 +1,4 @@
-const { db } = require('.');
+import { db } from '.';
 
 /** @type {Collection<UserCardDBData>} */
 // @ts-ignore
@@ -40,7 +40,9 @@ const getCardById = async (cardId) => {
   return card;
 };
 
-module.exports = {
+const Cards = {
   add,
   getCardById,
 };
+
+export default Cards;

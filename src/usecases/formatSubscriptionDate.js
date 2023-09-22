@@ -1,5 +1,5 @@
+import padStart from '../../common/padStart';
 import getCurrentMonth from '../utils/date/getCurrentMonth';
-import padStart from '../utils/padStart';
 
 /**
  * @param {UserSubscription} subscription

@@ -4,7 +4,11 @@
     "checkJs": true,
     "noEmit": true,
     "resolveJsonModule": true,
-    "strict": true
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["./src", "./node_modules/@types/*"]
+    }
   },
-  "include": ["."]
+  "include": ["./src", "../common"]
 }

@@ -1,4 +1,4 @@
-const { db } = require('.');
+import { db } from '.';
 
 /** @type {Collection<UserSubscriptionDBData>} */
 // @ts-ignore
@@ -28,4 +28,4 @@ const Subscriptions = {
   add,
 };
 
-module.exports = Subscriptions;
+export default Subscriptions;

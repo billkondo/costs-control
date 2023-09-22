@@ -1,10 +1,10 @@
 import { Card, Grid, List, ListItem, Typography } from '@mui/material';
 import { useEffect } from 'react';
+import padStart from '../../common/padStart';
 import FirebaseFirestore from '../firebase/firestore';
 import useAuthentication from '../providers/useAuthentication';
 import useExpenses from '../providers/useExpenses';
 import useIncompleteExpenses from '../usecases/useIncompleteExpenses';
-import padStart from '../utils/padStart';
 import ViewAllCurrentMonthExpensesButton from './ViewAllCurrentMonthExpensesButton';
 
 const CurrentMonthExpensesList = () => {

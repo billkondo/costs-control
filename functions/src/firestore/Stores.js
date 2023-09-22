@@ -1,4 +1,4 @@
-const { db } = require('.');
+import { db } from '.';
 
 /** @type {Collection<UserStoreDBData>} */
 // @ts-ignore
@@ -24,6 +24,8 @@ const add = async (userId, store) => {
   return userStoreDBData;
 };
 
-module.exports = {
+const Stores = {
   add,
 };
+
+export default Stores;

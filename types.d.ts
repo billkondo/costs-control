@@ -33,6 +33,11 @@ type FunctionCall<RequestData, ResponseData> =
 
 type PaymentType = 'DEBIT' | 'CREDIT' | 'CASH';
 
+type PaymentDate = {
+  month: number;
+  year: number;
+};
+
 // Stores
 
 type Store = {
