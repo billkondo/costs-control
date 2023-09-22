@@ -2,7 +2,7 @@
   "name": "functions",
   "scripts": {
     "build": "webpack --mode=production",
-    "build:dev": "webpack --mode=development",
+    "build:dev": "webpack --mode=development --watch",
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
