@@ -5,6 +5,7 @@ import FirebaseFirestore from '../firebase/firestore';
 import useAuthentication from '../providers/useAuthentication';
 import useExpenses from '../providers/useExpenses';
 import useIncompleteExpenses from '../usecases/useIncompleteExpenses';
+import ExpensePartChip from './ExpensePartChip';
 import ViewAllCurrentMonthExpensesButton from './ViewAllCurrentMonthExpensesButton';
 
 const CurrentMonthExpensesList = () => {
@@ -58,20 +59,16 @@ const CurrentMonthExpensesList = () => {
 
               return (
                 <ListItem key={id} divider>
-                  <Grid container spacing={1}>
-                    <Grid item>
+                  <Grid container alignItems="center" spacing={2}>
+                    <Grid item sx={{ flexGrow: 1 }}>
                       <Typography variant="body1">
                         <b>{`R$ ${value.toFixed(2)}`}</b>
                       </Typography>
                     </Grid>
-                    <Grid
-                      item
-                      style={{
-                        flexGrow: 1,
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                      }}
-                    >
+                    <Grid item>
+                      <ExpensePartChip expense={expense} />
+                    </Grid>
+                    <Grid item>
                       <Typography variant="body2">
                         {formatDate(buyDate)}
                       </Typography>

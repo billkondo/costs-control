@@ -42,6 +42,7 @@ type Payment = {
   partsCount: number;
   partsValue: number;
   paymentDates: PaymentDate[];
+  isInstallment: boolean;
 };
 
 // Stores
