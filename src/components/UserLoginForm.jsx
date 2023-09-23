@@ -1,5 +1,6 @@
-import { Button, Grid, TextField } from '@mui/material';
+import { Button, Divider, Grid, TextField, Typography } from '@mui/material';
 import { useContext } from 'react';
+import { Link } from 'wouter';
 import { AuthenticationContext } from '../providers/AuthenticationProvider';
 
 /**
@@ -35,7 +36,13 @@ const UserLoginForm = () => {
 
   return (
     <Grid container justifyContent="center">
-      <Grid item xs={12} sm={10} md={4}>
+      <Grid
+        item
+        xs={12}
+        sm={10}
+        md={4}
+        sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}
+      >
         <form
           noValidate
           onSubmit={onSubmit}
@@ -57,6 +64,13 @@ const UserLoginForm = () => {
             Submit
           </Button>
         </form>
+        <Divider />
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
+          <Typography variant="body1">{`Don't have an account?`}</Typography>
+          <Link href="signup" style={{ textDecoration: 'none' }}>
+            Sign up
+          </Link>
+        </div>
       </Grid>
     </Grid>
   );

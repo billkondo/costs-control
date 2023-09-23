@@ -29,6 +29,20 @@ type FirestoreQueryDocumentSnapshot<T> =
 type FunctionCall<RequestData, ResponseData> =
   import('firebase/functions').HttpsCallable<RequestData, ResponseData>;
 
+// User
+
+type User = {
+  name: string;
+  email: string;
+  timezone: string;
+};
+
+type UserLogin = User & {
+  password: string;
+};
+
+type AddUserRequest = UserLogin;
+
 // Payments
 
 type PaymentType = 'DEBIT' | 'CREDIT' | 'CASH';

@@ -1,7 +1,8 @@
 /// <reference path="../types.d.ts"/>
 /// <reference path="../../types.d.ts"/>
 
-import * as functions from 'firebase-functions/v2';
+import * as firebase from 'firebase-admin';
+import * as functionsV2 from 'firebase-functions/v2';
 import Subscriptions from './firestore/Subscriptions';
 import Stores from './firestore/Stores';
 import MonthlyExpenses from './firestore/MonthlyExpenses';
@@ -53,13 +54,13 @@ const updateMonthlyExpenses = async (userExpenseDBData, increment = true) => {
   }
 };
 
-exports.addExpense = functions.https.onCall(
+exports.addExpense = functionsV2.https.onCall(
   /**
    * @param {FunctionCall<AddExpenseRequest>} request
    */
   async (request) => {
     if (!request.auth) {
-      throw new functions.https.HttpsError(
+      throw new functionsV2.https.HttpsError(
         'unauthenticated',
         'Request is not authenticated'
       );
@@ -78,14 +79,14 @@ exports.addExpense = functions.https.onCall(
   }
 );
 
-exports.addCard = functions.https.onCall(
+exports.addCard = functionsV2.https.onCall(
   /**
    * @param {FunctionCall<AddCardRequest>} request
    * @returns {Promise<AddCardResponse>}
    */
   async (request) => {
     if (!request.auth) {
-      throw new functions.https.HttpsError(
+      throw new functionsV2.https.HttpsError(
         'unauthenticated',
         'Request is not authenticated'
       );
@@ -99,14 +100,14 @@ exports.addCard = functions.https.onCall(
   }
 );
 
-exports.addStore = functions.https.onCall(
+exports.addStore = functionsV2.https.onCall(
   /**
    * @param {FunctionCall<AddStoreRequest>} request
    * @returns {Promise<AddStoreResponse>}
    */
   async (request) => {
     if (!request.auth) {
-      throw new functions.https.HttpsError(
+      throw new functionsV2.https.HttpsError(
         'unauthenticated',
         'Request is not authenticated'
       );
@@ -120,14 +121,14 @@ exports.addStore = functions.https.onCall(
   }
 );
 
-exports.addSubscription = functions.https.onCall(
+exports.addSubscription = functionsV2.https.onCall(
   /**
    * @param {FunctionCall<AddSubscriptionRequest>} request
    * @returns {Promise<AddSubscriptionResponse>}
    */
   async (request) => {
     if (!request.auth) {
-      throw new functions.https.HttpsError(
+      throw new functionsV2.https.HttpsError(
         'unauthenticated',
         'Request is not authenticated'
       );
@@ -142,7 +143,7 @@ exports.addSubscription = functions.https.onCall(
 );
 
 // @ts-ignore
-exports.onUserExpenseCreated = functions.firestore.onDocumentCreated(
+exports.onUserExpenseCreated = functionsV2.firestore.onDocumentCreated(
   'expenses/{docId}',
   /**
    * @param {CreateEvent<UserExpenseDBData>} event
@@ -155,7 +156,7 @@ exports.onUserExpenseCreated = functions.firestore.onDocumentCreated(
 );
 
 // @ts-ignore
-exports.onUserExpenseDeleted = functions.firestore.onDocumentDeleted(
+exports.onUserExpenseDeleted = functionsV2.firestore.onDocumentDeleted(
   'expenses/{docId}',
   /**
    * @param {DeleteEvent<UserExpenseDBData>} event
@@ -168,7 +169,7 @@ exports.onUserExpenseDeleted = functions.firestore.onDocumentDeleted(
 );
 
 // @ts-ignore
-exports.onUserExpenseUpdated = functions.firestore.onDocumentUpdated(
+exports.onUserExpenseUpdated = functionsV2.firestore.onDocumentUpdated(
   'expenses/{docId}',
   /**
    * @param {UpdateEvent<UserExpenseDBData>} event
@@ -179,5 +180,21 @@ exports.onUserExpenseUpdated = functions.firestore.onDocumentUpdated(
 
     await updateMonthlyExpenses(beforeUserExpenseDBData, false);
     await updateMonthlyExpenses(afterUserExpenseDBData);
+  }
+);
+
+exports.addUser = functionsV2.https.onCall(
+  /**
+   * @param {FunctionCall<AddUserRequest>} request
+   */
+  async (request) => {
+    const { email, name, password, timezone } = request.data;
+
+    const user = await firebase.auth().createUser({
+      email,
+      password,
+      displayName: name,
+    });
+    await firebase.auth().setCustomUserClaims(user.uid, { timezone });
   }
 );

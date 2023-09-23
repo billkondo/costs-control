@@ -14,6 +14,8 @@ import PropTypes from 'prop-types';
  * @property {React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>} [onChange]
  * @property {boolean} [readOnly]
  * @property {React.ReactNode} [startAdornment]
+ * @property {boolean} [password]
+ * @property {boolean} [email]
  */
 
 /**
@@ -28,7 +30,24 @@ const FilledInput = (props) => {
     onChange,
     readOnly = false,
     startAdornment,
+    password = false,
+    email = false,
   } = props;
+
+  /**
+   * @returns {import('react').HTMLInputTypeAttribute}
+   */
+  const getType = () => {
+    if (password) {
+      return 'password';
+    }
+
+    if (email) {
+      return 'email';
+    }
+
+    return 'text';
+  };
 
   return (
     <FormControl fullWidth={fullWidth} variant="filled">
@@ -41,6 +60,7 @@ const FilledInput = (props) => {
         startAdornment={startAdornment}
         onChange={onChange}
         readOnly={readOnly}
+        type={getType()}
         sx={{ paddingTop: 1 }}
       />
     </FormControl>
@@ -55,6 +75,8 @@ FilledInput.propTypes = {
   onChange: PropTypes.func,
   readOnly: PropTypes.bool,
   startAdornment: PropTypes.node,
+  password: PropTypes.bool,
+  email: PropTypes.bool,
 };
 
 export default FilledInput;
