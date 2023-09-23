@@ -1,4 +1,8 @@
-import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth';
 import { auth } from '.';
 
 /**
@@ -31,4 +35,8 @@ export const loginWithEmailAndPassword = async (email, password) => {
   const { user } = userCredential;
 
   return user;
+};
+
+export const logout = async () => {
+  await signOut(auth);
 };

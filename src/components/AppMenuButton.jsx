@@ -1,6 +1,7 @@
-import { CreditCard, Menu, Storefront } from '@mui/icons-material';
+import { CreditCard, Logout, Menu, Storefront } from '@mui/icons-material';
 import {
   Box,
+  Divider,
   Drawer,
   IconButton,
   List,
@@ -11,6 +12,7 @@ import {
 } from '@mui/material';
 import { Fragment, useState } from 'react';
 import { Link } from 'wouter';
+import { logout } from '../firebase/auth';
 
 /**
  * @typedef {object} AppMenuItem
@@ -39,6 +41,12 @@ const AppMenuButton = () => {
   const openMenu = () => setOpen(true);
   const closeMenu = () => setOpen(false);
 
+  const onLogout = async () => {
+    await logout();
+
+    closeMenu();
+  };
+
   /**
    * @param {AppMenuItem} item
    */
@@ -63,8 +71,29 @@ const AppMenuButton = () => {
         <Menu />
       </IconButton>
       <Drawer open={open} onClose={closeMenu}>
-        <Box sx={{ width: 250 }}>
-          <List>{items.map((item) => renderItem(item))}</List>
+        <Box
+          sx={{
+            width: 250,
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <List sx={{ display: 'flex', flexDirection: 'column' }}>
+            {items.map((item) => renderItem(item))}
+          </List>
+          <div style={{ flexGrow: 1 }} />
+          <Divider />
+          <List>
+            <ListItem onClick={onLogout}>
+              <ListItemButton>
+                <ListItemIcon>
+                  <Logout />
+                </ListItemIcon>
+                <ListItemText>Logout</ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </List>
         </Box>
       </Drawer>
     </Fragment>
