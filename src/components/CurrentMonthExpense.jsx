@@ -21,7 +21,7 @@ const CurrentMonthExpense = () => {
 
   useEffect(() => {
     const unsubscribeMonthExpenseListener =
-      FirebaseFirestore.MonthlyExpenses.listener(
+      FirebaseFirestore.MonthlyExpenses.currentMonth.listener(
         authenticatedUserId,
         (currentMonthExpense) => {
           setCurrentMonthExpense(currentMonthExpense);

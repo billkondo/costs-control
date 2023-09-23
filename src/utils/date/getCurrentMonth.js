@@ -1,7 +1,7 @@
 const getCurrentMonth = () => {
   const now = new Date();
 
-  return now.getUTCMonth();
+  return now.getMonth();
 };
 
 export default getCurrentMonth;

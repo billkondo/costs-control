@@ -1,7 +1,7 @@
 const getCurrentYear = () => {
   const now = new Date();
 
-  return now.getUTCFullYear();
+  return now.getFullYear();
 };
 
 export default getCurrentYear;

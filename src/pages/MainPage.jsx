@@ -4,6 +4,7 @@ import AddSubscriptionButton from '../components/AddSubscriptionButton';
 import CurrentMonthExpense from '../components/CurrentMonthExpense';
 import CurrentMonthExpensesList from '../components/CurrentMonthExpensesList';
 import CurrentMonthSubscriptionsList from '../components/CurrentMonthSubscriptionsList';
+import LatestMonthExpenses from '../components/LatestMonthExpenses';
 
 const MainPage = () => {
   return (
@@ -37,6 +38,11 @@ const MainPage = () => {
         </Grid>
         <Grid item xs={12} md={4}>
           <CurrentMonthSubscriptionsList />
+        </Grid>
+      </Box>
+      <Box>
+        <Grid item xs={12} md={4}>
+          <LatestMonthExpenses />
         </Grid>
       </Box>
     </Box>
