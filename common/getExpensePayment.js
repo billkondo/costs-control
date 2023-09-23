@@ -20,7 +20,7 @@ const getExpensePayment = (expense) => {
         },
       ],
       partsValue: value,
-      isInstallment: false,
+      isImmediate: true,
     };
   }
 
@@ -68,7 +68,7 @@ const getExpensePayment = (expense) => {
     partsCount: partsTotal,
     paymentDates: dates,
     partsValue: partsValue,
-    isInstallment,
+    isImmediate: false,
   };
 };
 

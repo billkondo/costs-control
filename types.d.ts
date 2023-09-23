@@ -56,7 +56,7 @@ type Payment = {
   partsCount: number;
   partsValue: number;
   paymentDates: PaymentDate[];
-  isInstallment: boolean;
+  isImmediate: boolean;
 };
 
 // Stores
@@ -109,6 +109,8 @@ type UserExpense = {
   id: string;
   userId: string;
   paymentDates: string[];
+  month: number;
+  year: number;
 } & Expense;
 
 type IncompleteUserExpense = Omit<UserExpense, 'store' | 'card'> & {

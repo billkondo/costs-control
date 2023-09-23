@@ -1,4 +1,4 @@
-import { Chip } from '@mui/material';
+import { Chip, Tooltip } from '@mui/material';
 import PropTypes from 'prop-types';
 import getExpensePayment from '../../common/getExpensePayment';
 import getPaymentPart from '../../common/getPaymentPart';
@@ -16,15 +16,27 @@ import getCurrentYear from '../utils/date/getCurrentYear';
 const ExpensePartChip = (props) => {
   const { expense } = props;
   const payment = getExpensePayment(expense);
-  const { partsCount, isInstallment } = payment;
+  const { partsCount, isImmediate } = payment;
 
-  if (!isInstallment) {
+  if (isImmediate) {
     return null;
   }
 
+  const currentMonth = getCurrentMonth();
+  const currentYear = getCurrentYear();
   const part = getPaymentPart(getCurrentMonth(), getCurrentYear(), payment);
+  const isExpenseChargedNextMonth =
+    !part && expense.month === currentMonth && expense.year === currentYear;
 
-  return <Chip label={`${part} / ${partsCount}`} color="primary" />;
+  if (isExpenseChargedNextMonth) {
+    return <Chip label="Charged next month" />;
+  }
+
+  return (
+    <Tooltip title="Part">
+      <Chip label={`${part} / ${partsCount}`} color="primary" />
+    </Tooltip>
+  );
 };
 
 ExpensePartChip.propTypes = {

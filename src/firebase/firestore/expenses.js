@@ -1,15 +1,19 @@
 import {
+  and,
   collection,
   getCountFromServer,
   getDocs,
   limit,
   onSnapshot,
+  or,
   orderBy,
   query,
   where,
 } from 'firebase/firestore';
 import { db } from '..';
 import getCurrentMonthDateString from '../../utils/date/getCurrentMonthDateString';
+import getCurrentMonth from '../../utils/date/getCurrentMonth';
+import getCurrentYear from '../../utils/date/getCurrentYear';
 
 /** @type {FirestoreCollectionReference<UserExpenseDBData>} */
 // @ts-ignore
@@ -72,8 +76,16 @@ const getCurrentMonthExpensesBaseQuery = (userId, maxSize = 5) => {
 
   return query(
     expensesCollection,
-    where('paymentDates', 'array-contains', currentMonthDateString),
-    where('userId', '==', userId),
+    and(
+      or(
+        where('paymentDates', 'array-contains', currentMonthDateString),
+        and(
+          where('month', '==', getCurrentMonth()),
+          where('year', '==', getCurrentYear())
+        )
+      ),
+      where('userId', '==', userId)
+    ),
     ...constraints
   );
 };

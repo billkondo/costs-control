@@ -12,14 +12,14 @@ const collection = db.collection('expenses');
  * @param {Expense} expense
  */
 const add = async (userId, expense) => {
-  const { card } = expense;
+  const { card, buyDate } = expense;
   const doc = collection.doc();
 
   /** @type {ServerUserExpenseDBData} */
   const expenseDBData = {
     id: doc.id,
     userId: userId,
-    buyDate: Timestamp.fromDate(expense.buyDate),
+    buyDate: Timestamp.fromDate(buyDate),
     storeId: expense.store.id,
     cardId: null,
     isInstallment: expense.isInstallment,
@@ -29,6 +29,8 @@ const add = async (userId, expense) => {
     paymentDates: stringifyPaymentDates(
       getExpensePaymentDates(expense).paymentDates
     ),
+    month: buyDate.getMonth(),
+    year: buyDate.getFullYear(),
   };
 
   if (card) {
