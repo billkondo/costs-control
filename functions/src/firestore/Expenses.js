@@ -1,7 +1,7 @@
 import { Timestamp } from 'firebase-admin/firestore';
 import { db } from '.';
 import stringifyPaymentDates from '../../../common/strigifyPaymentDates';
-import getExpensePaymentDates from '../../../common/getExpensePaymentDates';
+import getExpensePaymentDates from '../../../common/getExpensePayment';
 
 /** @type {Collection<UserExpenseDBData>} */
 // @ts-ignore
@@ -26,7 +26,9 @@ const add = async (userId, expense) => {
     partsCount: expense.partsCount,
     paymentType: expense.paymentType,
     value: expense.value,
-    paymentDates: stringifyPaymentDates(getExpensePaymentDates(expense)),
+    paymentDates: stringifyPaymentDates(
+      getExpensePaymentDates(expense).paymentDates
+    ),
   };
 
   if (card) {

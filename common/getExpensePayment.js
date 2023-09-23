@@ -1,21 +1,26 @@
+import isImmediateExpense from './isImmediateExpense';
+
 /**
  * @param {Expense} expense
- * @returns {PaymentDate[]}
+ * @returns {Payment}
  */
-const getExpensePaymentDates = (expense) => {
-  const { paymentType, buyDate } = expense;
+const getExpensePayment = (expense) => {
+  const { buyDate, value } = expense;
   const buyDay = buyDate.getUTCDate();
   const buyMonth = buyDate.getUTCMonth();
   const buyYear = buyDate.getUTCFullYear();
-  const isImmediateExpense = paymentType === 'CASH' || paymentType === 'DEBIT';
 
-  if (isImmediateExpense) {
-    return [
-      {
-        month: buyMonth,
-        year: buyYear,
-      },
-    ];
+  if (isImmediateExpense(expense)) {
+    return {
+      partsCount: 1,
+      paymentDates: [
+        {
+          month: buyMonth,
+          year: buyYear,
+        },
+      ],
+      partsValue: value,
+    };
   }
 
   const { card } = expense;
@@ -44,6 +49,7 @@ const getExpensePaymentDates = (expense) => {
   }
 
   const partsTotal = isInstallment ? partsCount : 1;
+  const partsValue = value / partsTotal;
 
   /** @type {PaymentDate[]} */
   const dates = [];
@@ -57,7 +63,11 @@ const getExpensePaymentDates = (expense) => {
     incrementMonth();
   }
 
-  return dates;
+  return {
+    partsCount: partsTotal,
+    paymentDates: dates,
+    partsValue: partsValue,
+  };
 };
 
-export default getExpensePaymentDates;
+export default getExpensePayment;

@@ -38,6 +38,12 @@ type PaymentDate = {
   year: number;
 };
 
+type Payment = {
+  partsCount: number;
+  partsValue: number;
+  paymentDates: PaymentDate[];
+};
+
 // Stores
 
 type Store = {

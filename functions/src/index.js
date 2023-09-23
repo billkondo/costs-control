@@ -1,130 +1,55 @@
 /// <reference path="../types.d.ts"/>
 /// <reference path="../../types.d.ts"/>
 
-import { Filter } from 'firebase-admin/firestore';
 import * as functions from 'firebase-functions/v2';
-import { db } from './firestore';
 import Subscriptions from './firestore/Subscriptions';
 import Stores from './firestore/Stores';
 import MonthlyExpenses from './firestore/MonthlyExpenses';
 import Cards from './firestore/Cards';
 import Expenses from './firestore/Expenses';
-
-/** @type {Collection<UserMonthlyExpenseDBData>} */
-// @ts-ignore
-const userMonthlyExpensesCollection = db.collection('monthlyExpenses');
-
-/**
- * @param {UserExpenseDBData} userExpenseDBData
- * @returns {Promise<UserMonthlyExpense>}
- */
-const getUserMonthlyExpenseFromUserExpenseDBData = async (
-  userExpenseDBData
-) => {
-  const { userId, buyDate: timestamp } = userExpenseDBData;
-  const date = timestamp.toDate();
-  const month = date.getUTCMonth();
-  const year = date.getUTCFullYear();
-
-  const querySnapshot = await userMonthlyExpensesCollection
-    .where(Filter.where('month', '==', month))
-    .where(Filter.where('year', '==', year))
-    .where(Filter.where('userId', '==', userId))
-    .get();
-
-  const docs = querySnapshot.docs;
-
-  if (!docs.length) {
-    return {
-      id: null,
-      userId,
-      month,
-      year,
-      value: 0,
-    };
-  }
-
-  const userMonthlyExpenseDoc = querySnapshot.docs[0];
-
-  const userMonthlyExpenseDBData = userMonthlyExpenseDoc.data();
-
-  return {
-    ...userMonthlyExpenseDBData,
-    id: userMonthlyExpenseDoc.id,
-  };
-};
+import isImmediateExpense from '../../common/isImmediateExpense';
+import getExpensePayment from '../../common/getExpensePayment';
 
 /**
  * @param {UserExpenseDBData} userExpenseDBData
  * @param {boolean?} increment
  */
 const updateMonthlyExpenses = async (userExpenseDBData, increment = true) => {
-  const { paymentType, cardId } = userExpenseDBData;
-  const isImmediateExpense = paymentType === 'CASH' || paymentType === 'DEBIT';
+  const { cardId, userId } = userExpenseDBData;
 
-  if (isImmediateExpense) {
-    const monthlyExpense = await getUserMonthlyExpenseFromUserExpenseDBData(
-      userExpenseDBData
+  /** @type {Expense} */
+  const expense = {
+    ...userExpenseDBData,
+    store: {
+      id: '',
+      name: '',
+      userId: '',
+    },
+    card: null,
+    buyDate: userExpenseDBData.buyDate.toDate(),
+  };
+
+  if (!isImmediateExpense(expense)) {
+    expense.card = await Cards.getCardById(/** @type {string} */ (cardId));
+  }
+
+  const { paymentDates, partsValue } = getExpensePayment(expense);
+
+  for (const paymentDate of paymentDates) {
+    const { month, year } = paymentDate;
+    const monthlyExpense = await MonthlyExpenses.getByMonthAndYear(
+      userId,
+      month,
+      year
     );
 
     if (increment) {
-      monthlyExpense.value += userExpenseDBData.value;
+      monthlyExpense.value += partsValue;
     } else {
-      monthlyExpense.value -= userExpenseDBData.value;
+      monthlyExpense.value -= partsValue;
     }
 
     await MonthlyExpenses.save(monthlyExpense);
-  } else {
-    const card = await Cards.getCardById(/** @type {string} */ (cardId));
-    const { lastBuyDay } = card;
-    const {
-      buyDate: buyTimestamp,
-      partsCount,
-      isInstallment,
-      userId,
-      value,
-    } = userExpenseDBData;
-    const buyDate = buyTimestamp.toDate();
-    const buyMonth = buyDate.getUTCMonth();
-    const buyDay = buyDate.getUTCDate();
-    const buyYear = buyDate.getUTCFullYear();
-
-    let month = buyMonth;
-    let year = buyYear;
-
-    const incrementMonth = () => {
-      month++;
-
-      if (month === 12) {
-        month = 0;
-        year++;
-      }
-    };
-
-    if (buyDay > lastBuyDay) {
-      incrementMonth();
-    }
-
-    const partsTotal = isInstallment ? partsCount : 1;
-    const partValue = value / partsTotal;
-
-    for (let i = 0; i < partsTotal; i++) {
-      const monthlyExpense = await MonthlyExpenses.getByMonthAndYear(
-        userId,
-        month,
-        year
-      );
-
-      if (increment) {
-        monthlyExpense.value += partValue;
-      } else {
-        monthlyExpense.value -= partValue;
-      }
-
-      await MonthlyExpenses.save(monthlyExpense);
-
-      incrementMonth();
-    }
   }
 };
 
