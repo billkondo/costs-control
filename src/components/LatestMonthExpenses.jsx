@@ -24,6 +24,10 @@ const LatestMonthExpenses = () => {
     };
   }, [authenticatedUserId]);
 
+  if (!monthlyExpenses.length) {
+    return null;
+  }
+
   const xLabels = monthlyExpenses.map(getChartLabel);
   const yData = monthlyExpenses.map(({ value }) => value);
 
@@ -38,15 +42,8 @@ const LatestMonthExpenses = () => {
             scaleType: 'band',
           },
         ]}
-        yAxis={[
-          {
-            id: 'expense',
-            scaleType: 'log',
-          },
-        ]}
         series={[
           {
-            yAxisKey: 'expense',
             type: 'line',
             curve: 'linear',
             data: yData,

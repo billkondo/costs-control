@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Link } from 'wouter';
 import AppMenuButton from './AppMenuButton';
@@ -10,38 +10,40 @@ const HeaderPage = (props) => {
   const { children } = props;
 
   return (
-    <Grid
-      container
-      direction="column"
-      style={{ minHeight: '100vh', height: '100%' }}
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        height: '100%',
+      }}
     >
-      <Grid
-        container
-        item
-        style={{ padding: '1rem' }}
-        alignItems="center"
-        spacing={1}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+          padding: '1rem',
+        }}
       >
-        <Grid item>
-          <AppMenuButton />
-        </Grid>
-        <Grid item>
-          <Link href="/">
-            <Typography variant="h6" sx={{ cursor: 'pointer' }}>
-              Expenses Manager
-            </Typography>
-          </Link>
-        </Grid>
-      </Grid>
-
-      <Grid
-        item
-        style={{ paddingLeft: '1rem', paddingRight: '1rem', flexGrow: 1 }}
-        xs={12}
+        <AppMenuButton />
+        <Link href="/">
+          <Typography variant="h6" sx={{ cursor: 'pointer' }}>
+            Expenses Manager
+          </Typography>
+        </Link>
+      </div>
+      <div
+        style={{
+          paddingLeft: '1rem',
+          paddingRight: '1rem',
+          flexGrow: 1,
+          width: '100%',
+        }}
       >
         {children}
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 };
 

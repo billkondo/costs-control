@@ -32,19 +32,19 @@ const MainPage = () => {
           <AddSubscriptionButton />
         </Box>
       </Box>
-      <Box sx={{ display: 'flex', gap: 4 }}>
+      <Grid container spacing={4}>
         <Grid item xs={12} md={4}>
           <CurrentMonthExpensesList />
         </Grid>
         <Grid item xs={12} md={4}>
           <CurrentMonthSubscriptionsList />
         </Grid>
-      </Box>
-      <Box>
+      </Grid>
+      <Grid container spacing={4}>
         <Grid item xs={12} md={4}>
           <LatestMonthExpenses />
         </Grid>
-      </Box>
+      </Grid>
     </Box>
   );
 };
