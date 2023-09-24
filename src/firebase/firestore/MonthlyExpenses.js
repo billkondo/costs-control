@@ -3,6 +3,7 @@ import { db } from '..';
 import getCurrentMonth from '../../utils/date/getCurrentMonth';
 import getCurrentYear from '../../utils/date/getCurrentYear';
 import getLatestMonths from '../../utils/date/getLatestMonths';
+import getNextMonths from '../../utils/date/getNextMonths';
 
 /** @type {FirestoreCollectionReference<UserMonthlyExpenseDBData>} */
 // @ts-ignore
@@ -46,14 +47,11 @@ const currentMonthlyExpenseListener = (
 
 /**
  * @param {string} userId
- * @param {(latestMonthlyExpenses: MonthlyExpense[]) => void} onLatestMonthlyExpensesChanged
+ * @param {(monthlyExpenses: MonthlyExpense[]) => void} onMonthlyExpensesChanged
+ * @param {Month[]} months
  */
-const latestMonthlyExpensesListener = (
-  userId,
-  onLatestMonthlyExpensesChanged
-) => {
-  const latestMonths = getLatestMonths();
-  const queries = latestMonths.map(({ month, year }) => {
+const monthlyExpensesListener = (userId, onMonthlyExpensesChanged, months) => {
+  const queries = months.map(({ month, year }) => {
     return {
       month,
       year,
@@ -67,7 +65,7 @@ const latestMonthlyExpensesListener = (
   });
 
   /** @type {MonthlyExpense[]} */
-  const monthlyExpenses = latestMonths.map(({ month, year }) => {
+  const monthlyExpenses = months.map(({ month, year }) => {
     return {
       month,
       year,
@@ -75,7 +73,7 @@ const latestMonthlyExpensesListener = (
     };
   });
 
-  onLatestMonthlyExpensesChanged(monthlyExpenses);
+  onMonthlyExpensesChanged(monthlyExpenses);
 
   const unsubscribes = queries.map((latestMonthQuery, index) => {
     const { query } = latestMonthQuery;
@@ -89,7 +87,7 @@ const latestMonthlyExpensesListener = (
 
       monthlyExpenses[index] = changedMonthlyExpense;
 
-      onLatestMonthlyExpensesChanged([...monthlyExpenses]);
+      onMonthlyExpensesChanged([...monthlyExpenses]);
     });
   });
 
@@ -102,11 +100,46 @@ const latestMonthlyExpensesListener = (
   return unsubscribeAll;
 };
 
+/**
+ * @param {string} userId
+ * @param {(latestMonthlyExpenses: MonthlyExpense[]) => void} onLatestMonthlyExpensesChanged
+ */
+const latestMonthlyExpensesListener = (
+  userId,
+  onLatestMonthlyExpensesChanged
+) => {
+  const latestMonths = getLatestMonths();
+
+  return monthlyExpensesListener(
+    userId,
+    onLatestMonthlyExpensesChanged,
+    latestMonths
+  );
+};
+
+/**
+ *
+ * @param {string} userId
+ * @param {(nextMonthlyExpenses: MonthlyExpense[]) => void} onNextMonthlyExpensesChanged
+ */
+const nextMonthlyExpensesListener = (userId, onNextMonthlyExpensesChanged) => {
+  const nextMonths = getNextMonths();
+
+  return monthlyExpensesListener(
+    userId,
+    onNextMonthlyExpensesChanged,
+    nextMonths
+  );
+};
+
 export default {
   currentMonth: {
     listener: currentMonthlyExpenseListener,
   },
   latestMonths: {
     listener: latestMonthlyExpensesListener,
+  },
+  nextMonths: {
+    listener: nextMonthlyExpensesListener,
   },
 };

@@ -4,14 +4,14 @@ import MonthlyExpenses from '../firebase/firestore/MonthlyExpenses';
 import useAuthentication from '../providers/useAuthentication';
 import MonthlyExpensesChart from './MonthlyExpensesChart';
 
-const LatestMonthExpenses = () => {
+const NextMonthExpenses = () => {
   const { authenticatedUserId } = useAuthentication();
   const [monthlyExpenses, setMonthlyExpenses] = useState(
     /** @type {MonthlyExpense[]} */ ([])
   );
 
   useEffect(() => {
-    const unsubscribe = MonthlyExpenses.latestMonths.listener(
+    const unsubscribe = MonthlyExpenses.nextMonths.listener(
       authenticatedUserId,
       (monthlyExpenses) => {
         setMonthlyExpenses(monthlyExpenses);
@@ -25,10 +25,10 @@ const LatestMonthExpenses = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-      <Typography variant="h6">Latest months expenses</Typography>
+      <Typography variant="h6">Next months expenses</Typography>
       <MonthlyExpensesChart monthlyExpenses={monthlyExpenses} />
     </div>
   );
 };
 
-export default LatestMonthExpenses;
+export default NextMonthExpenses;

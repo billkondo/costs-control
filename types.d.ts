@@ -29,6 +29,13 @@ type FirestoreQueryDocumentSnapshot<T> =
 type FunctionCall<RequestData, ResponseData> =
   import('firebase/functions').HttpsCallable<RequestData, ResponseData>;
 
+// Date
+
+type Month = {
+  month: number;
+  year: number;
+};
+
 // User
 
 type User = {

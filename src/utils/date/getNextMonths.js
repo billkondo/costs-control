@@ -1,15 +1,26 @@
 import getCurrentMonth from './getCurrentMonth';
 import getCurrentYear from './getCurrentYear';
 
-const getLatestMonths = () => {
+const getNextMonths = () => {
   const month = getCurrentMonth();
   const year = getCurrentYear();
 
-  /** @type {Month[]} */
-  const dates = [];
-
   let m = month;
   let y = year;
+
+  const incrementMonth = () => {
+    m++;
+
+    if (m === 12) {
+      m = 0;
+      y++;
+    }
+  };
+
+  incrementMonth();
+
+  /** @type {Month[]} */
+  const dates = [];
 
   for (let i = 0; i < 6; i++) {
     dates.push({
@@ -17,15 +28,10 @@ const getLatestMonths = () => {
       year: y,
     });
 
-    m--;
-
-    if (m < 0) {
-      y--;
-      m = 11;
-    }
+    incrementMonth();
   }
 
-  return dates.reverse();
+  return dates;
 };
 
-export default getLatestMonths;
+export default getNextMonths;
