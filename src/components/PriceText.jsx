@@ -11,17 +11,7 @@ import brlFormat from '../utils/currency/brlFormat';
 const PriceText = (props) => {
   const { value, variant = 'body1' } = props;
 
-  const renderPrice = () => {
-    const priceText = <>{brlFormat(value)}</>;
-
-    if (variant === 'body1' || variant === 'body2') {
-      return <b>{priceText}</b>;
-    }
-
-    return priceText;
-  };
-
-  return <Typography variant={variant}>{renderPrice()}</Typography>;
+  return <Typography variant={variant}>{brlFormat(value)}</Typography>;
 };
 
 PriceText.propTypes = {
