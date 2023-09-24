@@ -6,6 +6,7 @@ import useAuthentication from '../providers/useAuthentication';
 import useExpenses from '../providers/useExpenses';
 import useIncompleteExpenses from '../usecases/useIncompleteExpenses';
 import ExpensePartChip from './ExpensePartChip';
+import PriceText from './PriceText';
 import ViewAllCurrentMonthExpensesButton from './ViewAllCurrentMonthExpensesButton';
 
 const CurrentMonthExpensesList = () => {
@@ -61,9 +62,7 @@ const CurrentMonthExpensesList = () => {
                 <ListItem key={id} divider>
                   <Grid container alignItems="center" spacing={2}>
                     <Grid item sx={{ flexGrow: 1 }}>
-                      <Typography variant="body1">
-                        <b>{`R$ ${value.toFixed(2)}`}</b>
-                      </Typography>
+                      <PriceText value={value} />
                     </Grid>
                     <Grid item>
                       <ExpensePartChip expense={expense} />

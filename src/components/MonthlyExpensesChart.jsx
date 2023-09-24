@@ -1,5 +1,6 @@
 import { LineChart } from '@mui/x-charts';
 import PropTypes from 'prop-types';
+import brlFormat from '../utils/currency/brlFormat';
 import getChartLabel from '../utils/date/getChartLabel';
 
 /**
@@ -33,6 +34,7 @@ const MonthlyExpensesChart = (props) => {
           type: 'line',
           curve: 'linear',
           data: yData,
+          valueFormatter: brlFormat,
         },
       ]}
       height={300}

@@ -2,6 +2,7 @@ import { Grid, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import FirebaseFirestore from '../firebase/firestore';
 import useAuthentication from '../providers/useAuthentication';
+import PriceText from './PriceText';
 
 const CurrentMonthExpense = () => {
   const { authenticatedUserId } = useAuthentication();
@@ -39,7 +40,7 @@ const CurrentMonthExpense = () => {
         <Typography variant="h5">{`This month's total expense`}</Typography>
       </Grid>
       <Grid container item justifyContent="center">
-        <Typography variant="h6">{`R$ ${expense.toFixed(2)}`}</Typography>
+        <PriceText value={expense} variant="h6" />
       </Grid>
     </Grid>
   );
