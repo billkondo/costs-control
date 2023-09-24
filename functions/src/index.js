@@ -124,7 +124,7 @@ exports.addStore = functionsV2.https.onCall(
 exports.addSubscription = functionsV2.https.onCall(
   /**
    * @param {FunctionCall<AddSubscriptionRequest>} request
-   * @returns {Promise<AddSubscriptionResponse>}
+   * @returns {Promise<void>}
    */
   async (request) => {
     if (!request.auth) {
@@ -134,11 +134,15 @@ exports.addSubscription = functionsV2.https.onCall(
       );
     }
 
-    const subscription = request.data;
+    /** @type {Subscription} */
+    const subscription = {
+      ...request.data,
+      startDate: new Date(request.data.startDate),
+      endDate: request.data.endDate ? new Date(request.data.endDate) : null,
+    };
     const userId = request.auth.uid;
-    const userSubscription = Subscriptions.add(userId, subscription);
 
-    return userSubscription;
+    await Subscriptions.add(userId, subscription);
   }
 );
 

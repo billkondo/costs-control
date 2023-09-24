@@ -1,18 +1,19 @@
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '..';
 
-/** @type {FunctionCall<AddSubscriptionRequest, AddSubscriptionResponse>} */
+/** @type {FunctionCall<AddSubscriptionRequest, void>} */
 const addSubscription = httpsCallable(functions, 'addSubscription');
 
 /**
  * @param {Subscription} subscription
- * @returns {Promise<UserSubscription>}
+ * @returns {Promise<void>}
  */
 const add = async (subscription) => {
-  const request = await addSubscription(subscription);
-  const userSubscription = request.data;
-
-  return userSubscription;
+  await addSubscription({
+    ...subscription,
+    startDate: subscription.startDate.toString(),
+    endDate: subscription.endDate ? subscription.endDate.toString() : null,
+  });
 };
 
 export default {

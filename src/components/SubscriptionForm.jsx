@@ -10,10 +10,12 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import useSubscriptions from '../providers/useSubscriptions';
+import FilledDatePicker from './common/FilledDatePicker';
+import FilledDayPicker from './common/FilledDayPicker';
+import FilledMonthPicker from './common/FilledMonthPicker';
 
 /**
  * @param {{
@@ -29,6 +31,8 @@ const SubscriptionForm = (props) => {
   const [type, setType] = useState(/** @type {SubscriptionType} */ ('MONTHLY'));
   const [day, setDay] = useState(/** @type {number | null} */ (null));
   const [month, setMonth] = useState(/** @type {number | null} */ (null));
+  const [startDate, setStartDate] = useState(/** @type {Date | null} */ (null));
+  const [endDate, setEndDate] = useState(/** @type {Date | null} */ (null));
 
   /**
    * @param {SubscriptionType} newType
@@ -48,6 +52,8 @@ const SubscriptionForm = (props) => {
       type,
       day: /** @type {number} */ (day),
       month: /** @type {number} */ (month),
+      startDate: /** @type {Date} */ (startDate),
+      endDate: /** @type {Date} */ (endDate),
     };
 
     await addSubscription(subscription);
@@ -64,7 +70,7 @@ const SubscriptionForm = (props) => {
   };
 
   return (
-    <Grid container direction="column" spacing={1}>
+    <Grid container direction="column" spacing={3}>
       <Grid item>
         <FormControl fullWidth variant="filled">
           <InputLabel htmlFor="subscription-value">Value</InputLabel>
@@ -106,56 +112,23 @@ const SubscriptionForm = (props) => {
           </ToggleButtonGroup>
         </Box>
       </Grid>
-      <Grid item>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <DatePicker
-            views={['day']}
-            disableOpenPicker
-            label="Charge day"
-            onChange={(date) => {
-              if (date) {
-                /** @type {Date} */
-                const dateObj = date.toDate();
-                const newDay = dateObj.getDate();
-
-                setDay(newDay);
-              } else {
-                setDay(null);
-              }
-            }}
-            slotProps={{
-              textField: {
-                variant: 'filled',
-                InputLabelProps: { shrink: true },
-              },
-            }}
-          />
-          {type === 'YEARLY' ? (
-            <DatePicker
-              views={['month']}
-              view="month"
-              label="Charge month"
-              openTo="month"
-              onChange={(date) => {
-                if (date) {
-                  /** @type {Date} */
-                  const dateObj = date.toDate();
-                  const newMonth = dateObj.getMonth();
-
-                  setMonth(newMonth + 1);
-                } else {
-                  setMonth(null);
-                }
-              }}
-              slotProps={{
-                textField: {
-                  variant: 'filled',
-                  InputLabelProps: { shrink: true },
-                },
-              }}
-            />
-          ) : null}
-        </Box>
+      <Grid container item spacing={1}>
+        <Grid item xs={4}>
+          <FilledDayPicker label="Charge day" onDayChange={setDay} />
+        </Grid>
+        {type === 'YEARLY' ? (
+          <Grid item xs={4}>
+            <FilledMonthPicker label="Charge month" onMonthChange={setMonth} />
+          </Grid>
+        ) : null}
+      </Grid>
+      <Grid container item spacing={1}>
+        <Grid item xs={4}>
+          <FilledDatePicker label="Start date" onChange={setStartDate} />
+        </Grid>
+        <Grid item xs={4}>
+          <FilledDatePicker label="End date" onChange={setEndDate} />
+        </Grid>
       </Grid>
       <Grid item sx={{ marginTop: 3 }}>
         <Button

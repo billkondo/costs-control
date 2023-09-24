@@ -27,3 +27,13 @@ type ServerUserExpenseDBData = Override<
     buyDate: import('firebase-admin/firestore').Timestamp;
   }
 >;
+
+// Subscriptions
+
+type ServerUserSubscriptionDBData = Override<
+  UserSubscriptionDBData,
+  {
+    startDate: import('firebase-admin/firestore').Timestamp;
+    endDate: import('firebase-admin/firestore').Timestamp | null;
+  }
+>;

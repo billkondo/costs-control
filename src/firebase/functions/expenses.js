@@ -11,7 +11,7 @@ const addExpenseFunction = httpsCallable(functions, 'addExpense');
 const add = async (expense) => {
   await addExpenseFunction({
     ...expense,
-    buyDate: expense.buyDate.toISOString(),
+    buyDate: expense.buyDate.toString(),
   });
 };
 

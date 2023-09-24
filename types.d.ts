@@ -161,6 +161,8 @@ type Subscription = {
   type: SubscriptionType;
   day: number;
   month: number;
+  startDate: Date;
+  endDate: Date | null;
 };
 
 type UserSubscription = {
@@ -168,7 +170,15 @@ type UserSubscription = {
   userId: string;
 } & Subscription;
 
-type UserSubscriptionDBData = UserSubscription;
+type UserSubscriptionDBData = Override<
+  UserSubscription,
+  {
+    startDate: import('firebase/firestore').Timestamp;
+    endDate: import('firebase/firestore').Timestamp | null;
+  }
+>;
 
-type AddSubscriptionRequest = Subscription;
-type AddSubscriptionResponse = UserSubscription;
+type AddSubscriptionRequest = Override<
+  Subscription,
+  { startDate: string; endDate: string | null }
+>;

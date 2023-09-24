@@ -81,16 +81,10 @@ const ExpenseForm = (props) => {
       </Grid>
       <Grid item>
         <FilledDatePicker
+          onChange={setBuyDate}
+          label="Spent date"
           datePickerProps={{
             disableFuture: true,
-            label: 'Spent date',
-            onChange: (newDate) => {
-              if (newDate) {
-                setBuyDate(newDate.toDate());
-              } else {
-                setBuyDate(null);
-              }
-            },
           }}
         />
       </Grid>
