@@ -35,10 +35,10 @@ const ExpensesListGroupedByDay = (props) => {
 
       if (!groupedExpenses[label]) {
         groupedExpenses[label] = [];
+        dates.push(buyDate);
       }
 
       groupedExpenses[label].push(expense);
-      dates.push(buyDate);
     }
 
     dates.sort().reverse();
