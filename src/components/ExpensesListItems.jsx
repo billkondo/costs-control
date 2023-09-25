@@ -1,4 +1,4 @@
-import { Grid, ListItem, Typography } from '@mui/material';
+import { Grid, ListItem, Tooltip, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import padStart from '../../common/padStart';
 import ExpensePartChip from './ExpensePartChip';
@@ -41,7 +41,9 @@ const ExpensesListItems = (props) => {
                 <ExpensePartChip expense={expense} />
               </Grid>
               <Grid item>
-                <Typography variant="body2">{formatDate(buyDate)}</Typography>
+                <Tooltip title="Buy date">
+                  <Typography variant="body2">{formatDate(buyDate)}</Typography>
+                </Tooltip>
               </Grid>
             </Grid>
           </ListItem>

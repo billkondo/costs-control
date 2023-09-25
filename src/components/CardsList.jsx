@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid, Tooltip, Typography } from '@mui/material';
 import useCards from '../providers/useCards';
 import AddCardButton from './AddCardButton';
 import ListWithControls from './common/List/ListWithControls';
@@ -28,9 +28,11 @@ const CardsList = (props) => {
             </Typography>
           </Grid>
           <Grid item>
-            <Typography variant="body1">
-              <b>Last buy day</b>
-            </Typography>
+            <Tooltip title="Buys after this date will be charged on the following month">
+              <Typography variant="body1">
+                <b>Last buy day</b>
+              </Typography>
+            </Tooltip>
           </Grid>
         </Grid>
       }
