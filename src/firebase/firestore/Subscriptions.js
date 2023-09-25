@@ -19,6 +19,7 @@ const subscriptionsCollection = collection(db, 'subscriptions');
 
 /**
  * @param {string} userId
+ * @returns {Promise<IncompleteUserSubscription[]>}
  */
 const getAll = async (userId) => {
   const userSubscriptionsQuery = query(
@@ -29,7 +30,7 @@ const getAll = async (userId) => {
   const docs = await getDocs(userSubscriptionsQuery);
 
   const userSubscriptions = docs.docs.map(
-    mapUserSubscriptionSnapshotToUserSubscription
+    mapUserSubscriptionDBDataToIncompleteUserSubscription
   );
 
   return userSubscriptions;
@@ -37,7 +38,7 @@ const getAll = async (userId) => {
 
 /**
  * @param {string} userId
- * @param {(subscriptions: UserSubscription[]) => void} onCurrentMonthSubscriptionsChanged
+ * @param {(subscriptions: IncompleteUserSubscription[]) => void} onCurrentMonthSubscriptionsChanged
  * @returns {import('firebase/firestore').Unsubscribe}
  */
 const currentMonthListener = (userId, onCurrentMonthSubscriptionsChanged) => {
@@ -49,7 +50,7 @@ const currentMonthListener = (userId, onCurrentMonthSubscriptionsChanged) => {
     }
 
     const userSubscriptions = querySnapshot.docs.map(
-      mapUserSubscriptionSnapshotToUserSubscription
+      mapUserSubscriptionDBDataToIncompleteUserSubscription
     );
 
     onCurrentMonthSubscriptionsChanged(userSubscriptions);
@@ -92,7 +93,7 @@ export const CurrentMonthSubscriptionsPager = (userId) => {
     const snapshot = await getDocs(query);
     const docs = snapshot.docs;
     const userSubscriptions = docs.map(
-      mapUserSubscriptionSnapshotToUserSubscription
+      mapUserSubscriptionDBDataToIncompleteUserSubscription
     );
     const lastDocumentInQuery = docs[docs.length - 1];
     const lastIndex = start + userSubscriptions.length;
@@ -143,22 +144,17 @@ const getCurrentMonthSubscriptionsBaseQuery = (
  *
  * @param {import('firebase/firestore').QueryDocumentSnapshot<UserSubscriptionDBData>} snapshot
  */
-const mapUserSubscriptionSnapshotToUserSubscription = (snapshot) => {
+const mapUserSubscriptionDBDataToIncompleteUserSubscription = (snapshot) => {
   return mapUserSubscriptionDBDataToUserSubscription(snapshot.data());
 };
 
 /**
  * @param {UserSubscriptionDBData} dbData
- * @returns {UserSubscription}
+ * @returns {IncompleteUserSubscription}
  */
 const mapUserSubscriptionDBDataToUserSubscription = (dbData) => {
   return {
-    id: dbData.id,
-    day: dbData.day,
-    month: dbData.month,
-    type: dbData.type,
-    userId: dbData.userId,
-    value: dbData.value,
+    ...dbData,
     startDate: dbData.startDate.toDate(),
     endDate: dbData.endDate ? dbData.endDate.toDate() : null,
   };

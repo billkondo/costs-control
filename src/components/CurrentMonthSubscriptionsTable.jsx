@@ -16,14 +16,16 @@ import { CurrentMonthSubscriptionsPager } from '../firebase/firestore/Subscripti
 import useAuthentication from '../providers/useAuthentication';
 import useSubscriptions from '../providers/useSubscriptions';
 import formatSubscriptionDate from '../usecases/formatSubscriptionDate';
+import useIncompleteSubscriptions from '../usecases/useIncompleteSubscriptions';
 import PriceText from './PriceText';
 
 const CurrentMonthSubscriptionsTable = () => {
   const { currentMonthSubscriptionsCount: total } = useSubscriptions();
   const { authenticatedUserId } = useAuthentication();
+  const { subscriptions: items, setIncompleteSubscriptions: setItems } =
+    useIncompleteSubscriptions();
 
   const [loading, setLoading] = useState(true);
-  const [items, setItems] = useState(/** @type {UserSubscription[]} */ ([]));
   const [page, setPage] = useState(0);
 
   const PAGE_SIZE = 5;
@@ -52,7 +54,7 @@ const CurrentMonthSubscriptionsTable = () => {
     };
 
     load();
-  }, [startItem, query]);
+  }, [startItem, query, setItems]);
 
   const onNext = () => setPage(page + 1);
   const onBack = () => setPage(page - 1);

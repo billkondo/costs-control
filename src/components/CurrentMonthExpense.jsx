@@ -2,6 +2,7 @@ import { Grid, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import FirebaseFirestore from '../firebase/firestore';
 import useAuthentication from '../providers/useAuthentication';
+import useSubscriptions from '../providers/useSubscriptions';
 import PriceText from './PriceText';
 
 const CurrentMonthExpense = () => {
@@ -9,28 +10,29 @@ const CurrentMonthExpense = () => {
   const [currentMonthExpense, setCurrentMonthExpense] = useState(
     /** @type {UserMonthlyExpense | null} */ (null)
   );
+  const { getMonthSubscriptionCost } = useSubscriptions();
 
   const expense = useMemo(() => {
     let cost = 0;
 
     if (currentMonthExpense) {
       cost += currentMonthExpense.value;
+      cost += getMonthSubscriptionCost(currentMonthExpense);
     }
 
     return cost;
-  }, [currentMonthExpense]);
+  }, [currentMonthExpense, getMonthSubscriptionCost]);
 
   useEffect(() => {
-    const unsubscribeMonthExpenseListener =
-      FirebaseFirestore.MonthlyExpenses.currentMonth.listener(
-        authenticatedUserId,
-        (currentMonthExpense) => {
-          setCurrentMonthExpense(currentMonthExpense);
-        }
-      );
+    const unsubscribe = FirebaseFirestore.MonthlyExpenses.currentMonth.listener(
+      authenticatedUserId,
+      (currentMonthExpense) => {
+        setCurrentMonthExpense(currentMonthExpense);
+      }
+    );
 
     return () => {
-      unsubscribeMonthExpenseListener();
+      unsubscribe();
     };
   }, [authenticatedUserId]);
 

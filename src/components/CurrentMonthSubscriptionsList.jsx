@@ -1,19 +1,20 @@
 import { Card, Grid, List, ListItem, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import FirebaseFirestore from '../firebase/firestore';
 import useAuthentication from '../providers/useAuthentication';
 import useSubscriptions from '../providers/useSubscriptions';
 import formatSubscriptionDate from '../usecases/formatSubscriptionDate';
+import useIncompleteSubscriptions from '../usecases/useIncompleteSubscriptions';
 import PriceText from './PriceText';
 import ViewAllCurrentMonthSubscriptionsButton from './ViewAllCurrentMonthSubscriptionsButton';
 
 const CurrentMonthSubscriptionsList = () => {
   const { currentMonthSubscriptionsCount } = useSubscriptions();
   const { authenticatedUserId } = useAuthentication();
-
-  const [currentMonthSubscriptions, setCurrentMonthSubscriptions] = useState(
-    /** @type {UserSubscription[]} */ ([])
-  );
+  const {
+    subscriptions: currentMonthSubscriptions,
+    setIncompleteSubscriptions: setCurrentMonthSubscriptions,
+  } = useIncompleteSubscriptions();
 
   const hasAnySubscription = currentMonthSubscriptions.length > 0;
   const hasManySubscriptions = currentMonthSubscriptionsCount > 5;
@@ -29,7 +30,7 @@ const CurrentMonthSubscriptionsList = () => {
     return () => {
       unsubscribe();
     };
-  }, [authenticatedUserId]);
+  }, [authenticatedUserId, setCurrentMonthSubscriptions]);
 
   return (
     <Grid container direction="column">

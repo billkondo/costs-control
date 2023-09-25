@@ -8,7 +8,6 @@ import useAuthentication from './useAuthentication';
 /**
  * @typedef {object} ExpensesState
  * @property {(expense: Expense) => Promise<void>} addExpense
- * @property {UserSubscription[]} subscriptions
  * @property {number} currentMonthExpensesCount
  * @property {UserExpense[]} currentMonthExpenses,
  * @property {() => Promise<void>} loadCurrentMonthExpenses
@@ -17,7 +16,6 @@ import useAuthentication from './useAuthentication';
 /** @type {ExpensesState} */
 const defaultExpensesState = {
   addExpense: async () => {},
-  subscriptions: [],
   currentMonthExpensesCount: 0,
   currentMonthExpenses: [],
   loadCurrentMonthExpenses: async () => {},
@@ -31,11 +29,6 @@ export const ExpensesContext = createContext(defaultExpensesState);
 const ExpensesProvider = (props) => {
   const { children } = props;
   const { authenticatedUserId } = useAuthentication();
-
-  const [subscriptions, setSubscriptions] = useState(
-    /** @type {UserSubscription[]} /*/ ([])
-  );
-
   const [currentMonthExpensesCount, setCurrentMonthExpensesCount] = useState(0);
 
   const loadCurrentMonthExpensesCount = useCallback(async () => {
@@ -70,18 +63,6 @@ const ExpensesProvider = (props) => {
     setCurrentMonthExpenses(expenses);
   }, [authenticatedUserId, loaded, setCurrentMonthExpenses]);
 
-  useEffect(() => {
-    const loadSubscriptions = async () => {
-      const subscriptions = await FirebaseFirestore.Subscriptions.getAll(
-        authenticatedUserId
-      );
-
-      setSubscriptions(subscriptions);
-    };
-
-    loadSubscriptions();
-  }, [authenticatedUserId]);
-
   /**
    * @param {Expense} expense
    */
@@ -93,7 +74,6 @@ const ExpensesProvider = (props) => {
     <ExpensesContext.Provider
       value={{
         addExpense,
-        subscriptions,
         currentMonthExpensesCount,
         currentMonthExpenses,
         loadCurrentMonthExpenses,

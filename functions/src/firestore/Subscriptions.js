@@ -1,5 +1,7 @@
 import { Timestamp } from 'firebase-admin/firestore';
 import { db } from '.';
+import increaseMonth from '../../../common/increaseMonth';
+import decreaseMonth from '../../../common/decreaseMonth';
 
 /** @type {Collection<UserSubscriptionDBData>} */
 // @ts-ignore
@@ -12,26 +14,69 @@ const collection = db.collection('subscriptions');
  */
 const add = async (userId, subscription) => {
   const doc = collection.doc();
+  const { card, day, startDate, endDate } = subscription;
+  const { lastBuyDay } = card;
 
-  /** @type {UserSubscription} */
-  const userSubscription = {
-    ...subscription,
-    id: doc.id,
-    userId,
-  };
+  const startMonth = startDate.getMonth();
+  const startYear = startDate.getFullYear();
+
+  /** @type {Month} */
+  const paymentStart = { month: startMonth, year: startYear };
+
+  if (day <= lastBuyDay) {
+    increaseMonth(paymentStart);
+  }
+
+  const endDay = endDate ? endDate?.getDate() : null;
+  const endMonth = endDate ? endDate.getMonth() : null;
+  const endYear = endDate ? endDate.getFullYear() : null;
+  const subscriptionEnded = !!endDate;
+
+  /** @type {Month | null} */
+  let paymentEnd = null;
+
+  if (subscriptionEnded) {
+    paymentEnd = {
+      month: /** @type {number} */ (endMonth),
+      year: /** @type {number} */ (endYear),
+    };
+
+    if (endDay && day > endDay) {
+      decreaseMonth(paymentEnd);
+    }
+  }
 
   /** @type {ServerUserSubscriptionDBData} */
   const userSubscriptionDBData = {
-    ...userSubscription,
-    startDate: Timestamp.fromDate(subscription.startDate),
+    id: doc.id,
+    userId,
+    cardId: card.id,
+    day: subscription.day,
+    month: subscription.month,
+    type: subscription.type,
+    value: subscription.value,
+    startDate: Timestamp.fromDate(startDate),
+    startMonth,
+    startYear: startDate.getFullYear(),
+    paymentStartMonth: paymentStart.month,
+    paymentStartYear: paymentStart.year,
     endDate: subscription.endDate
       ? Timestamp.fromDate(subscription.endDate)
       : null,
+    endMonth,
+    endYear,
+    paymentEndMonth: paymentEnd ? paymentEnd.month : null,
+    paymentEndYear: paymentEnd ? paymentEnd.year : null,
   };
 
   await doc.set(userSubscriptionDBData);
 
-  return userSubscription;
+  return {
+    ...userSubscriptionDBData,
+    card,
+    startDate,
+    endDate,
+  };
 };
 
 const Subscriptions = {

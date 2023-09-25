@@ -167,15 +167,28 @@ type Subscription = {
   month: number;
   startDate: Date;
   endDate: Date | null;
+  card: UserCard;
 };
 
 type UserSubscription = {
   id: string;
   userId: string;
+  startMonth: number;
+  startYear: number;
+  paymentStartMonth: number;
+  paymentStartYear: number;
+  endMonth: number | null;
+  endYear: number | null;
+  paymentEndMonth: number | null;
+  paymentEndYear: number | null;
 } & Subscription;
 
+type IncompleteUserSubscription = Omit<UserSubscription, 'card'> & {
+  cardId: string;
+};
+
 type UserSubscriptionDBData = Override<
-  UserSubscription,
+  IncompleteUserSubscription,
   {
     startDate: import('firebase/firestore').Timestamp;
     endDate: import('firebase/firestore').Timestamp | null;

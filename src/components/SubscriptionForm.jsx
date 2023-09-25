@@ -13,6 +13,7 @@ import {
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import useSubscriptions from '../providers/useSubscriptions';
+import CardSelector from './CardSelector';
 import FilledDatePicker from './common/FilledDatePicker';
 import FilledDayPicker from './common/FilledDayPicker';
 import FilledMonthPicker from './common/FilledMonthPicker';
@@ -33,6 +34,7 @@ const SubscriptionForm = (props) => {
   const [month, setMonth] = useState(/** @type {number | null} */ (null));
   const [startDate, setStartDate] = useState(/** @type {Date | null} */ (null));
   const [endDate, setEndDate] = useState(/** @type {Date | null} */ (null));
+  const [card, setCard] = useState(/** @type {UserCard | null} */ (null));
 
   /**
    * @param {SubscriptionType} newType
@@ -54,6 +56,7 @@ const SubscriptionForm = (props) => {
       month: /** @type {number} */ (month),
       startDate: /** @type {Date} */ (startDate),
       endDate: /** @type {Date} */ (endDate),
+      card: /** @type {UserCard} */ (card),
     };
 
     await addSubscription(subscription);
@@ -129,6 +132,14 @@ const SubscriptionForm = (props) => {
         <Grid item xs={4}>
           <FilledDatePicker label="End date" onChange={setEndDate} />
         </Grid>
+      </Grid>
+      <Grid item>
+        <CardSelector
+          label="Credit card"
+          baseId="subscription"
+          card={card}
+          onCardSelect={setCard}
+        />
       </Grid>
       <Grid item sx={{ marginTop: 3 }}>
         <Button
