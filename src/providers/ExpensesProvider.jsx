@@ -1,8 +1,15 @@
 import PropTypes from 'prop-types';
-import { createContext, useCallback, useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import FirebaseFirestore from '../firebase/firestore';
 import FirebaseFunctions from '../firebase/functions';
 import useIncompleteExpenses from '../usecases/useIncompleteExpenses';
+import EventEmitter from '../utils/EventEmitter';
 import useAuthentication from './useAuthentication';
 
 /**
@@ -11,6 +18,7 @@ import useAuthentication from './useAuthentication';
  * @property {number} currentMonthExpensesCount
  * @property {UserExpense[]} currentMonthExpenses,
  * @property {() => Promise<void>} loadCurrentMonthExpenses
+ * @property {EventEmitter} emmiter
  */
 
 /** @type {ExpensesState} */
@@ -19,6 +27,7 @@ const defaultExpensesState = {
   currentMonthExpensesCount: 0,
   currentMonthExpenses: [],
   loadCurrentMonthExpenses: async () => {},
+  emmiter: new EventEmitter(),
 };
 
 export const ExpensesContext = createContext(defaultExpensesState);
@@ -30,6 +39,10 @@ const ExpensesProvider = (props) => {
   const { children } = props;
   const { authenticatedUserId } = useAuthentication();
   const [currentMonthExpensesCount, setCurrentMonthExpensesCount] = useState(0);
+
+  const emmiter = useMemo(() => {
+    return new EventEmitter();
+  }, []);
 
   const loadCurrentMonthExpensesCount = useCallback(async () => {
     const count = await FirebaseFirestore.expenses.currentMonth.getCount(
@@ -68,6 +81,8 @@ const ExpensesProvider = (props) => {
    */
   const addExpense = async (expense) => {
     await FirebaseFunctions.expenses.add(expense);
+
+    emmiter.emit('update');
   };
 
   return (
@@ -77,6 +92,7 @@ const ExpensesProvider = (props) => {
         currentMonthExpensesCount,
         currentMonthExpenses,
         loadCurrentMonthExpenses,
+        emmiter,
       }}
     >
       {children}

@@ -3,9 +3,11 @@ import usePagination from '../utils/pagination/usePagination';
 import FirebaseFirestore from '../firebase/firestore';
 import useAuthentication from '../providers/useAuthentication';
 import useIncompleteExpenses from './useIncompleteExpenses';
+import useExpenses from '../providers/useExpenses';
 
 const useOngoingExpensesPagination = () => {
   const { authenticatedUserId } = useAuthentication();
+  const { emmiter } = useExpenses();
 
   const getItems = useMemo(() => {
     return FirebaseFirestore.expenses.ongoing.pager(authenticatedUserId);
@@ -18,6 +20,8 @@ const useOngoingExpensesPagination = () => {
   const { items, ...rest } = usePagination({
     getItems,
     getTotal,
+    emmiter,
+    eventName: 'update',
   });
 
   const { expenses, setIncompleteExpenses } = useIncompleteExpenses();

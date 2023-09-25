@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 /**
  * @template T
@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
  * @property {number} [pageSize]
  * @property {(start: number) => Promise<T[]>} getItems
  * @property {() => Promise<number>} getTotal
+ * @property {import('../EventEmitter').default} [emmiter]
+ * @property {string} [eventName]
  */
 
 /**
@@ -23,6 +25,8 @@ const usePagination = (
     pageSize = 5,
     getItems = async () => [],
     getTotal = async () => 0,
+    emmiter,
+    eventName,
   } = params;
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
@@ -36,27 +40,45 @@ const usePagination = (
   const onNextPage = () => setPage(page + 1);
   const onBackPage = () => setPage(page - 1);
 
-  useEffect(() => {
-    const loadItems = async () => {
-      setItems([]);
+  const loadTotal = useCallback(async () => {
+    const total = await getTotal();
 
-      const newItems = await getItems(startItem);
+    setTotal(total);
+  }, [getTotal]);
 
-      setItems(newItems);
-    };
+  const loadPage = useCallback(async () => {
+    setItems([]);
 
-    loadItems();
+    const newItems = await getItems(startItem);
+
+    setItems(newItems);
   }, [startItem, getItems]);
 
-  useEffect(() => {
-    const loadTotal = async () => {
-      const total = await getTotal();
-
-      setTotal(total);
-    };
-
+  const onUpdate = useCallback(() => {
     loadTotal();
-  }, [getTotal]);
+    setPage(0);
+    loadPage();
+  }, [loadTotal, loadPage]);
+
+  useEffect(() => {
+    loadPage();
+  }, [loadPage]);
+
+  useEffect(() => {
+    loadTotal();
+  }, [loadTotal]);
+
+  useEffect(() => {
+    if (!eventName || !emmiter) {
+      return;
+    }
+
+    emmiter.on(eventName, onUpdate);
+
+    return () => {
+      emmiter.off(eventName, onUpdate);
+    };
+  }, [eventName, emmiter, onUpdate]);
 
   return {
     page,
