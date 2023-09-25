@@ -6,6 +6,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import afterMonth from '../../common/afterMonth';
 import beforeMonth from '../../common/beforeMonth';
 import getCurrentMonth from '../../common/getCurrentMonth';
 import getDateString from '../../common/getDateString';
@@ -68,9 +69,11 @@ const SubscriptionsProvider = (props) => {
     loadAll();
   }, [authenticatedUserId, setSubscriptions]);
 
-  const subscriptionsCost = useMemo(() => {
+  const { subscriptionCostByMonth, fixedSubscriptionCost } = useMemo(() => {
     /** @type {{ [dateString: string]: number }} */
-    const subscriptionsCost = {};
+    const subscriptionCostByMonth = {};
+
+    let fixedSubscriptionCost = 0;
 
     for (const subscription of subscriptions) {
       const {
@@ -98,17 +101,23 @@ const SubscriptionsProvider = (props) => {
       while (beforeMonth(month, lastMonth)) {
         const dateString = getDateString(month.month, month.year);
 
-        if (!subscriptionsCost[dateString]) {
-          subscriptionsCost[dateString] = 0;
+        if (!subscriptionCostByMonth[dateString]) {
+          subscriptionCostByMonth[dateString] = 0;
         }
 
-        subscriptionsCost[dateString] += value;
+        subscriptionCostByMonth[dateString] += value;
 
         increaseMonth(month);
       }
+
+      const onGoingSubscription = !endDate;
+
+      if (onGoingSubscription) {
+        fixedSubscriptionCost += value;
+      }
     }
 
-    return subscriptionsCost;
+    return { subscriptionCostByMonth, fixedSubscriptionCost };
   }, [subscriptions]);
 
   const getMonthSubscriptionCost = useCallback(
@@ -118,11 +127,15 @@ const SubscriptionsProvider = (props) => {
      */
     (month) => {
       const dateString = getDateString(month.month, month.year);
-      const cost = subscriptionsCost[dateString];
+      let cost = subscriptionCostByMonth[dateString] ?? 0;
 
-      return cost ?? 0;
+      if (afterMonth(month, getCurrentMonth())) {
+        cost += fixedSubscriptionCost;
+      }
+
+      return cost;
     },
-    [subscriptionsCost]
+    [subscriptionCostByMonth, fixedSubscriptionCost]
   );
 
   /**

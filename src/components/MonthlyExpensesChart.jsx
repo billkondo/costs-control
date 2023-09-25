@@ -57,6 +57,7 @@ const MonthlyExpensesChart = (props) => {
       yAxis={[
         {
           max: allZeros ? 1000 : undefined,
+          min: 0,
         },
       ]}
       height={300}
