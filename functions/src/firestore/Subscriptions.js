@@ -16,6 +16,7 @@ const add = async (userId, subscription) => {
   const doc = collection.doc();
   const { card, day, startDate, endDate } = subscription;
   const { lastBuyDay } = card;
+  const chargedNextMonth = day > lastBuyDay;
 
   const startMonth = startDate.getMonth();
   const startYear = startDate.getFullYear();
@@ -23,11 +24,10 @@ const add = async (userId, subscription) => {
   /** @type {Month} */
   const paymentStart = { month: startMonth, year: startYear };
 
-  if (day <= lastBuyDay) {
+  if (chargedNextMonth) {
     increaseMonth(paymentStart);
   }
 
-  const endDay = endDate ? endDate?.getDate() : null;
   const endMonth = endDate ? endDate.getMonth() : null;
   const endYear = endDate ? endDate.getFullYear() : null;
   const subscriptionEnded = !!endDate;
@@ -36,13 +36,19 @@ const add = async (userId, subscription) => {
   let paymentEnd = null;
 
   if (subscriptionEnded) {
+    const endDay = endDate.getDate();
+
     paymentEnd = {
       month: /** @type {number} */ (endMonth),
       year: /** @type {number} */ (endYear),
     };
 
-    if (endDay && day > endDay) {
+    const chargedAtEnd = day <= endDay;
+
+    if (!chargedAtEnd) {
       decreaseMonth(paymentEnd);
+    } else if (chargedNextMonth) {
+      increaseMonth(paymentEnd);
     }
   }
 
