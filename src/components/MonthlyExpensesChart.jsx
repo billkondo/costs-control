@@ -1,5 +1,7 @@
 import { LineChart } from '@mui/x-charts';
 import PropTypes from 'prop-types';
+import { useMemo } from 'react';
+import useSubscriptions from '../providers/useSubscriptions';
 import brlFormat from '../utils/currency/brlFormat';
 import getChartLabel from '../utils/date/getChartLabel';
 
@@ -13,13 +15,23 @@ import getChartLabel from '../utils/date/getChartLabel';
  */
 const MonthlyExpensesChart = (props) => {
   const { monthlyExpenses } = props;
+  const { getMonthSubscriptionCost } = useSubscriptions();
 
-  if (!monthlyExpenses.length) {
+  const expenses = useMemo(
+    () =>
+      monthlyExpenses.map((monthlyExpense) => ({
+        ...monthlyExpense,
+        value: monthlyExpense.value + getMonthSubscriptionCost(monthlyExpense),
+      })),
+    [monthlyExpenses, getMonthSubscriptionCost]
+  );
+
+  if (!expenses.length) {
     return null;
   }
 
-  const xLabels = monthlyExpenses.map(getChartLabel);
-  const yData = monthlyExpenses.map(({ value }) => value);
+  const xLabels = expenses.map(getChartLabel);
+  const yData = expenses.map(({ value }) => value);
   const allZeros = yData.reduce(
     (allZeros, value) => allZeros && value === 0,
     true
