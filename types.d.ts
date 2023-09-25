@@ -122,6 +122,7 @@ type UserExpense = {
   paymentDates: string[];
   month: number;
   year: number;
+  paymentEndKey: number;
 } & Expense;
 
 type IncompleteUserExpense = Omit<UserExpense, 'store' | 'card'> & {

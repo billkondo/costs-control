@@ -14,6 +14,9 @@ import { db } from '..';
 import getCurrentMonthDateString from '../../utils/date/getCurrentMonthDateString';
 import getCurrentMonth from '../../utils/date/getCurrentMonth';
 import getCurrentYear from '../../utils/date/getCurrentYear';
+import getConstraints from './getConstraints';
+import Pager from './Pager';
+import getMonthKey from '../../../common/getMonthKey';
 
 /** @type {FirestoreCollectionReference<UserExpenseDBData>} */
 // @ts-ignore
@@ -91,18 +94,86 @@ const getCurrentMonthExpensesBaseQuery = (userId, maxSize = 5) => {
 };
 
 /**
+ * @param {string} userId
+ * @returns {(start?: number) => Promise<IncompleteUserExpense[]>}
+ */
+const getOngoingExpensesPager = (userId) => {
+  const pager = Pager(userId, getOngoingExpensesQuery);
+
+  const callback =
+    /**
+     * @param {number} [start]
+     */
+    async (start) => {
+      const expenses = await pager(start);
+
+      return expenses.map(mapUserExpenseDBDataToIncompleteUserExpense);
+    };
+
+  return callback;
+};
+
+/**
+ * @param {string} userId
+ * @returns {Promise<number>}
+ */
+const getOngoingExpensesCount = async (userId) => {
+  const query = getOngoingExpensesQuery({ userId });
+  const snapshot = await getCountFromServer(query);
+
+  return snapshot.data().count;
+};
+
+/**
+ * @param {QueryParams<UserExpenseDBData>} params
+ * @returns {FirestoreQuery<UserExpenseDBData>}
+ */
+const getOngoingExpensesQuery = (params) => {
+  const { userId } = params;
+  const constraints = getConstraints(params);
+  const currentMonth = getCurrentMonth();
+  const currentYear = getCurrentYear();
+
+  /** @type {Month} */
+  const month = {
+    month: currentMonth,
+    year: currentYear,
+  };
+  const monthKey = getMonthKey(month);
+
+  return query(
+    expensesCollection,
+    and(
+      where('userId', '==', userId),
+      where('paymentType', '==', 'CREDIT'),
+      where('paymentEndKey', '>=', monthKey)
+    ),
+    ...constraints
+  );
+};
+
+/**
  * @param {FirestoreQueryDocumentSnapshot<UserExpenseDBData>} doc
  * @returns {IncompleteUserExpense}
  */
 const mapUserExpenseDocToIncompleteUserExpense = (doc) => {
   const data = doc.data();
 
-  /** @type {IncompleteUserExpense} */
-  const incompleteUserExpense = {
+  return mapUserExpenseDBDataToIncompleteUserExpense({
     ...data,
     id: doc.id,
-    userId: data.userId,
-    buyDate: data.buyDate.toDate(),
+  });
+};
+
+/**
+ * @param {UserExpenseDBData} dbData
+ * @returns {IncompleteUserExpense}
+ */
+const mapUserExpenseDBDataToIncompleteUserExpense = (dbData) => {
+  /** @type {IncompleteUserExpense} */
+  const incompleteUserExpense = {
+    ...dbData,
+    buyDate: dbData.buyDate.toDate(),
   };
 
   return incompleteUserExpense;
@@ -113,5 +184,9 @@ export default {
     listener: currentMonthListener,
     getCount: currentMonthGetCount,
     getAll: currentMonthGetAll,
+  },
+  ongoing: {
+    count: getOngoingExpensesCount,
+    pager: getOngoingExpensesPager,
   },
 };

@@ -6,6 +6,7 @@ import CurrentMonthExpensesList from '../components/CurrentMonthExpensesList';
 import CurrentMonthSubscriptionsList from '../components/CurrentMonthSubscriptionsList';
 import LatestMonthExpenses from '../components/LatestMonthExpenses';
 import NextMonthExpenses from '../components/NextMonthExpenses';
+import OngoingExpensesList from '../components/OngoingExpensesList';
 
 const MainPage = () => {
   return (
@@ -39,6 +40,9 @@ const MainPage = () => {
         </Grid>
         <Grid item xs={12} md={4}>
           <CurrentMonthSubscriptionsList />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <OngoingExpensesList />
         </Grid>
       </Grid>
       <Grid container spacing={4}>

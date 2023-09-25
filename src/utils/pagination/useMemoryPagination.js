@@ -48,10 +48,14 @@ const useMemoryPagination = (params) => {
     [pages]
   );
 
+  const getTotal = useCallback(async () => {
+    return items.length;
+  }, [items]);
+
   return usePagination({
-    total,
     pageSize,
     getItems,
+    getTotal,
   });
 };
 

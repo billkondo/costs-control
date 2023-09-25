@@ -2,6 +2,7 @@ import { Timestamp } from 'firebase-admin/firestore';
 import { db } from '.';
 import stringifyPaymentDates from '../../../common/strigifyPaymentDates';
 import getExpensePaymentDates from '../../../common/getExpensePayment';
+import getMonthKey from '../../../common/getMonthKey';
 
 /** @type {Collection<UserExpenseDBData>} */
 // @ts-ignore
@@ -14,6 +15,9 @@ const collection = db.collection('expenses');
 const add = async (userId, expense) => {
   const { card, buyDate } = expense;
   const doc = collection.doc();
+  const expensePayments = getExpensePaymentDates(expense);
+  const lastPayment =
+    expensePayments.paymentDates[expensePayments.paymentDates.length - 1];
 
   /** @type {ServerUserExpenseDBData} */
   const expenseDBData = {
@@ -26,11 +30,10 @@ const add = async (userId, expense) => {
     partsCount: expense.partsCount,
     paymentType: expense.paymentType,
     value: expense.value,
-    paymentDates: stringifyPaymentDates(
-      getExpensePaymentDates(expense).paymentDates
-    ),
+    paymentDates: stringifyPaymentDates(expensePayments.paymentDates),
     month: buyDate.getMonth(),
     year: buyDate.getFullYear(),
+    paymentEndKey: getMonthKey(lastPayment),
   };
 
   if (card) {

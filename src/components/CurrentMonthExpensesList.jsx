@@ -1,12 +1,10 @@
 import { Card, Grid, List, ListItem, Typography } from '@mui/material';
 import { useEffect } from 'react';
-import padStart from '../../common/padStart';
 import FirebaseFirestore from '../firebase/firestore';
 import useAuthentication from '../providers/useAuthentication';
 import useExpenses from '../providers/useExpenses';
 import useIncompleteExpenses from '../usecases/useIncompleteExpenses';
-import ExpensePartChip from './ExpensePartChip';
-import PriceText from './PriceText';
+import ExpensesListItems from './ExpensesListItems';
 import ViewAllCurrentMonthExpensesButton from './ViewAllCurrentMonthExpensesButton';
 
 const CurrentMonthExpensesList = () => {
@@ -30,17 +28,6 @@ const CurrentMonthExpensesList = () => {
     };
   }, [authenticatedUserId, setIncompleteExpenses]);
 
-  /**
-   * @param {Date} date
-   * @returns {string}
-   */
-  const formatDate = (date) => {
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-
-    return `${padStart(day)} / ${padStart(month)}`;
-  };
-
   return (
     <Grid container direction="column">
       <Grid item>
@@ -55,27 +42,7 @@ const CurrentMonthExpensesList = () => {
           }}
         >
           <Card variant="outlined">
-            {expenses.map((expense) => {
-              const { id, buyDate, value } = expense;
-
-              return (
-                <ListItem key={id} divider>
-                  <Grid container alignItems="center" spacing={2}>
-                    <Grid item sx={{ flexGrow: 1 }}>
-                      <PriceText value={value} />
-                    </Grid>
-                    <Grid item>
-                      <ExpensePartChip expense={expense} />
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="body2">
-                        {formatDate(buyDate)}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </ListItem>
-              );
-            })}
+            <ExpensesListItems expenses={expenses} />
             {!hasAnyExpense ? (
               <Grid
                 container

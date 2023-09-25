@@ -50,7 +50,7 @@ const CurrentMonthSubscriptionsList = () => {
               const { id, value } = userSubscription;
 
               return (
-                <ListItem key={id} divider>
+                <ListItem key={id} divider sx={{ height: 50 }}>
                   <Grid container spacing={1}>
                     <Grid item>
                       <PriceText value={value} />

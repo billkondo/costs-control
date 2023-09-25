@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
  * @template T
  * @typedef {object} Params<T>
  * @property {number} [pageSize]
- * @property {number} total
  * @property {(start: number) => Promise<T[]>} getItems
+ * @property {() => Promise<number>} getTotal
  */
 
 /**
@@ -16,10 +16,15 @@ const usePagination = (
   params = {
     pageSize: 5,
     getItems: async () => [],
-    total: 0,
+    getTotal: async () => 0,
   }
 ) => {
-  const { pageSize = 5, getItems = async () => [], total = 0 } = params;
+  const {
+    pageSize = 5,
+    getItems = async () => [],
+    getTotal = async () => 0,
+  } = params;
+  const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [items, setItems] = useState(/** @type {T[]} */ ([]));
 
@@ -32,7 +37,7 @@ const usePagination = (
   const onBackPage = () => setPage(page - 1);
 
   useEffect(() => {
-    const load = async () => {
+    const loadItems = async () => {
       setItems([]);
 
       const newItems = await getItems(startItem);
@@ -40,8 +45,18 @@ const usePagination = (
       setItems(newItems);
     };
 
-    load();
+    loadItems();
   }, [startItem, getItems]);
+
+  useEffect(() => {
+    const loadTotal = async () => {
+      const total = await getTotal();
+
+      setTotal(total);
+    };
+
+    loadTotal();
+  }, [getTotal]);
 
   return {
     page,
