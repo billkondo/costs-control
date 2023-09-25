@@ -47,8 +47,6 @@ const usePagination = (
   }, [getTotal]);
 
   const loadPage = useCallback(async () => {
-    setItems([]);
-
     const newItems = await getItems(startItem);
 
     setItems(newItems);
