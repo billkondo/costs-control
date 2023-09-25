@@ -1,32 +1,12 @@
 import { Card, Grid, List, ListItem, Typography } from '@mui/material';
-import { useEffect } from 'react';
-import FirebaseFirestore from '../firebase/firestore';
-import useAuthentication from '../providers/useAuthentication';
-import useExpenses from '../providers/useExpenses';
-import useIncompleteExpenses from '../usecases/useIncompleteExpenses';
+import useCurrentMonthExpenses from '../usecases/useCurrentMonthExpenses';
 import ExpensesListItems from './ExpensesListItems';
 import ViewAllCurrentMonthExpensesButton from './ViewAllCurrentMonthExpensesButton';
 
 const CurrentMonthExpensesList = () => {
-  const { currentMonthExpensesCount } = useExpenses();
-  const { authenticatedUserId } = useAuthentication();
-  const { expenses, setIncompleteExpenses } = useIncompleteExpenses();
-
-  const hasAnyExpense = expenses.length > 0;
-  const hasManyExpenses = currentMonthExpensesCount > 5;
-
-  useEffect(() => {
-    const unsubscribe = FirebaseFirestore.expenses.currentMonth.listener(
-      authenticatedUserId,
-      (incompleteExpenses) => {
-        setIncompleteExpenses(incompleteExpenses);
-      }
-    );
-
-    return () => {
-      unsubscribe();
-    };
-  }, [authenticatedUserId, setIncompleteExpenses]);
+  const { total, items: expenses } = useCurrentMonthExpenses();
+  const hasAnyExpense = total > 0;
+  const hasManyExpenses = total > 5;
 
   return (
     <Grid container direction="column">

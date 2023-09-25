@@ -3,10 +3,7 @@ import {
   collection,
   getCountFromServer,
   getDocs,
-  limit,
-  onSnapshot,
   or,
-  orderBy,
   query,
   where,
 } from 'firebase/firestore';
@@ -24,28 +21,10 @@ const expensesCollection = collection(db, 'expenses');
 
 /**
  * @param {string} userId
- * @param {(currentMonthExpenses: IncompleteUserExpense[]) => void} onCurrentMonthExpensesChanged
- */
-const currentMonthListener = (userId, onCurrentMonthExpensesChanged) => {
-  const expensesQuery = getCurrentMonthExpensesBaseQuery(userId);
-
-  const unsubscribe = onSnapshot(expensesQuery, (querySnapshot) => {
-    const currentMonthExpenses = querySnapshot.docs.map(
-      mapUserExpenseDocToIncompleteUserExpense
-    );
-
-    onCurrentMonthExpensesChanged(currentMonthExpenses);
-  });
-
-  return unsubscribe;
-};
-
-/**
- * @param {string} userId
  * @returns {Promise<number>}
  */
-const currentMonthGetCount = async (userId) => {
-  const query = getCurrentMonthExpensesBaseQuery(userId);
+const currentMonthCount = async (userId) => {
+  const query = getCurrentMonthExpensesQuery({ userId });
   const snapshot = await getCountFromServer(query);
 
   return snapshot.data().count;
@@ -56,7 +35,7 @@ const currentMonthGetCount = async (userId) => {
  * @returns {Promise<IncompleteUserExpense[]>}
  */
 const currentMonthGetAll = async (userId) => {
-  const query = getCurrentMonthExpensesBaseQuery(userId, null);
+  const query = getCurrentMonthExpensesQuery({ userId });
   const snapshot = await getDocs(query);
   const expenses = snapshot.docs.map(mapUserExpenseDocToIncompleteUserExpense);
 
@@ -65,17 +44,22 @@ const currentMonthGetAll = async (userId) => {
 
 /**
  * @param {string} userId
- * @param {number | null} maxSize
  */
-const getCurrentMonthExpensesBaseQuery = (userId, maxSize = 5) => {
+const currentMonthPager = (userId) => {
+  return getExpensesPager(userId, getCurrentMonthExpensesQuery);
+};
+
+/**
+ * @param {QueryParams<UserExpenseDBData>} params
+ * @returns {FirestoreQuery<UserExpenseDBData>}
+ */
+const getCurrentMonthExpensesQuery = (params) => {
+  const { userId } = params;
   const currentMonthDateString = getCurrentMonthDateString();
-
-  /** @type {import('firebase/firestore').QueryNonFilterConstraint[]} */
-  const constraints = [orderBy('buyDate', 'desc')];
-
-  if (maxSize) {
-    constraints.push(limit(maxSize));
-  }
+  const constraints = getConstraints({
+    orderBy: ['buyDate', 'desc'],
+    ...params,
+  });
 
   return query(
     expensesCollection,
@@ -95,11 +79,18 @@ const getCurrentMonthExpensesBaseQuery = (userId, maxSize = 5) => {
 
 /**
  * @param {string} userId
+ */
+const ongoingPager = (userId) => {
+  return getExpensesPager(userId, getOngoingExpensesQuery);
+};
+
+/**
+ * @param {string} userId
+ * @param {GetQuery<UserExpenseDBData>} getQuery
  * @returns {(start?: number) => Promise<IncompleteUserExpense[]>}
  */
-const getOngoingExpensesPager = (userId) => {
-  const pager = Pager(userId, getOngoingExpensesQuery);
-
+const getExpensesPager = (userId, getQuery) => {
+  const pager = Pager(userId, getQuery);
   const callback =
     /**
      * @param {number} [start]
@@ -117,7 +108,7 @@ const getOngoingExpensesPager = (userId) => {
  * @param {string} userId
  * @returns {Promise<number>}
  */
-const getOngoingExpensesCount = async (userId) => {
+const ongoingCount = async (userId) => {
   const query = getOngoingExpensesQuery({ userId });
   const snapshot = await getCountFromServer(query);
 
@@ -181,12 +172,12 @@ const mapUserExpenseDBDataToIncompleteUserExpense = (dbData) => {
 
 export default {
   currentMonth: {
-    listener: currentMonthListener,
-    getCount: currentMonthGetCount,
+    count: currentMonthCount,
     getAll: currentMonthGetAll,
+    pager: currentMonthPager,
   },
   ongoing: {
-    count: getOngoingExpensesCount,
-    pager: getOngoingExpensesPager,
+    count: ongoingCount,
+    pager: ongoingPager,
   },
 };

@@ -4,7 +4,6 @@ import ExpensesListItems from './ExpensesListItems';
 
 const OngoingExpensesList = () => {
   const { items, total } = useOngoingExpensesPagination();
-
   const hasAnyOngoingExpense = total > 0;
 
   return (

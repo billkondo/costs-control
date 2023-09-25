@@ -3,7 +3,7 @@ import { getDocs } from 'firebase/firestore';
 /**
  * @template T
  * @param {string} userId
- * @param {(params: QueryParams<T>) => FirestoreQuery<T>} getQuery
+ * @param {GetQuery<T>} getQuery
  * @returns {(start?: number) => Promise<T[]>}
  */
 const Pager = (userId, getQuery) => {

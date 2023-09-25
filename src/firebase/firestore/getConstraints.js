@@ -1,4 +1,4 @@
-import { limit, startAfter } from 'firebase/firestore';
+import { limit, orderBy, startAfter } from 'firebase/firestore';
 
 /**
  * @template T
@@ -6,7 +6,7 @@ import { limit, startAfter } from 'firebase/firestore';
  * @returns {import('firebase/firestore').QueryNonFilterConstraint[]}
  */
 const getConstraints = (params) => {
-  const { lastDocument, maxSize } = params;
+  const { lastDocument, maxSize, orderBy: orderByParam } = params;
 
   /** @type {import('firebase/firestore').QueryNonFilterConstraint[]} */
   const constraints = [];
@@ -17,6 +17,10 @@ const getConstraints = (params) => {
 
   if (lastDocument) {
     constraints.push(startAfter(lastDocument));
+  }
+
+  if (orderByParam) {
+    constraints.push(orderBy(...orderByParam));
   }
 
   return constraints;

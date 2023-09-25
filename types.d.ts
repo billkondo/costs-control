@@ -10,6 +10,8 @@ type withID = {
   id: string;
 };
 
+type GetQuery<T> = (params: QueryParams<T>) => FirestoreQuery<T>;
+
 // QueryParams
 
 type QueryParams<T> = {
@@ -18,6 +20,10 @@ type QueryParams<T> = {
   lastDocument?: QueryDocumentSnapshot<
     import('firebase/firestore').QueryDocumentSnapshot<T>
   >;
+  orderBy?: [
+    field: string,
+    order?: import('firebase/firestore').OrderByDirection
+  ];
 };
 
 // Firestore

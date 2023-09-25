@@ -1,11 +1,5 @@
 import PropTypes from 'prop-types';
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, useCallback, useMemo, useState } from 'react';
 import FirebaseFirestore from '../firebase/firestore';
 import FirebaseFunctions from '../firebase/functions';
 import useIncompleteExpenses from '../usecases/useIncompleteExpenses';
@@ -15,7 +9,6 @@ import useAuthentication from './useAuthentication';
 /**
  * @typedef {object} ExpensesState
  * @property {(expense: Expense) => Promise<void>} addExpense
- * @property {number} currentMonthExpensesCount
  * @property {UserExpense[]} currentMonthExpenses,
  * @property {() => Promise<void>} loadCurrentMonthExpenses
  * @property {EventEmitter} emmiter
@@ -24,7 +17,6 @@ import useAuthentication from './useAuthentication';
 /** @type {ExpensesState} */
 const defaultExpensesState = {
   addExpense: async () => {},
-  currentMonthExpensesCount: 0,
   currentMonthExpenses: [],
   loadCurrentMonthExpenses: async () => {},
   emmiter: new EventEmitter(),
@@ -38,23 +30,10 @@ export const ExpensesContext = createContext(defaultExpensesState);
 const ExpensesProvider = (props) => {
   const { children } = props;
   const { authenticatedUserId } = useAuthentication();
-  const [currentMonthExpensesCount, setCurrentMonthExpensesCount] = useState(0);
 
   const emmiter = useMemo(() => {
     return new EventEmitter();
   }, []);
-
-  const loadCurrentMonthExpensesCount = useCallback(async () => {
-    const count = await FirebaseFirestore.expenses.currentMonth.getCount(
-      authenticatedUserId
-    );
-
-    setCurrentMonthExpensesCount(count);
-  }, [authenticatedUserId]);
-
-  useEffect(() => {
-    loadCurrentMonthExpensesCount();
-  }, [loadCurrentMonthExpensesCount]);
 
   const {
     expenses: currentMonthExpenses,
@@ -89,7 +68,6 @@ const ExpensesProvider = (props) => {
     <ExpensesContext.Provider
       value={{
         addExpense,
-        currentMonthExpensesCount,
         currentMonthExpenses,
         loadCurrentMonthExpenses,
         emmiter,
