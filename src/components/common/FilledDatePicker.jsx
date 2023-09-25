@@ -57,7 +57,7 @@ FilledDatePicker.propTypes = {
   fullWidth: PropTypes.bool,
   onChange: PropTypes.func,
   datePickerProps: PropTypes.object,
-  label: PropTypes.bool,
+  label: PropTypes.string,
   disableOpenPicker: PropTypes.bool,
   views: PropTypes.array,
 };

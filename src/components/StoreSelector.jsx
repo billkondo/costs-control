@@ -22,7 +22,7 @@ const StoreSelector = (props) => {
         <FilledInput
           id="store-selector"
           label="Store"
-          value={store?.name}
+          value={store?.name ?? ''}
           readOnly
           startAdornment={
             <InputAdornment position="start">
