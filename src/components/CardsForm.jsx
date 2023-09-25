@@ -2,6 +2,7 @@ import { Box, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import useCards from '../providers/useCards';
+import FilledDayPicker from './common/FilledDayPicker';
 import FilledInput from './common/FilledInput';
 
 /**
@@ -53,19 +54,7 @@ const CardsForm = (props) => {
           }
         }}
       />
-      <FilledInput
-        id="card-last-buy-day"
-        label="Last buy day"
-        onChange={(e) => {
-          const newLastBuyDay = parseInt(e.target.value);
-
-          if (!isNaN(newLastBuyDay)) {
-            setLastBuyDay(newLastBuyDay);
-          } else {
-            setLastBuyDay(null);
-          }
-        }}
-      />
+      <FilledDayPicker label="Last buy day" onDayChange={setLastBuyDay} />
       <FilledInput
         id="card-name"
         label="Name"

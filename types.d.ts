@@ -6,6 +6,10 @@ type Without<T, K> = {
   [L in Exclude<keyof T, K>]: T[L];
 };
 
+type withID = {
+  id: string;
+};
+
 // QueryParams
 
 type QueryParams<T> = {

@@ -21,7 +21,6 @@ import TableControl from './common/Table/TableControl';
 /**
  * @param {StoresListProps} props
  */
-
 const StoresList = (props) => {
   const { selectable, onSelect } = props;
   const { stores, loadStores } = useStores();
@@ -83,7 +82,7 @@ const StoresList = (props) => {
       <ListItem>
         <Grid container>
           <Grid item sx={{ flexGrow: 1 }}>
-            <Typography variant="h6">Registered stores</Typography>
+            <Typography variant="h6">Stores</Typography>
           </Grid>
           <Grid item>
             <AddStoreButton />

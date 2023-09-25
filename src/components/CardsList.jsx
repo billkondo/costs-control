@@ -1,56 +1,65 @@
-import { Grid, List, ListItem, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import useCards from '../providers/useCards';
 import AddCardButton from './AddCardButton';
+import ListWithControls from './common/List/ListWithControls';
 
-const CardsList = () => {
+/**
+ * @param {ListWithControlsSelectProps<UserCard>} props
+ */
+const CardsList = (props) => {
   const { cards } = useCards();
-  const hasAnyCard = cards.length > 0;
 
   return (
-    <List sx={{ border: '1px solid rgba(0, 0, 0, 0.12)', borderRadius: 1 }}>
-      <ListItem>
-        <Grid container alignItems="center">
+    <ListWithControls
+      {...props}
+      title="You cards"
+      controls={<AddCardButton />}
+      items={cards}
+      bodyHeader={
+        <Grid container spacing={4} sx={{ marginBottom: 1 }}>
           <Grid item sx={{ flexGrow: 1 }}>
-            <Typography variant="h6">Your cards</Typography>
+            <Typography variant="body1">
+              <b>Card name</b>
+            </Typography>
           </Grid>
           <Grid item>
-            <AddCardButton />
+            <Typography variant="body1">
+              <b>Last four digits</b>
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography variant="body1">
+              <b>Last buy day</b>
+            </Typography>
           </Grid>
         </Grid>
-      </ListItem>
-      {hasAnyCard ? (
-        <ListItem sx={{ marginTop: 3 }}>
-          <Grid container>
+      }
+      renderItem={(card) => {
+        const { name, lastFourDigits, lastBuyDay } = card;
+
+        return (
+          <Grid container spacing={4}>
             <Grid item sx={{ flexGrow: 1 }}>
-              <Typography variant="body1">
-                <b>Card name</b>
-              </Typography>
+              <Typography variant="body1">{name}</Typography>
             </Grid>
             <Grid item>
-              <Typography variant="body1">
-                <b>Last four digits</b>
+              <Typography variant="body1">{lastFourDigits}</Typography>
+            </Grid>
+            <Grid item>
+              <Typography
+                variant="body1"
+                style={{ visibility: 'hidden', height: 0 }}
+              >
+                <b>Last buy day</b>
+              </Typography>
+              <Typography variant="body1" sx={{ textAlign: 'end' }}>
+                {lastBuyDay}
               </Typography>
             </Grid>
           </Grid>
-        </ListItem>
-      ) : null}
-      {cards.map((card) => {
-        const { id, name, lastFourDigits } = card;
-
-        return (
-          <ListItem key={id}>
-            <Grid container>
-              <Grid item sx={{ flexGrow: 1 }}>
-                <Typography variant="body1">{name}</Typography>
-              </Grid>
-              <Grid item>
-                <Typography variant="body1">{lastFourDigits}</Typography>
-              </Grid>
-            </Grid>
-          </ListItem>
         );
-      })}
-    </List>
+      }}
+    />
   );
 };
 

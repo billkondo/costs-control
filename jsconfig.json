@@ -9,7 +9,8 @@
     "moduleResolution": "bundler",
     "types": ["vite/client"],
     "lib": ["es2015", "dom"],
-    "strict": true
+    "strict": true,
+    "skipLibCheck": true
   },
-  "include": ["./src", "./common"]
+  "include": ["./src", "./common"],
 }
