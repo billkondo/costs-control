@@ -129,8 +129,15 @@ const SubscriptionsProvider = (props) => {
    * @param {Subscription} subscription
    */
   const addSubscription = async (subscription) => {
-    await FirebaseFunctions.subscriptions.add(subscription);
+    const createdSubscription = await FirebaseFunctions.subscriptions.add(
+      subscription
+    );
+
     await loadCurrentMonthSubscriptionsLength();
+
+    setSubscriptions((subscriptions) =>
+      subscriptions.concat([createdSubscription])
+    );
   };
 
   return (

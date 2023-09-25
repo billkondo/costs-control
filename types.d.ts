@@ -199,3 +199,11 @@ type AddSubscriptionRequest = Override<
   Subscription,
   { startDate: string; endDate: string | null }
 >;
+
+type AddSubscriptionResponse = Override<
+  IncompleteUserSubscription,
+  {
+    startDate: string;
+    endDate: string | null;
+  }
+>;
