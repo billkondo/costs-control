@@ -8,13 +8,12 @@ import * as functions from 'firebase-functions/v2';
 const createUser = async (userLogin) => {
   try {
     const auth = firebase.auth();
-    const { email, password, name, timezone } = userLogin;
+    const { email, password, name } = userLogin;
     const user = await auth.createUser({
       email,
       password,
       displayName: name,
     });
-    await auth.setCustomUserClaims(user.uid, { timezone });
 
     return user;
   } catch (error) {

@@ -51,7 +51,6 @@ type Month = {
 type User = {
   name: string;
   email: string;
-  timezone: string;
 };
 
 type UserLogin = User & {

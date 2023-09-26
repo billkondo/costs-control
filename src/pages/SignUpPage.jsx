@@ -3,7 +3,6 @@ import { Box, Grid, Typography } from '@mui/material';
 import { FirebaseError } from 'firebase/app';
 import { useState } from 'react';
 import { Link } from 'wouter';
-import getUserTimezone from '../../common/getUserTimezone';
 import ErrorMessage from '../components/ErrorMessage';
 import GoogleButton from '../components/GoogleButton';
 import OrDivider from '../components/OrDivider';
@@ -35,7 +34,6 @@ const SignUpPage = () => {
         email,
         name,
         password,
-        timezone: getUserTimezone(),
       });
       await loginWithEmailAndPassword(email, password);
     } catch (error) {
