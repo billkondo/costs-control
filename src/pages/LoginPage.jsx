@@ -1,9 +1,11 @@
 import { LoadingButton } from '@mui/lab';
-import { Divider, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { FirebaseError } from 'firebase/app';
 import { useState } from 'react';
 import { Link } from 'wouter';
 import ErrorMessage from '../components/ErrorMessage';
+import GoogleButton from '../components/GoogleButton';
+import OrDivider from '../components/OrDivider';
 import FilledInput from '../components/common/FilledInput';
 import useAuthentication from '../providers/useAuthentication';
 
@@ -41,6 +43,7 @@ const LoginPage = () => {
           'auth/user-not-found',
           'auth/invalid-password',
           'auth/invalid-email',
+          'auth/missing-password',
         ];
 
         if (invalidEmailOrPasswordErrors.includes(code)) {
@@ -96,15 +99,18 @@ const LoginPage = () => {
           >
             Submit
           </LoadingButton>
-          <ErrorMessage>{error}</ErrorMessage>
         </div>
-        <Divider />
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
+        <Box sx={{ marginTop: -3 }}>
+          <ErrorMessage>{error}</ErrorMessage>
+        </Box>
+        <Box sx={{ display: 'flex', gap: 1, marginTop: -1 }}>
           <Typography variant="body1">{`Don't have an account?`}</Typography>
           <Link href="signup" style={{ textDecoration: 'none' }}>
             Sign up
           </Link>
-        </div>
+        </Box>
+        <OrDivider />
+        <GoogleButton />
       </Grid>
     </Grid>
   );

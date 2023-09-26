@@ -1,10 +1,12 @@
 import { LoadingButton } from '@mui/lab';
-import { Divider, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { FirebaseError } from 'firebase/app';
 import { useState } from 'react';
 import { Link } from 'wouter';
 import getUserTimezone from '../../common/getUserTimezone';
 import ErrorMessage from '../components/ErrorMessage';
+import GoogleButton from '../components/GoogleButton';
+import OrDivider from '../components/OrDivider';
 import FilledInput from '../components/common/FilledInput';
 import { loginWithEmailAndPassword } from '../firebase/auth';
 import FirebaseFunctions from '../firebase/functions';
@@ -109,15 +111,18 @@ const SignUpPage = () => {
           >
             Create account
           </LoadingButton>
-          <ErrorMessage>{error}</ErrorMessage>
         </div>
-        <Divider />
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
+        <Box sx={{ marginTop: -3 }}>
+          <ErrorMessage>{error}</ErrorMessage>
+        </Box>
+        <Box sx={{ display: 'flex', gap: 1, marginTop: -1 }}>
           <Typography variant="body1">{`Have an account?`}</Typography>
           <Link href="login" style={{ textDecoration: 'none' }}>
             Login
           </Link>
-        </div>
+        </Box>
+        <OrDivider />
+        <GoogleButton signUp />
       </Grid>
     </Grid>
   );
