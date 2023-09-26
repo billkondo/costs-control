@@ -4,8 +4,8 @@ import { Route, Switch } from 'wouter';
 import HeaderPage from './components/HeaderPage';
 import OnlyAuthenticated from './components/OnlyAuthenticated';
 import RedirectAuthenticated from './components/RedirectAuthenticated';
-import UserLoginForm from './components/UserLoginForm';
 import CardsPage from './pages/CardsPage';
+import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
 import SignUpPage from './pages/SignUpPage';
 import StoresPage from './pages/StoresPage';
@@ -27,7 +27,9 @@ function App() {
               </RedirectAuthenticated>
             </Route>
             <Route>
-              <UserLoginForm />
+              <RedirectAuthenticated>
+                <LoginPage />
+              </RedirectAuthenticated>
               <OnlyAuthenticated>
                 <div style={{ padding: '1rem' }}>
                   <SubscriptionsProvider>

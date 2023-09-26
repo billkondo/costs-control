@@ -4,6 +4,7 @@ import {
   FilledInput as MUIFilledInput,
 } from '@mui/material';
 import PropTypes from 'prop-types';
+import ErrorMessage from '../ErrorMessage';
 
 /**
  * @typedef {object} FilledInputProps
@@ -16,6 +17,8 @@ import PropTypes from 'prop-types';
  * @property {React.ReactNode} [startAdornment]
  * @property {boolean} [password]
  * @property {boolean} [email]
+ * @property {string} [helperText]
+ * @property {boolean} [error]
  */
 
 /**
@@ -32,6 +35,8 @@ const FilledInput = (props) => {
     startAdornment,
     password = false,
     email = false,
+    error = false,
+    helperText = '',
   } = props;
 
   /**
@@ -51,7 +56,7 @@ const FilledInput = (props) => {
 
   return (
     <FormControl fullWidth={fullWidth} variant="filled">
-      <InputLabel htmlFor={id} shrink>
+      <InputLabel htmlFor={id} shrink error={error}>
         {label}
       </InputLabel>
       <MUIFilledInput
@@ -61,8 +66,10 @@ const FilledInput = (props) => {
         onChange={onChange}
         readOnly={readOnly}
         type={getType()}
+        error={error}
         sx={{ paddingTop: 1 }}
       />
+      {helperText ? <ErrorMessage>{helperText}</ErrorMessage> : null}
     </FormControl>
   );
 };
@@ -77,6 +84,8 @@ FilledInput.propTypes = {
   startAdornment: PropTypes.node,
   password: PropTypes.bool,
   email: PropTypes.bool,
+  error: PropTypes.bool,
+  helperText: PropTypes.string,
 };
 
 export default FilledInput;

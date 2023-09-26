@@ -1,7 +1,6 @@
 /// <reference path="../types.d.ts"/>
 /// <reference path="../../types.d.ts"/>
 
-import * as firebase from 'firebase-admin';
 import * as functionsV2 from 'firebase-functions/v2';
 import Subscriptions from './firestore/Subscriptions';
 import Stores from './firestore/Stores';
@@ -10,6 +9,7 @@ import Cards from './firestore/Cards';
 import Expenses from './firestore/Expenses';
 import isImmediateExpense from '../../common/isImmediateExpense';
 import getExpensePayment from '../../common/getExpensePayment';
+import FirebaseAuthentication from './auth/FirebaseAuthentication';
 
 /**
  * @param {UserExpenseDBData} userExpenseDBData
@@ -200,13 +200,8 @@ exports.addUser = functionsV2.https.onCall(
    * @param {FunctionCall<AddUserRequest>} request
    */
   async (request) => {
-    const { email, name, password, timezone } = request.data;
+    const userLogin = request.data;
 
-    const user = await firebase.auth().createUser({
-      email,
-      password,
-      displayName: name,
-    });
-    await firebase.auth().setCustomUserClaims(user.uid, { timezone });
+    await FirebaseAuthentication.createUser(userLogin);
   }
 );

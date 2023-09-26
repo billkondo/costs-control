@@ -1,20 +1,32 @@
-import { Button, Divider, Grid, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Divider, Grid, Typography } from '@mui/material';
+import { FirebaseError } from 'firebase/app';
 import { useState } from 'react';
 import { Link } from 'wouter';
 import getUserTimezone from '../../common/getUserTimezone';
+import ErrorMessage from '../components/ErrorMessage';
 import FilledInput from '../components/common/FilledInput';
 import { loginWithEmailAndPassword } from '../firebase/auth';
 import FirebaseFunctions from '../firebase/functions';
 
 const SignUpPage = () => {
-  const [loading, setLoading] = useState(false);
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [errorName, setErrorName] = useState('');
+
   const onSubmit = async () => {
     try {
+      setError('');
+      setErrorName('');
+
+      if (!name) {
+        return setErrorName('Name should not be empty');
+      }
+
       setLoading(true);
 
       await FirebaseFunctions.Auth.addUser({
@@ -23,8 +35,19 @@ const SignUpPage = () => {
         password,
         timezone: getUserTimezone(),
       });
-
       await loginWithEmailAndPassword(email, password);
+    } catch (error) {
+      const setUnknownError = () => {
+        setError('It was not possible to create account');
+      };
+
+      if (error instanceof FirebaseError) {
+        const { message } = error;
+
+        setError(message);
+      } else {
+        setUnknownError();
+      }
     } finally {
       setLoading(false);
     }
@@ -56,6 +79,8 @@ const SignUpPage = () => {
 
               setName(newName);
             }}
+            error={!!errorName}
+            helperText={errorName}
           />
           <FilledInput
             id="signup-email"
@@ -76,14 +101,15 @@ const SignUpPage = () => {
               setPassword(newPassword);
             }}
           />
-          <Button
+          <LoadingButton
             onClick={onSubmit}
             variant="contained"
-            disabled={loading}
+            loading={loading}
             sx={{ textTransform: 'none', marginTop: 3 }}
           >
             Create account
-          </Button>
+          </LoadingButton>
+          <ErrorMessage>{error}</ErrorMessage>
         </div>
         <Divider />
         <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
