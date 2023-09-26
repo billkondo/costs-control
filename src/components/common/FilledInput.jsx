@@ -17,8 +17,7 @@ import ErrorMessage from '../ErrorMessage';
  * @property {React.ReactNode} [startAdornment]
  * @property {boolean} [password]
  * @property {boolean} [email]
- * @property {string} [helperText]
- * @property {boolean} [error]
+ * @property {string} [errorText]
  */
 
 /**
@@ -35,9 +34,9 @@ const FilledInput = (props) => {
     startAdornment,
     password = false,
     email = false,
-    error = false,
-    helperText = '',
+    errorText = '',
   } = props;
+  const error = !!errorText;
 
   /**
    * @returns {import('react').HTMLInputTypeAttribute}
@@ -69,7 +68,7 @@ const FilledInput = (props) => {
         error={error}
         sx={{ paddingTop: 1 }}
       />
-      {helperText ? <ErrorMessage>{helperText}</ErrorMessage> : null}
+      <ErrorMessage>{errorText}</ErrorMessage>
     </FormControl>
   );
 };
@@ -85,7 +84,7 @@ FilledInput.propTypes = {
   password: PropTypes.bool,
   email: PropTypes.bool,
   error: PropTypes.bool,
-  helperText: PropTypes.string,
+  errorText: PropTypes.string,
 };
 
 export default FilledInput;

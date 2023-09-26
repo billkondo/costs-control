@@ -8,16 +8,17 @@ import FilledInput from './common/FilledInput';
  * @typedef {object} StoreSelectorProps
  * @property {UserStore | null} store
  * @property {(store: UserStore) => void} onSelect
+ * @property {string} [errorText]
  */
 
 /**
  * @param {StoreSelectorProps} props
  */
 const StoreSelector = (props) => {
-  const { store, onSelect } = props;
+  const { store, onSelect, errorText = '' } = props;
 
   return (
-    <Grid container alignItems="center" spacing={1}>
+    <Grid container alignItems="flex-start" spacing={1}>
       <Grid item sx={{ flexGrow: 1 }}>
         <FilledInput
           id="store-selector"
@@ -31,9 +32,10 @@ const StoreSelector = (props) => {
               </Icon>
             </InputAdornment>
           }
+          errorText={errorText}
         />
       </Grid>
-      <Grid item>
+      <Grid item sx={{ marginTop: 1.5 }}>
         <SearchStoreButton onSelect={onSelect} />
       </Grid>
     </Grid>
@@ -43,6 +45,7 @@ const StoreSelector = (props) => {
 StoreSelector.propTypes = {
   store: PropTypes.object,
   onSelect: PropTypes.func,
+  errorText: PropTypes.string,
 };
 
 export default StoreSelector;

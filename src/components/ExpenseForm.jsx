@@ -1,6 +1,7 @@
 import { Box, Button, Grid, InputAdornment } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
+import validateExpense from '../../common/validateExpense';
 import { ExpensesContext } from '../providers/ExpensesProvider';
 import CardSelector from './CardSelector';
 import StoreSelector from './StoreSelector';
@@ -30,6 +31,10 @@ const ExpenseForm = (props) => {
   const [card, setCard] = useState(/** @type {UserCard | null} */ (null));
   const [store, setStore] = useState(/** @type {UserStore | null} */ (null));
 
+  const [errors, setErrors] = useState(
+    /** @type {ExpenseError | null} */ (null)
+  );
+
   const onSubmit = async () => {
     /** @type {Expense} */
     const expense = {
@@ -41,6 +46,12 @@ const ExpenseForm = (props) => {
       partsCount: /** @type {number} */ (partsCount),
       paymentType,
     };
+
+    const errors = validateExpense(expense);
+
+    if (errors) {
+      return setErrors(errors);
+    }
 
     await addExpense(expense);
 
@@ -55,6 +66,14 @@ const ExpenseForm = (props) => {
     setPartsCount(null);
     setCard(null);
     setPaymentType(paymentType);
+  };
+
+  /**
+   * @param {boolean} installment
+   */
+  const changeInstallment = (installment) => {
+    setInstallment(installment);
+    setPartsCount(null);
   };
 
   const isCreditPayment = paymentType === 'CREDIT';
@@ -76,6 +95,7 @@ const ExpenseForm = (props) => {
               setValue(null);
             }
           }}
+          errorText={errors?.value}
         />
       </Grid>
       <Grid item>
@@ -85,10 +105,15 @@ const ExpenseForm = (props) => {
           datePickerProps={{
             disableFuture: true,
           }}
+          errorText={errors?.buyDate}
         />
       </Grid>
       <Grid item>
-        <StoreSelector store={store} onSelect={setStore} />
+        <StoreSelector
+          store={store}
+          onSelect={setStore}
+          errorText={errors?.store}
+        />
       </Grid>
       <Grid item>
         <FilledSelector
@@ -110,6 +135,7 @@ const ExpenseForm = (props) => {
           label="Payment Type"
           value={paymentType}
           onChange={changePaymentType}
+          errorText={errors?.paymentType}
         />
       </Grid>
       {isCardPayment ? (
@@ -119,6 +145,7 @@ const ExpenseForm = (props) => {
             label={isCreditPayment ? 'Credit card' : 'Debit card'}
             onCardSelect={setCard}
             card={card}
+            errorText={errors?.card}
           />
         </Grid>
       ) : null}
@@ -128,7 +155,7 @@ const ExpenseForm = (props) => {
             <Switch
               label="Installment?"
               value={installment}
-              onChange={(checked) => setInstallment(checked)}
+              onChange={(checked) => changeInstallment(checked)}
             />
           </Box>
 
@@ -148,6 +175,7 @@ const ExpenseForm = (props) => {
                       setPartsCount(newPartsCount);
                     }
                   }}
+                  errorText={errors?.partsCount}
                 />
               </Grid>
             </Grid>

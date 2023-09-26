@@ -1,5 +1,6 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import PropTypes from 'prop-types';
+import ErrorMessage from '../ErrorMessage';
 
 /**
  * @template T
@@ -16,6 +17,7 @@ import PropTypes from 'prop-types';
  * @property {string} label
  * @property {(value: T) => void} [onChange]
  * @property {T} [value]
+ * @property {string} [errorText]
  */
 
 /**
@@ -23,11 +25,12 @@ import PropTypes from 'prop-types';
  * @param {FilledSelectorProps<T>} props
  */
 const FilledSelector = (props) => {
-  const { id, items, label, onChange, value } = props;
+  const { id, items, label, onChange, value, errorText = '' } = props;
+  const error = !!errorText;
 
   return (
     <FormControl fullWidth variant="filled">
-      <InputLabel htmlFor={id} shrink>
+      <InputLabel htmlFor={id} shrink error={error}>
         {label}
       </InputLabel>
       <Select
@@ -39,6 +42,7 @@ const FilledSelector = (props) => {
           // @ts-ignore
           onChange(newValue);
         }}
+        error={error}
         sx={{ paddingTop: 1 }}
       >
         {items.map((item) => {
@@ -52,6 +56,7 @@ const FilledSelector = (props) => {
           );
         })}
       </Select>
+      <ErrorMessage>{errorText}</ErrorMessage>
     </FormControl>
   );
 };
@@ -62,6 +67,7 @@ FilledSelector.propTypes = {
   label: PropTypes.string,
   onChange: PropTypes.func,
   value: PropTypes.any,
+  errorText: PropTypes.string,
 };
 
 export default FilledSelector;

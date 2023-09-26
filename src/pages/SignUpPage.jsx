@@ -79,8 +79,7 @@ const SignUpPage = () => {
 
               setName(newName);
             }}
-            error={!!errorName}
-            helperText={errorName}
+            errorText={errorName}
           />
           <FilledInput
             id="signup-email"

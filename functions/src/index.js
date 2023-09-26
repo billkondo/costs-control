@@ -10,6 +10,7 @@ import Expenses from './firestore/Expenses';
 import isImmediateExpense from '../../common/isImmediateExpense';
 import getExpensePayment from '../../common/getExpensePayment';
 import FirebaseAuthentication from './auth/FirebaseAuthentication';
+import validateExpense from '../../common/validateExpense';
 
 /**
  * @param {UserExpenseDBData} userExpenseDBData
@@ -74,6 +75,15 @@ exports.addExpense = functionsV2.https.onCall(
       ...data,
       buyDate: new Date(data.buyDate),
     };
+
+    const errors = validateExpense(expense);
+
+    if (errors) {
+      throw new functionsV2.https.HttpsError(
+        'invalid-argument',
+        'Expense is invalid'
+      );
+    }
 
     await Expenses.add(userId, expense);
   }

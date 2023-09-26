@@ -9,25 +9,27 @@ import FilledInput from './common/FilledInput';
  * @property {string} label
  * @property {(card: UserCard) => void} onCardSelect
  * @property {UserCard | null} card
+ * @property {string} [errorText]
  */
 
 /**
  * @param {CardSelectorProps} props
  */
 const CardSelector = (props) => {
-  const { baseId, label, onCardSelect, card } = props;
+  const { baseId, label, onCardSelect, card, errorText } = props;
 
   return (
-    <Grid container alignItems="center" spacing={1}>
+    <Grid container alignItems="flex-start" spacing={1}>
       <Grid item sx={{ flexGrow: 1 }}>
         <FilledInput
           id={`${baseId}-card-selector`}
           label={label}
           readOnly
           value={card?.name ?? ''}
+          errorText={errorText}
         />
       </Grid>
-      <Grid item>
+      <Grid item sx={{ marginTop: 1.5 }}>
         <SearchCardButton onSelect={onCardSelect} />
       </Grid>
     </Grid>
@@ -39,6 +41,7 @@ CardSelector.propTypes = {
   label: PropTypes.string,
   onCardSelect: PropTypes.func,
   card: PropTypes.object,
+  errorText: PropTypes.string,
 };
 
 export default CardSelector;

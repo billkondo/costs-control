@@ -12,6 +12,10 @@ type withID = {
 
 type GetQuery<T> = (params: QueryParams<T>) => FirestoreQuery<T>;
 
+type ValidationError<T> = {
+  [Property in keyof T]?: string;
+};
+
 // QueryParams
 
 type QueryParams<T> = {
@@ -120,6 +124,8 @@ type Expense = {
   partsCount: number;
   card: UserCard | null;
 };
+
+type ExpenseError = ValidationError<Expense>;
 
 type UserExpense = {
   id: string;
