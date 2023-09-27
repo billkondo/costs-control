@@ -44,6 +44,7 @@ const LoginPage = () => {
           'auth/invalid-password',
           'auth/invalid-email',
           'auth/missing-password',
+          'auth/wrong-password',
         ];
 
         if (invalidEmailOrPasswordErrors.includes(code)) {

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Redirect } from 'wouter';
+import { Redirect, useLocation } from 'wouter';
 import useAuthentication from '../providers/useAuthentication';
 
 /**
@@ -8,9 +8,15 @@ import useAuthentication from '../providers/useAuthentication';
 const RedirectAuthenticated = (props) => {
   const { children } = props;
   const { authenticated } = useAuthentication();
+  const [location] = useLocation();
+  const inLoginPage = location === '/login';
+
+  if (inLoginPage && authenticated) {
+    return <Redirect to="/" />;
+  }
 
   if (authenticated) {
-    return <Redirect to="/" />;
+    return null;
   }
 
   return children;
