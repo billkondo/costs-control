@@ -12,6 +12,7 @@ import getExpensePayment from '../../common/getExpensePayment';
 import FirebaseAuthentication from './auth/FirebaseAuthentication';
 import validateExpense from '../../common/validateExpense';
 import validateSubscription from '../../common/validateSubscription';
+import validateCard from '../../common/validateCard';
 
 /**
  * @param {UserExpenseDBData} userExpenseDBData
@@ -104,6 +105,16 @@ exports.addCard = functionsV2.https.onCall(
     }
 
     const card = request.data;
+
+    const errors = validateCard(card);
+
+    if (errors) {
+      throw new functionsV2.https.HttpsError(
+        'invalid-argument',
+        'Card is invalid'
+      );
+    }
+
     const userId = request.auth.uid;
     const userCard = await Cards.add(userId, card);
 

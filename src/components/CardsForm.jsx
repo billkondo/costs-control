@@ -1,6 +1,8 @@
-import { Box, Button } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import validateCard from '../../common/validateCard';
 import useCards from '../providers/useCards';
 import FilledDayPicker from './common/FilledDayPicker';
 import FilledInput from './common/FilledInput';
@@ -24,18 +26,33 @@ const CardsForm = (props) => {
     /** @type {number | null} */ (null)
   );
 
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(/** @type {CardError | null} */ (null));
+
   const onSubmit = async () => {
-    /** @type {Card} */
-    const card = {
-      name,
-      lastBuyDay: /** @type {number} */ (lastBuyDay),
-      lastFourDigits: /** @type {number} */ (lastFourDigits),
-    };
+    try {
+      setLoading(true);
 
-    await addCard(card);
+      /** @type {Card} */
+      const card = {
+        name,
+        lastBuyDay: /** @type {number} */ (lastBuyDay),
+        lastFourDigits: /** @type {number} */ (lastFourDigits),
+      };
 
-    if (onSubmitted) {
-      onSubmitted();
+      const errors = validateCard(card);
+
+      if (errors) {
+        return setErrors(errors);
+      }
+
+      await addCard(card);
+
+      if (onSubmitted) {
+        onSubmitted();
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,8 +70,13 @@ const CardsForm = (props) => {
             setLastFourDigits(null);
           }
         }}
+        errorText={errors?.lastFourDigits}
       />
-      <FilledDayPicker label="Last buy day" onDayChange={setLastBuyDay} />
+      <FilledDayPicker
+        label="Last buy day"
+        onDayChange={setLastBuyDay}
+        errorText={errors?.lastBuyDay}
+      />
       <FilledInput
         id="card-name"
         label="Name"
@@ -63,14 +85,16 @@ const CardsForm = (props) => {
 
           setName(newName);
         }}
+        errorText={errors?.name}
       />
-      <Button
+      <LoadingButton
         onClick={onSubmit}
         variant="contained"
+        loading={loading}
         sx={{ textTransform: 'none', marginTop: 3 }}
       >
         Save card
-      </Button>
+      </LoadingButton>
     </Box>
   );
 };

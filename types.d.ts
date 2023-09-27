@@ -103,6 +103,8 @@ type Card = {
   lastBuyDay: number;
 };
 
+type CardError = ValidationError<Card>;
+
 type UserCard = {
   id: string;
   userId: string;
