@@ -29,7 +29,7 @@ const HeaderPage = (props) => {
         <AppMenuButton />
         <Link href="/">
           <Typography variant="h6" sx={{ cursor: 'pointer' }}>
-            Expenses Manager
+            Costs Control
           </Typography>
         </Link>
       </div>

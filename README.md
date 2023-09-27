@@ -1,4 +1,4 @@
-# Expenses Manager
+# Costs Control
 
 ## Scripts 
 
