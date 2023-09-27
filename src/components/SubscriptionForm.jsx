@@ -1,21 +1,20 @@
+import { LoadingButton } from '@mui/lab';
 import {
   Box,
-  Button,
-  FilledInput,
-  FormControl,
   Grid,
   InputAdornment,
-  InputLabel,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import validateSubscription from '../../common/validateSubscription';
 import useSubscriptions from '../providers/useSubscriptions';
 import CardSelector from './CardSelector';
 import FilledDatePicker from './common/FilledDatePicker';
 import FilledDayPicker from './common/FilledDayPicker';
+import FilledInput from './common/FilledInput';
 import FilledMonthPicker from './common/FilledMonthPicker';
 
 /**
@@ -36,6 +35,11 @@ const SubscriptionForm = (props) => {
   const [endDate, setEndDate] = useState(/** @type {Date | null} */ (null));
   const [card, setCard] = useState(/** @type {UserCard | null} */ (null));
 
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(
+    /** @type {SubscriptionError | null} */ (null)
+  );
+
   /**
    * @param {SubscriptionType} newType
    */
@@ -48,21 +52,33 @@ const SubscriptionForm = (props) => {
   };
 
   const onSubmit = async () => {
-    /** @type {Subscription} */
-    const subscription = {
-      value: /** @type {number} */ (value),
-      type,
-      day: /** @type {number} */ (day),
-      month: /** @type {number} */ (month),
-      startDate: /** @type {Date} */ (startDate),
-      endDate: /** @type {Date} */ (endDate),
-      card: /** @type {UserCard} */ (card),
-    };
+    try {
+      setLoading(true);
 
-    await addSubscription(subscription);
+      /** @type {Subscription} */
+      const subscription = {
+        value: /** @type {number} */ (value),
+        type,
+        day: /** @type {number} */ (day),
+        month: /** @type {number} */ (month),
+        startDate: /** @type {Date} */ (startDate),
+        endDate: /** @type {Date} */ (endDate),
+        card: /** @type {UserCard} */ (card),
+      };
 
-    resetForm();
-    onSubscriptionSaved();
+      const errors = validateSubscription(subscription);
+
+      if (errors) {
+        return setErrors(errors);
+      }
+
+      await addSubscription(subscription);
+
+      resetForm();
+      onSubscriptionSaved();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const resetForm = () => {
@@ -75,24 +91,21 @@ const SubscriptionForm = (props) => {
   return (
     <Grid container direction="column" spacing={3}>
       <Grid item>
-        <FormControl fullWidth variant="filled">
-          <InputLabel htmlFor="subscription-value">Value</InputLabel>
-          <FilledInput
-            id="subscription-value"
-            startAdornment={
-              <InputAdornment position="start">R$</InputAdornment>
-            }
-            onChange={(e) => {
-              const newValue = parseFloat(e.target.value);
+        <FilledInput
+          id="subscription-value"
+          label="Value"
+          startAdornment={<InputAdornment position="start">R$</InputAdornment>}
+          onChange={(e) => {
+            const newValue = parseFloat(e.target.value);
 
-              if (!isNaN(newValue)) {
-                setValue(newValue);
-              } else {
-                setValue(null);
-              }
-            }}
-          />
-        </FormControl>
+            if (!isNaN(newValue)) {
+              setValue(newValue);
+            } else {
+              setValue(null);
+            }
+          }}
+          errorText={errors?.value}
+        />
       </Grid>
       <Grid item>
         <Box sx={{ p: 1 }}>
@@ -117,17 +130,29 @@ const SubscriptionForm = (props) => {
       </Grid>
       <Grid container item spacing={1}>
         <Grid item xs={4}>
-          <FilledDayPicker label="Charge day" onDayChange={setDay} />
+          <FilledDayPicker
+            label="Charge day"
+            onDayChange={setDay}
+            errorText={errors?.day}
+          />
         </Grid>
         {type === 'YEARLY' ? (
           <Grid item xs={4}>
-            <FilledMonthPicker label="Charge month" onMonthChange={setMonth} />
+            <FilledMonthPicker
+              label="Charge month"
+              onMonthChange={setMonth}
+              errorText={errors?.month}
+            />
           </Grid>
         ) : null}
       </Grid>
       <Grid container item spacing={1}>
         <Grid item xs={4}>
-          <FilledDatePicker label="Start date" onChange={setStartDate} />
+          <FilledDatePicker
+            label="Start date"
+            onChange={setStartDate}
+            errorText={errors?.startDate}
+          />
         </Grid>
         <Grid item xs={4}>
           <FilledDatePicker label="End date" onChange={setEndDate} />
@@ -139,17 +164,19 @@ const SubscriptionForm = (props) => {
           baseId="subscription"
           card={card}
           onCardSelect={setCard}
+          errorText={errors?.card}
         />
       </Grid>
       <Grid item sx={{ marginTop: 3 }}>
-        <Button
+        <LoadingButton
           variant="contained"
           fullWidth
           onClick={onSubmit}
+          loading={loading}
           sx={{ textTransform: 'none' }}
         >
           Save subscription
-        </Button>
+        </LoadingButton>
       </Grid>
     </Grid>
   );

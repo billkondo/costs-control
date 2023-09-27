@@ -182,6 +182,8 @@ type Subscription = {
   card: UserCard;
 };
 
+type SubscriptionError = ValidationError<Subscription>;
+
 type UserSubscription = {
   id: string;
   userId: string;

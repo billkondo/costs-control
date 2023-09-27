@@ -16,23 +16,20 @@ const validateExpense = (expense) => {
   /** @type {ExpenseError} */
   const errors = {};
 
-  // @ts-ignore
-  const parsedValue = parseFloat(value);
-
-  if (isNaN(parsedValue) || !parsedValue) {
+  if (isNaN(value) || !value) {
     errors['value'] = 'Invalid expense value';
   }
 
   if (!store) {
-    errors['store'] = 'Select where expense happened';
+    errors['store'] = 'Select where the expense happened';
   }
 
   if (!buyDate) {
-    errors['buyDate'] = 'Select when expense happened';
+    errors['buyDate'] = 'Select when the expense happened';
   }
 
   if (!paymentType) {
-    errors['paymentType'] = 'Select how expense was paid';
+    errors['paymentType'] = 'Select how the expense was paid';
   }
 
   const isCardPayment = paymentType === 'CREDIT' || paymentType === 'DEBIT';

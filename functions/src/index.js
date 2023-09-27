@@ -11,6 +11,7 @@ import isImmediateExpense from '../../common/isImmediateExpense';
 import getExpensePayment from '../../common/getExpensePayment';
 import FirebaseAuthentication from './auth/FirebaseAuthentication';
 import validateExpense from '../../common/validateExpense';
+import validateSubscription from '../../common/validateSubscription';
 
 /**
  * @param {UserExpenseDBData} userExpenseDBData
@@ -150,6 +151,16 @@ exports.addSubscription = functionsV2.https.onCall(
       startDate: new Date(request.data.startDate),
       endDate: request.data.endDate ? new Date(request.data.endDate) : null,
     };
+
+    const errors = validateSubscription(subscription);
+
+    if (errors) {
+      throw new functionsV2.https.HttpsError(
+        'invalid-argument',
+        'Subscription is invalid'
+      );
+    }
+
     const userId = request.auth.uid;
     const userSubscription = await Subscriptions.add(userId, subscription);
 
