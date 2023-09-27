@@ -5,8 +5,15 @@ import {
   GoogleAuthProvider,
 } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
-import firebaseConfig from './firebaseConfig';
+import FirebaseConfig from './FirebaseConfig';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
+import getMode from '../utils/getMode';
+
+const firebaseConfig = FirebaseConfig[getMode()];
+
+if (!firebaseConfig) {
+  throw new Error('Firebase Web was not configured correctly');
+}
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);

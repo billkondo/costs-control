@@ -16,6 +16,8 @@ type ValidationError<T> = {
   [Property in keyof T]?: string;
 };
 
+type Mode = keyof FirebaseConfig;
+
 // QueryParams
 
 type QueryParams<T> = {
@@ -28,6 +30,13 @@ type QueryParams<T> = {
     field: string,
     order?: import('firebase/firestore').OrderByDirection
   ];
+};
+
+// Firebase
+
+type FirebaseConfig = {
+  development?: object;
+  production?: object;
 };
 
 // Firestore

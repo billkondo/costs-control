@@ -5,4 +5,4 @@ node_modules/
 /index.js
 
 # Firebase configuration
-serviceAccount.json
+FirebaseConfig.js
