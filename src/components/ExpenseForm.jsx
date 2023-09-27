@@ -1,4 +1,5 @@
-import { Box, Button, Grid, InputAdornment } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Box, Grid, InputAdornment } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import validateExpense from '../../common/validateExpense';
@@ -31,31 +32,38 @@ const ExpenseForm = (props) => {
   const [card, setCard] = useState(/** @type {UserCard | null} */ (null));
   const [store, setStore] = useState(/** @type {UserStore | null} */ (null));
 
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(
     /** @type {ExpenseError | null} */ (null)
   );
 
   const onSubmit = async () => {
-    /** @type {Expense} */
-    const expense = {
-      value: /** @type {number} */ (value),
-      buyDate: /** @type {Date} */ (buyDate),
-      store: /** @type {UserStore} */ (store),
-      card: /** @type {UserCard} */ (card),
-      isInstallment: installment,
-      partsCount: /** @type {number} */ (partsCount),
-      paymentType,
-    };
+    try {
+      setLoading(true);
 
-    const errors = validateExpense(expense);
+      /** @type {Expense} */
+      const expense = {
+        value: /** @type {number} */ (value),
+        buyDate: /** @type {Date} */ (buyDate),
+        store: /** @type {UserStore} */ (store),
+        card: /** @type {UserCard} */ (card),
+        isInstallment: installment,
+        partsCount: /** @type {number} */ (partsCount),
+        paymentType,
+      };
 
-    if (errors) {
-      return setErrors(errors);
+      const errors = validateExpense(expense);
+
+      if (errors) {
+        return setErrors(errors);
+      }
+
+      await addExpense(expense);
+
+      onExpenseSaved();
+    } finally {
+      setLoading(false);
     }
-
-    await addExpense(expense);
-
-    onExpenseSaved();
   };
 
   /**
@@ -183,14 +191,15 @@ const ExpenseForm = (props) => {
         </Grid>
       ) : null}
       <Grid item sx={{ marginTop: 3 }}>
-        <Button
+        <LoadingButton
           variant="contained"
           fullWidth
           onClick={onSubmit}
+          loading={loading}
           sx={{ textTransform: 'none' }}
         >
           Save expense
-        </Button>
+        </LoadingButton>
       </Grid>
     </Grid>
   );
