@@ -13,6 +13,7 @@ import FirebaseAuthentication from './auth/FirebaseAuthentication';
 import validateExpense from '../../common/validateExpense';
 import validateSubscription from '../../common/validateSubscription';
 import validateCard from '../../common/validateCard';
+import validateStore from '../../common/validateStore';
 
 /**
  * @param {UserExpenseDBData} userExpenseDBData
@@ -136,6 +137,16 @@ exports.addStore = functionsV2.https.onCall(
     }
 
     const store = request.data;
+
+    const errors = validateStore(store);
+
+    if (errors) {
+      throw new functionsV2.https.HttpsError(
+        'invalid-argument',
+        'Store is invalid'
+      );
+    }
+
     const userId = request.auth.uid;
     const userStore = await Stores.add(userId, store);
 

@@ -1,6 +1,8 @@
-import { Box, Button } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Box } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import validateStore from '../../common/validateStore';
 import useStores from '../providers/useStores';
 import FilledInput from './common/FilledInput';
 
@@ -17,16 +19,31 @@ const StoresForm = (props) => {
   const { addStore } = useStores();
   const [name, setName] = useState('');
 
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState(/** @type {StoreError | null} */ (null));
+
   const onSubmit = async () => {
-    /** @type {Store} */
-    const store = {
-      name,
-    };
+    try {
+      setLoading(true);
 
-    await addStore(store);
+      /** @type {Store} */
+      const store = {
+        name,
+      };
 
-    if (onSubmitted) {
-      onSubmitted();
+      const errors = validateStore(store);
+
+      if (errors) {
+        return setErrors(errors);
+      }
+
+      await addStore(store);
+
+      if (onSubmitted) {
+        onSubmitted();
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,14 +57,16 @@ const StoresForm = (props) => {
 
           setName(newName);
         }}
+        errorText={errors?.name}
       />
-      <Button
+      <LoadingButton
         onClick={onSubmit}
         variant="contained"
+        loading={loading}
         sx={{ textTransform: 'none', marginTop: 3 }}
       >
         Save store
-      </Button>
+      </LoadingButton>
     </Box>
   );
 };

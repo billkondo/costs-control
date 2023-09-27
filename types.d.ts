@@ -85,6 +85,8 @@ type Store = {
   name: string;
 };
 
+type StoreError = ValidationError<Store>;
+
 type UserStore = {
   id: string;
   userId: string;
