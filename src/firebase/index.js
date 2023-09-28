@@ -8,6 +8,7 @@ import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import FirebaseConfig from './FirebaseConfig';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 import getMode from '../utils/getMode';
+import getRegion from '../../common/getRegion';
 
 const firebaseConfig = FirebaseConfig[getMode()];
 
@@ -18,7 +19,7 @@ if (!firebaseConfig) {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const functions = getFunctions(app);
+const functions = getFunctions(app, getRegion());
 
 const googleProvider = new GoogleAuthProvider();
 

@@ -6,11 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:staging": "vite build --mode staging",
+    "build:production": "vite build --mode production",
     "check-types": "tsc --project jsconfig.json",
     "lint": "npm run check-types && eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "emulator": "firebase emulators:start",
-    "emulator:debug": "firebase emulators:start --inspect-functions"
+    "emulator:debug": "firebase emulators:start --inspect-functions",
+    "deploy:staging:hosting": "npm run build:staging && firebase deploy -P staging --only hosting",
+    "deploy:staging:functions": "cd functions && npm run build && firebase deploy -P staging --only functions"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

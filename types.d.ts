@@ -36,8 +36,11 @@ type QueryParams<T> = {
 
 type FirebaseConfig = {
   development?: object;
+  staging?: object;
   production?: object;
 };
+
+type FirebaseRegion = 'southamerica-east1' | 'us-central1';
 
 // Firestore
 

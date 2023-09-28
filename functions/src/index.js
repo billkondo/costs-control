@@ -14,6 +14,11 @@ import validateExpense from '../../common/validateExpense';
 import validateSubscription from '../../common/validateSubscription';
 import validateCard from '../../common/validateCard';
 import validateStore from '../../common/validateStore';
+import getRegion from '../../common/getRegion';
+
+functionsV2.setGlobalOptions({
+  region: getRegion(),
+});
 
 /**
  * @param {UserExpenseDBData} userExpenseDBData
