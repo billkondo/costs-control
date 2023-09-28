@@ -3,31 +3,7 @@
 ## Prerequisites
 
 - Setup [Firebase CLI](https://firebase.google.com/docs/cli)
-- Create a [Firebase Web](https://firebase.google.com/docs/web/setup#create-project) project
-- Run ``firebase use PROJECT_ID`` to change projects
-- Run ``firebase projects:list`` to list projects
-
-## Firebase configuration
-
-Create a FirebaseConfig.js file on the */functions/* and */src/firebase/* folders. The file content should be the following template.
-
-```
-/** @type {FirebaseConfig} */
-const FirebaseConfig = {
-  development: {
-    ...
-  },
-  production: {
-    ...
-  }
-};
-
-export default FirebaseConfig;
-```
-
-The */functions/FirebaseConfig.js* file should have a [Firebase service account](https://firebase.google.com/support/guides/service-accounts).
-
-The */src/firebase/FirebaseConfig.js* file should have a [Firebase configuration object](https://firebase.google.com/docs/web/learn-more#config-object).
+- Configure [Firebase](/docs/FIREBASE.md)
 
 ## Scripts 
 

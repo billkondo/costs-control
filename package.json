@@ -14,7 +14,9 @@
     "emulator": "firebase emulators:start",
     "emulator:debug": "firebase emulators:start --inspect-functions",
     "deploy:staging:hosting": "npm run build:staging && firebase deploy -P staging --only hosting",
-    "deploy:staging:functions": "cd functions && npm run build && firebase deploy -P staging --only functions"
+    "deploy:staging:functions": "cd functions && npm run build && firebase deploy -P staging --only functions",
+    "deploy:production:hosting": "npm run build:production && firebase deploy -P production --only hosting",
+    "deploy:production:functions": "cd functions && npm run build && firebase deploy -P production --only functions"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
